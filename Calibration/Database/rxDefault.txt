@@ -1,0 +1,3 @@
+Confidence Level|95
+Coverage Factor|2
+Reference Refractive Index|1.00028

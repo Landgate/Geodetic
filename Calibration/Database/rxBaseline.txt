@@ -1,0 +1,20 @@
+2|Curtin University|Kent Street, Bentley|DOLA|13/12/1995|1116/1984/V3|1|95|10.88|0.004|20|50|A|
+3|Kalgoorlie|School of Mines|DOLA|13/12/1995|1116/1984/V3|1|95|375.488|0.004|20|50|A|
+6|Kalgoorlie|School of Mines|DOLA|22/09/1997|GS 51/92/5|1|95|375.488|0.004|20|50|A|
+7|Old Curtin baseline|Superseded|DOLA|3/10/1997|GS 7/88/23|1|95|10.88|0.004|20|50|A|
+10|KALGOOLIE 99|Kalgoorlie|DOLA|7/10/99|GS 7/88/24|1|95|375.488|0.005|20|50|A|
+13|Kalgoorlie 99|Kalgoorlie|DOLA|11/2/2000|7/88/24|1|95|375.488|0.004|20|50|A|
+14|Curtin 99|Curtin University|DOLA|7/10/99|7/88/24|1|95|10.88|0.004|20|50|A|
+15|Brunei|Malaysia|DOLA|11/05/2000|HARLEY WINRAM|3|95|10|0.004|5|60|A|
+16|Old Brunei Baseline|Superseded|DOLA|11/5/2000|DOLA|3|95|10|0.004|20|60|A|
+20|Curtin|Curtin University|DOLA|7/10/1999|7/88/24|1|95|10.88|0.004|20|50|A|
+22|Tape Tunnel|Midland|DOLA|23/07/2001|Reg 80 Certificate|1|95|0|0|10|50|A|
+25|Kalgoorlie 2001|Kalgoorlie|DOLA|13/09/2001|GS7/88/24|1|95|375.488|0.004|20|50|A|
+26|Curtin|Curtin University|DOLA|7/10/1999|7/88/24|1|95|10.88|0.004|20|50|A|
+28|Curtin|Curtin University|DOLA|10/09/2001|7/88/24|1|95|10.62|0.004|20|50|A|
+31|Kalgoorlie|DOIR Explosives Reserve|Department of Land Information|16/09/2003|GS 51/1992|9|95|376.133|0.004|20|50|A|Midland Square MIDLAND WA 6056
+32|Curtin|Curtin University|DLI|13/10/2003|7/88/36|1|95|10.62|0.004|20|50|A|
+33|CurtinA|Curtin University Kent Street Bentley|Department of Land Information|10/11/2005|GS 7/88/36|9|95|10.62|0.004|20|50|A|Midland Square Midland 6056
+34|Kalgoorlie|DOIR Explosives Reserve|Department of Land Information|10/11/2005|GS 51/1992|9|95|376.133|0.004|20|50|C|Midland Square MIDLAND WA 6056
+35|CurtinA|Curtin University Kent Street Bentley|Department of Land Information|18/10/2007|GS 7/88/36|9|95|10.62|0.004|20|50|A|Midland Square Midland 6056
+36|CurtinA|Curtin University Kent Street Bentley|Department of Land Information|18/10/2007|GS 7/88/36|9|95|10.62|0.004|20|50|C|Midland Square Midland 6056

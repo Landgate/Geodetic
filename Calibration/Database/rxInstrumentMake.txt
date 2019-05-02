@@ -1,0 +1,10 @@
+1|AGA Geotronics|Sweden
+2|Hewlett Packard|USA
+3|Kern|Switzerland
+18|Leica|Switzerland
+4|Nikon|Japan
+20|Sokkia|Japan
+11|Topcon|Japan
+22|Trimble|Germany
+9|Wild|Switzerland
+8|Zeiss|Germany
