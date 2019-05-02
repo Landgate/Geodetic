@@ -25,8 +25,7 @@ The Geodetic-Calculations-v4.xlsm spreadsheets demonstrates the functions.
 
 // Geodetic-Calculations-v4.xlam //
 
-The functions demonstrated in Geodetic-Calculations-v4.xlsm have also been made available as an excel add-in. This can be referenced to excell and the functions can then be used in any excel spreadsheet.
-
+The functions demonstrated in Geodetic-Calculations-v4.xlsm have also been made available as an excel add-in. This can be referenced to excel and the functions can then be used in any excel spreadsheet.
 
 
 // Abstract //
