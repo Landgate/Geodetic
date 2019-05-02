@@ -1,0 +1,87 @@
+unit TranslateMain;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Mask, ToolEdit, Buttons, ComCtrls;
+
+type
+  TfrmTranslate = class(TForm)
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    DirectoryEdit1: TDirectoryEdit;
+    Label1: TLabel;
+    btnTranslate: TButton;
+    procedure btnTranslateClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmTranslate: TfrmTranslate;
+
+implementation
+
+{$R *.dfm}
+uses BseDM;
+
+procedure TfrmTranslate.btnTranslateClick(Sender: TObject);
+begin
+  dmBase.rxAlias := DirectoryEdit1.Text;
+  if dmBase.rxAlias <> '' then
+  begin
+    dmBase.Translate(dmBase.rxUncertaintyEDM);
+    dmBase.Translate(dmBase.rxUncertaintyBaseline);
+
+    dmBase.Translate(dmBase.rxMethod);
+    dmBase.Translate(dmBase.rxMethodX);
+    dmBase.Translate(dmBase.rxDefault);
+
+    dmBase.Translate(dmBase.rxBaseline);
+    dmBase.Translate(dmBase.rxBaselineX);
+    dmBase.Translate(dmBase.rxEllipsoid);
+    dmBase.Translate(dmBase.rxDistance);
+    dmBase.Translate(dmBase.rxPillar);
+    dmBase.Translate(dmBase.rxJob);
+
+    dmBase.Translate(dmBase.rxInstrument);
+    dmBase.Translate(dmBase.rxInstrumentModel);
+    dmBase.Translate(dmBase.rxInstrumentMake);
+
+    dmBase.Translate(dmBase.rxInstrumentX);
+    dmBase.Translate(dmBase.rxInstrumentModelX);
+    dmBase.Translate(dmBase.rxInstrumentMakeX);
+
+    dmBase.Translate(dmBase.rxJMeasure);
+    dmBase.Translate(dmBase.rxEDMObs);
+    dmBase.Translate(dmBase.rxStandard);
+    dmBase.Translate(dmBase.rxDistribution);
+
+    dmBase.Translate(dmBase.rxWebBaseline);
+    dmBase.Translate(dmBase.rxWebDistance);
+    dmBase.Translate(dmBase.rxWebPillar);
+    dmBase.Translate(dmBase.rxWebJob);
+    dmBase.Translate(dmBase.rxWebEDMObs);
+    dmBase.Translate(dmBase.rxWebJMeasure);
+
+    dmBase.Translate(dmBase.rxBaselineAccuracy);
+    dmBase.Translate(dmBase.rxBaselineAccuracyX);
+    dmBase.Translate(dmBase.rxBaselineDefaultX);
+    dmBase.Translate(dmBase.rxBaselineDefault);
+
+  end;
+  ShowMessage('Translation completed.'+#10+#10+'The text files are in folder '+dmBase.rxAlias);
+  Close;
+end;
+
+procedure TfrmTranslate.FormShow(Sender: TObject);
+begin
+  DirectoryEdit1.InitialDir := ExtractFilePath( Application.ExeName);
+  DirectoryEdit1.DoClick;
+end;
+
+end.
