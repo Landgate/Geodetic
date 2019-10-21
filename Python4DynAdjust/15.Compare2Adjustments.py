@@ -130,8 +130,8 @@ def hms2dd(HMS_Ang):
 ###############################################################################
 adj_file1 =sys.argv[1]
 adj_file2 =sys.argv[2]
-#adj_file1 ='20190522_(05)_WA_NT_SA_GDA2020.phased-stage.adj'
-#adj_file2 ='20190523_(05)_WA_NT_SA_GDA2020.phased-stage.adj'
+#adj_file1 ='20192328_3_Final_Adjustment.phased-stage.adj'
+#adj_file2 ='20192328_3_Final_Adjustment.phased-stage.adj'
 adj_files=[adj_file1,adj_file2]
 apu_file1 = adj_file1.replace('.adj','_typeB.apu') if os.path.isfile(adj_file1.replace('.adj','_typeB.apu')) else adj_file1.replace('.adj','.apu')
 apu_file2 = adj_file2.replace('.adj','_typeB.apu') if os.path.isfile(adj_file2.replace('.adj','_typeB.apu')) else adj_file2.replace('.adj','.apu')
@@ -274,10 +274,10 @@ for fn in adj_files:
                     C = line[65:67].strip()
                     if typ =='D' or typ =='B' or typ =='K':
                         value = hms2dd(line[68:87])
-                        Adjusted = hms2dd(line[87:106])
+                        Adjusted = hms2dd(line[87:105])
                     else:
                         value = float(line[68:87])
-                        Adjusted = float(line[87:106])
+                        Adjusted = float(line[87:105])
                     Correction = float(line[106:118])
                     Meas_SD = float(line[118:131])
                     Adj_SD = float(line[131:144])
@@ -390,7 +390,7 @@ for fn in shp_fn:
                     ])
         if not row[22] is None:
             w1.line([
-                    [[row[18], row[17]], [row[20], row[19]], [row[22], row[21]]]
+                    [[row[20], row[19]], [row[18], row[17]], [row[22], row[21]]]
                     ])
         if not row[20] is None:
             w1.record(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15])
@@ -449,7 +449,7 @@ for row in qry:
     Mag_Vt_Chg=None
     Mag_vPU_Chg=None
     PER_Vt_v_vPU=None
-    if row[11]is not None and row[16]is not None:
+    if row[11]is not None and row[16]is not None and row[11]<>0:
         Mag_Coord_Chg=vincenty_inverse((row[7], row[8]),(row[3], row[4]))
         Mag_PU_Chg=row[16]-row[11]
         PER_Coord_v_PU=round((Mag_Coord_Chg[0]/row[11])*100,2)
@@ -461,6 +461,7 @@ for row in qry:
               row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19], row[20], \
               Mag_Coord_Chg[0], Mag_Coord_Chg[1], Mag_PU_Chg, PER_Coord_v_PU, PER_PU_v_PU,Mag_Vt_Chg,Mag_vPU_Chg,PER_Vt_v_vPU)
 w1.close()
+conn.close()
 with open(f1 +'.prj', 'wb') as prj:
     rf=rfs[1]
     if rf=='GDA2020':prj.write("GEOGCS['GDA2020',DATUM['D_GDA_2020',SPHEROID['GRS_1980',6378137,298.257222101]],PRIMEM['Greenwich',0],UNIT['Degree',0.017453292519943295]]")
