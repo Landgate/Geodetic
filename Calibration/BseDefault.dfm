@@ -21,13 +21,17 @@ object frmDefaults: TfrmDefaults
     Top = 0
     Width = 545
     Height = 337
-    ActivePage = tsAccreditation
+    ActivePage = tsEDMUncertainty
     Align = alTop
     MultiLine = True
     TabOrder = 0
     OnChange = pcMainChange
     object tsProcedures: TTabSheet
       Caption = 'Procedures'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object lblProcedure: TLabel
         Left = 2
         Top = 4
@@ -51,6 +55,10 @@ object frmDefaults: TfrmDefaults
         OnChange = pcProceduresChange
         object tsBaselineProcedure: TTabSheet
           Caption = 'Baseline Calibration'
+          ExplicitLeft = 0
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object lblBaselineProcedure: TLabel
             Left = 3
             Top = 8
@@ -95,6 +103,10 @@ object frmDefaults: TfrmDefaults
         object tsEDMCalibration: TTabSheet
           Caption = 'EDM Instrument Calibration'
           ImageIndex = 1
+          ExplicitLeft = 0
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object lblEDMProcedure: TLabel
             Left = 3
             Top = 8
@@ -137,6 +149,10 @@ object frmDefaults: TfrmDefaults
     object tsEDMUncertainty: TTabSheet
       Caption = 'Uncertainty EDM Calibration'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object lblUncertaintyEDM: TLabel
         Left = 2
         Top = 4
@@ -156,9 +172,9 @@ object frmDefaults: TfrmDefaults
         Width = 537
         Height = 218
         Selected.Strings = (
-          'Description'#9'45'#9'Description'
-          'Default'#9'10'#9'Default'
-          'Unit'#9'8'#9'Unit')
+          'Description'#9'45'#9'Description'#9#9
+          'Default'#9'10'#9'Default'#9#9
+          'Unit'#9'8'#9'Unit'#9#9)
         IniAttributes.Delimiter = ';;'
         TitleColor = clBtnFace
         FixedCols = 1
@@ -190,6 +206,10 @@ object frmDefaults: TfrmDefaults
     object tsUncertaintyBaseline: TTabSheet
       Caption = 'Uncertainty Baseline Calibration'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object lblUncertaintyBaseline: TLabel
         Left = 2
         Top = 4
@@ -243,6 +263,10 @@ object frmDefaults: TfrmDefaults
     object tsTraceability: TTabSheet
       Caption = 'Traceability'
       ImageIndex = 3
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object lblTraceability: TLabel
         Left = 2
         Top = 4
@@ -266,6 +290,10 @@ object frmDefaults: TfrmDefaults
         OnChange = pcTraceabilityChange
         object tsBaselineTraceability: TTabSheet
           Caption = 'Baseline Traceability'
+          ExplicitLeft = 0
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object lbl_tsBaselineTraceability_Procedure: TLabel
             Left = 6
             Top = 8
@@ -304,6 +332,10 @@ object frmDefaults: TfrmDefaults
         object tsEDMTraceability: TTabSheet
           Caption = 'EDM Instrument Traceability'
           ImageIndex = 1
+          ExplicitLeft = 0
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object lbl_tsEDMTraceability_Procedure: TLabel
             Left = 6
             Top = 8
@@ -342,6 +374,10 @@ object frmDefaults: TfrmDefaults
         object tsLegalTraceability: TTabSheet
           Caption = 'Legal Traceability'
           ImageIndex = 2
+          ExplicitLeft = 0
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object lbl_tsLegalTraceability_Procedure: TLabel
             Left = 6
             Top = 8
@@ -383,8 +419,10 @@ object frmDefaults: TfrmDefaults
       Caption = 'Standards'
       ImageIndex = 5
       OnShow = tsStandardsShow
-      ExplicitLeft = 10
-      ExplicitTop = 44
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object lblStandards1: TLabel
         Left = 72
         Top = 4
@@ -428,8 +466,8 @@ object frmDefaults: TfrmDefaults
       object lblConfidenceLevel: TLabel
         Left = 6
         Top = 70
-        Width = 179
-        Height = 46
+        Width = 177
+        Height = 39
         Caption = 
           'Minimum uncertainty standard for the calibration of an EDM instr' +
           'ument at a confidencel level of 95%.'
@@ -479,6 +517,10 @@ object frmDefaults: TfrmDefaults
     object tsMiscellaneous: TTabSheet
       Caption = 'Miscellaneous'
       ImageIndex = 5
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object lblMiscellaneous: TLabel
         Left = 2
         Top = 4
@@ -522,6 +564,10 @@ object frmDefaults: TfrmDefaults
     object tsAccreditation: TTabSheet
       Caption = 'Accreditation'
       ImageIndex = 6
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object lblAccreditation: TLabel
         Left = 2
         Top = 4
@@ -540,12 +586,15 @@ object frmDefaults: TfrmDefaults
         Top = 34
         Width = 528
         Height = 242
-        ActivePage = tsAccreditationLUM
+        ActivePage = tsStatement
         TabOrder = 0
         OnChange = pcAccreditationChange
         object tsAuthority: TTabSheet
           Caption = 'Accreditation Authority'
-          ExplicitWidth = 477
+          ExplicitLeft = 0
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object lblAccreditationAuthority: TLabel
             Left = 8
             Top = 14
@@ -565,7 +614,10 @@ object frmDefaults: TfrmDefaults
         end
         object tsStatement: TTabSheet
           Caption = 'Accreditation Statement'
-          ExplicitWidth = 477
+          ExplicitLeft = 0
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object dbmemBaselineAccreditationStatement: TDBMemo
             Left = 6
             Top = 33
@@ -579,7 +631,10 @@ object frmDefaults: TfrmDefaults
         object tsLogo: TTabSheet
           Caption = 'Accreditation Logo'
           ImageIndex = 1
-          ExplicitWidth = 477
+          ExplicitLeft = 0
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object ImageAccreditation: TImage
             Left = 8
             Top = 66
@@ -929,7 +984,10 @@ object frmDefaults: TfrmDefaults
           Caption = 'LUM'
           ImageIndex = 3
           OnShow = tsAccreditationLUMShow
-          ExplicitWidth = 477
+          ExplicitLeft = 0
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object Label7: TLabel
             Left = 2
             Top = 4
@@ -946,8 +1004,8 @@ object frmDefaults: TfrmDefaults
           object Label9: TLabel
             Left = 5
             Top = 51
-            Width = 150
-            Height = 45
+            Width = 146
+            Height = 39
             Caption = 'Least Uncertainty of Measurement at a confidencel level of 95%:'
             WordWrap = True
           end
@@ -959,10 +1017,6 @@ object frmDefaults: TfrmDefaults
             TabOrder = 0
             ExplicitLeft = 161
             ExplicitTop = 48
-            inherited pnlOldLUMUnits: TPanel
-              ExplicitLeft = -51
-              ExplicitTop = -7
-            end
             inherited pnlNewLUMUnits: TPanel
               inherited FrameNewLumUnits1: TFrameNewLumUnits
                 inherited lblLumUnits1: TLabel
@@ -978,6 +1032,10 @@ object frmDefaults: TfrmDefaults
     object tsAuthority1: TTabSheet
       Caption = 'Verifying Authority'
       ImageIndex = 7
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object lblTestingAuthority: TLabel
         Left = 2
         Top = 4
@@ -2136,6 +2194,10 @@ object frmDefaults: TfrmDefaults
     object tsAbout: TTabSheet
       Caption = 'About'
       ImageIndex = 8
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label1: TLabel
         Left = 2
         Top = -4
@@ -2219,6 +2281,10 @@ object frmDefaults: TfrmDefaults
     object tsReport: TTabSheet
       Caption = 'Report'
       ImageIndex = 9
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label4: TLabel
         Left = 8
         Top = 46
@@ -2266,6 +2332,10 @@ object frmDefaults: TfrmDefaults
     object tsLUM: TTabSheet
       Caption = 'LUM'
       ImageIndex = 10
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label8: TLabel
         Left = 2
         Top = 4
@@ -2290,6 +2360,10 @@ object frmDefaults: TfrmDefaults
         OnChange = pcLUMChange
         object tsLUMBaseline: TTabSheet
           Caption = 'Baseline Calibration'
+          ExplicitLeft = 0
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object Panel4: TPanel
             Left = 13
             Top = 7
@@ -2331,10 +2405,10 @@ object frmDefaults: TfrmDefaults
                   ExplicitWidth = 6
                 end
                 inherited lblOpenBracket: TLabel
-                  Width = 3
+                  Width = 9
                   Height = 13
                   Font.Name = 'MS Sans Serif'
-                  ExplicitWidth = 3
+                  ExplicitWidth = 9
                   ExplicitHeight = 13
                 end
               end
@@ -2344,6 +2418,10 @@ object frmDefaults: TfrmDefaults
         object tsLUMEDM: TTabSheet
           Caption = 'EDM Instrument Calibration'
           ImageIndex = 1
+          ExplicitLeft = 0
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object Panel7: TPanel
             Left = 13
             Top = 7
@@ -2385,10 +2463,10 @@ object frmDefaults: TfrmDefaults
                   ExplicitWidth = 6
                 end
                 inherited lblOpenBracket: TLabel
-                  Width = 3
+                  Width = 9
                   Height = 13
                   Font.Name = 'MS Sans Serif'
-                  ExplicitWidth = 3
+                  ExplicitWidth = 9
                   ExplicitHeight = 13
                 end
               end

@@ -1,9 +1,9 @@
 object frmAbout: TfrmAbout
   Left = 465
   Top = 243
-  Width = 523
-  Height = 449
   Caption = 'About Baseline'
+  ClientHeight = 430
+  ClientWidth = 514
   Color = 11392759
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

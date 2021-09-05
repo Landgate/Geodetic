@@ -2016,7 +2016,8 @@ begin
     gbAccreditation.Height := 148;
 
     // Public users can not change the uncertainties
-    lblUncertaintyHeader.Caption := 'Uncertainties';
+    // Public users can now change the uncertainties                 KW 25/8/2021
+    {lblUncertaintyHeader.Caption := 'Uncertainties';
     dbedtUncertaintyEDMHeight.ReadOnly := True;
     dbedtUncertaintyEDMHeight.Color := clBtnFace;
     dbedtUncertaintyPrismHeight.ReadOnly := True;
@@ -2036,9 +2037,19 @@ begin
     dbedtUncertaintyCentringEDM.ReadOnly := True;
     dbedtUncertaintyCentringEDM.Color := clBtnFace;
     dbedtUncertaintyCentringPrism.ReadOnly := True;
-    dbedtUncertaintyCentringPrism.Color := clBtnFace;
+    dbedtUncertaintyCentringPrism.Color := clBtnFace;}
+
   end;
 
+  dbedtUnitWaveLength.ReadOnly := True;		// KW Instrument parameters can only be edited from the Instrument Model
+  dbedtFrequency.ReadOnly := True;
+  dbedtCarrierWaveLength.ReadOnly := True;
+  dbedtRefractiveIndex.ReadOnly := True;
+  dbedtUnitWaveLength.Color := clBtnFace;
+  dbedtFrequency.Color := clBtnFace;
+  dbedtCarrierWaveLength.Color := clBtnFace;
+  dbedtRefractiveIndex.Color := clBtnFace;
+  
   hasChangedDefault := False;
   hasValidBaseline := True;
   dDefaultHumidity := 50.0;
@@ -2970,6 +2981,7 @@ begin
     if strInstrType = 'P' then
     begin
       pcStdDev.ActivePage := tsPrismConstant;
+      pcStdDev.Visible          := True;
       lblModelStdDevConst.Visible  := False;
       bedtModelStdDevConst.Visible := False;
       lblModelStdDevPPM.Visible    := False;
@@ -2990,6 +3002,7 @@ begin
     else
     begin
       pcStdDev.ActivePage := tsEDMStdDev;
+      pcStdDev.Visible          := False;
       lblModelStdDevConst.Visible  := True;
       bedtModelStdDevConst.Visible := True;
       lblModelStdDevPPM.Visible    := True;
@@ -7233,7 +7246,8 @@ begin
     strLine := strLine +' by the '+strProgramOwner+'.';
     lblVersionNumber.caption := strLine;
     lblCalibrationDate.caption := DateToStr(dmMain.rxJobJobStartCalibrationDate.AsDateTime);
-    lblComputationDate.caption := DateToStr(Date);
+    //lblComputationDate.caption := DateToStr(Date);    KW 31/08/2021
+    lblComputationDate.caption := DateToStr(dmMain.rxJobJobEndCalibrationDate.AsDateTime);
     lblObserverName.Caption    := dmMain.rxJobJobObserverName.AsString;
     lblComputationTime.caption := TimeToStr(Time);
     lblEDMOwner.Caption := dmMain.rxJobJobInst1Owner.AsString;

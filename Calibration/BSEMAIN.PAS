@@ -46,7 +46,6 @@ type
     sbtnEditBaseline: TSpeedButton;
     sbtnEllipsoid: TSpeedButton;
     N2: TMenuItem;
-    vedtLatitude: TDisplayFmt;
     sbtnDefault: TSpeedButton;
     sbtnDistribute: TSpeedButton;
     N1: TMenuItem;

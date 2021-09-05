@@ -33,8 +33,6 @@ procedure SlopeCorrection (
    sLineCount: Integer);                // Number of lines
 procedure ReduceDistance  (
     sLineCount: Integer);           // Number of lines
-procedure  AprioriStdDevDistance1;
-procedure AprioriStdDevDistance2;
 function  BaseEDMPrePrint(
     sPage:           Integer;            // page number
     sTotalPages:     Integer;            // Total number of pages
@@ -97,6 +95,7 @@ procedure VarianceMatrixByVF(
    dPostvarFactor: DOUBLE;      // A posteriori variance factor
    sParCount: Integer);         // Number of parameters
 procedure StdDevResiduals;
+procedure UncertaintyBudget;
 procedure LSStandardisedResidual;
 procedure Student;
 procedure TestCyclicError;
@@ -107,6 +106,8 @@ function  BaseEDMPostPrint(
    strBaseFileName: String;               // Base file name
    pre: PRE_L): Integer;                 // ptr to pre  processing struct
 procedure PrintCalibrationParameters;
+procedure PrintISO17123_4Tests;
+procedure PrintUncertaintyTbl;
 procedure PrintNationalStandards;
 function UncertaintyIC2(
       dDistance: DOUBLE): Double;
@@ -119,6 +120,10 @@ function PrintResiduals(
    sPage: Integer;                  // Page number
    sTotalPages: Integer): Integer;  // Total pages
 procedure BaseHistogram;
+procedure PlotResiduals(
+   X_Axis:  array of double;
+   Y_Axis:  array of double;
+   sHeader:  String);
 function PrintCurve (
    strLine: String;
    sCurrentCol: Integer;               // Current column value
@@ -193,7 +198,9 @@ function GetLUM( var dUncertaintyConstant: Double;
                   var dUncertaintyScale: Double;
                   strCalibType: string): Boolean;
 function AddCalibrationUncertainties(dUncertainty: Double; dDistance: Double): Double;
+function GetUncertaintyCertifiedDistance(dCertifiedDistance: Double): Double;
 function AddEDMCalibrationUncertainties(dScaleStdDev: Double): Double;
+
 function GetUncertaintyWithUnits(AConstant, AScale: Double;
   AConstantFormat, AScaleFormat, AMessage: string; IncludeNewBrackets: boolean = True;
   ShowLengthInMetres: boolean = True; IncludeOldBrackets: boolean = True;
@@ -202,7 +209,14 @@ function GetLumUnitsFromDB: string;
 procedure LogDebugMessage(AMessage: string);
 procedure InitialiseOMat(sLineCount, sMaxUnknowns: integer);
 procedure InitialiseMat(sMaxUnknowns: integer);
-
+function sigfigs(
+  aVal: double;   //the number to be formatted as with significant figures
+  sLen: integer;  //define the length of the returned string
+  sFig: integer):string;      //The number of significant figures
+function tttstudent(
+  dof:  double): double; //Returns the 2 tailed inverse of student t at 95% confidence
+function CHISQ_INV(
+  dof:  double): double; //Returns the inverse of left-tailed chi-squared at 95% confidence
 var
   strWeatherCondition: String;
   line: array of LINE_L;               // ptr to line
@@ -239,7 +253,7 @@ uses
 @procedure FillrxPillarList;
 
 @description
-  Saves pillar onformation to a temporary table (dmBase.rxmemPillar).
+  Saves pillar information to a temporary table (dmBase.rxmemPillar).
 *******************************************************************************)
 procedure FillrxPillarList;
 begin
@@ -1285,118 +1299,6 @@ begin
 end;
 
 (*******************************************************************************
-@procedure AprioriStdDevDistance1;
-
-@description
-  A linear regression solution is used to resolve an a priori standard deviation
-  of the measured line caused by random errors in the distance measurements of
-  all lines used on the baseline.
-*******************************************************************************)
-procedure  AprioriStdDevDistance1;
-var
-  sLoop:            Integer;             // Loop Counter
-  sLineCount:       Integer;             // Number of lines
-  dConstant:        DOUBLE;              // Constant part of EDM std dev
-  dScale:           DOUBLE;              // Scale PPM  of EDM std dev
-  dX, dY, dXY, dX2: DOUBLE;              // Terms in equations
-  dSumX, dSumY:     DOUBLE;              // Terms in equations
-  dSumXY, dSumX2:   DOUBLE;              // Terms in equations
-begin
-  dSumX  := 0.000;
-  dSumY  := 0.000;
-  dSumXY := 0.000;
-  dSumX2 := 0.000;
-
-  sLineCount := dmMain.rxJMeasure.RecordCount;
-
-  for sLoop := 0 to sLineCount-1 do
-  begin
-    dX  := line[sLoop].dMeanObsDistance;
-    dY  := line[sLoop].dObsDistanceStdDev;
-    dX2 := dX*dX;
-    dXY := dX*dY;
-    dSumX  := dSumX + dX;
-    dSumY  := dSumY + dY;
-    dSumXY := dSumXY + dXY;
-    dSumX2 := dSumX2 + dX2;
-  end;
-
-  dConstant := (dSumX2 * dSumY - dSumX * dSumXY) /
-              (sLineCount * dSumX2 - dSumX * dSumX);
-  dScale    := (sLineCount * dSumXY - dSumX * dSumY) /
-              (sLineCount * dSumX2 - dSumX * dSumX);
-
-  if (dConstant < 0.0000) then
-  begin
-    dConstant := 0.000;
-  end;
-  post.dStdDevConst := dConstant;
-
-  if (dScale < 0.0000) then
-  begin
-    post.dStdDevPPM := 0.0000;
-  end
-  else
-  begin
-    post.dStdDevPPM := dScale * 1000000.000;
-  end;
-end;
-
-(*******************************************************************************
-@procedure AprioriStdDevDistance2;
-
-@description
-  Computes the a priori standard deviation of all measured lines.
-*******************************************************************************)
-procedure AprioriStdDevDistance2;
-var
-  sLoop:      Integer;              // Loop Counter
-  dConstant:  DOUBLE;               // Constant part of EDM std dev
-  dScale:     DOUBLE;               // Scale PPM  of EDM std dev
-  dSCentring: DOUBLE;               // Std dev Centering
-  dSLevel:    DOUBLE;               // Std dev Levelling
-  dSTemp:     DOUBLE;               // Std Dev temperature
-  dSPres:     DOUBLE;               // Std dev pressure
-  dA:         DOUBLE;               // Constant term
-  dB:         DOUBLE;               // Scale term
-  dDistance:  DOUBLE;               // Distance
-  sLineCount: Integer;
-begin
-  //***************************************************************
-  // Scale Term
-  //***************************************************************
-  sLineCount := dmMain.rxJMeasure.RecordCount;
-  dScale  := dmMain.rxAtInstrumentInstStdDevPPM.AsFloat;
-  dSTemp := dmMain.rxJobJobStdDevTemp.AsFloat;
-  dSPres := dmMain.rxJobJobStdDevPressure.AsFloat * 0.3;
-  dB := sqrt(dScale*dScale + dSTemp*dSTemp + dSPres*dSPres);
-
-  //***************************************************************
-  // Constant term
-  //***************************************************************
-  dConstant  := dmMain.rxAtInstrumentInstStdDevConst.AsFloat;
-  dSCentring := dmMain.rxJobJobInstCentringStdDev.AsFLoat/1000;
-  if dmMain.rxJobJobInstLevellingStdDev.AsFloat > 0 then
-  begin
-    dSLevel := dmMain.rxJobJobInstLevellingStdDev.AsFloat/1000;
-  end
-  else
-  begin
-    dSLevel := 0;
-  end;
-  dA := sqrt(dConstant*dConstant + 2*dSCentring*dSCentring + 2*dSLevel*dSLevel);
-
-  //***************************************************************
-  // Std dev of each distance
-  //***************************************************************
-  for sLoop :=0 to sLineCount-1 do
-  begin
-    dDistance :=  line[sLoop].dMeanObsDistance;
-    line[sLoop].dAprioriStdDev := dA + dB * dDistance/1000000.000;
-  end;
-end;
-
-(*******************************************************************************
 @function  BaseEDMPrePrint(
     sPage:           Integer;            // page number
     sTotalPages:     Integer;            // Total number of pages
@@ -1413,6 +1315,8 @@ function  BaseEDMPrePrint(
     pre:            PRE_L): Integer;     // ptr to pre  processing struct
 var
   strOutputFileName:     string;         // Output filename string
+  X_Axis, Y_Axis: array of double;
+  i:  integer;
 begin
   strOutputFileName := strBaseFileName;
   //**********************************************************
@@ -1505,6 +1409,18 @@ begin
   Rewrite(pfRPTFile);
   sPage :=  EDMPageHeader(sPage,sTotalPages);
   sPage := PrintLinearMiscloses(sPage, sTotalPages);
+
+  sPage :=  EDMPageHeader(sPage,sTotalPages);
+
+  setlength(X_Axis, dmMain.rxJMeasure.RecordCount);
+  setlength(Y_Axis, dmMain.rxJMeasure.RecordCount);
+  for i := 0 to dmMain.rxJMeasure.RecordCount-1 do
+  begin
+     X_Axis[i] := line[i].dReducedDistance;
+     Y_Axis[i] := line[i].dResidual;
+  end;
+  PlotResiduals(X_Axis,Y_Axis,'RESIDUALS FROM LINEAR MISCLOSES');
+
   CloseFile(pfRPTFile);
 
   Result := sPage;
@@ -1560,7 +1476,7 @@ begin
     // Chi square test on the variance factor
     //**********************************************************************
     Basechitest;
-
+       
     //**********************************************************************
     // Multiple variance-covariance matrix of the adjusted parameters
     // by a posteriori variance factor
@@ -3054,69 +2970,38 @@ var
   sK: Integer;
   dCC: Double;
 begin
-  LogDebugMessage('Matrix('+IntToStr(sUnknowns)+')');
   //*****************************
   //  initialise inverse matrix
   //*****************************
   dCC := 0;
-  LogDebugMessage('for sI := 0 to sUnknowns-1['+IntToStr(sUnknowns-1)+'] do');
   for sI :=0 to sUnknowns-1 do
   begin
-    LogDebugMessage('for sJ := 0 to sUnknowns-1['+IntToStr(sUnknowns-1)+'] do');
     for sJ :=0 to sUnknowns-1 do
     begin
       Mat.dInv[sI][sJ] := 0.0;
-      LogDebugMessage('mat.dInv['+IntToStr(sI)+']['+IntToStr(sJ)+'] := 0.0');
     end;
 
     Mat.dInv[sI][sI] := 1.0;
-    LogDebugMessage('mat.dInv['+IntToStr(sI)+']['+IntToStr(sI)+'] := 1.0');
   end;
 
   //*****************************
   //  Compute unknowns & inverse
   //*****************************
-  LogDebugMessage('for sI := 0 to sUnknowns-1['+IntToStr(sUnknowns-1)+'] do');
   for  sI := 0 to sUnknowns-1 do
     for sJ := 0 to sUnknowns-1 do
     begin
-      LogDebugMessage('for sJ := 0 to sUnknowns-1['+IntToStr(sUnknowns-1)+'] do');
       if sI <> sJ then
       begin
-        LogDebugMessage('if ( Mat.dA['+IntToStr(sI)+']['+IntToStr(sI)+'] ('+
-          FloatToStr(Mat.dA[sI][sI])+') <> 0) then');
         if ( Mat.dA[sI][sI] <> 0) then
         begin
           dCC := Mat.dA[sJ][sI] / Mat.dA[sI][sI];
-          LogDebugMessage('dCC := Mat.dA['+IntToStr(sJ)+']['+IntToStr(sI)+'] ('+
-            FloatToStr(Mat.dA[sJ][sI])+') / Mat.dA['+IntToStr(sI)+']['+
-            IntToStr(sI)+'] ('+FloatToStr(Mat.dA[sI][sI])+') = '+FloatToStr(dCC));
         end;
 
         Mat.dB[sJ] := Mat.dB[sJ] - dCC * Mat.dB[sI];
-        LogDebugMessage('Mat.dB['+IntToStr(sJ)+'] := Mat.dB['+IntToStr(sJ)+'] ('+
-          FloatToStr(Mat.dB[sJ])+') - dCC ('+FloatToStr(dCC)+') * Mat.dB['+
-          IntToStr(sI)+'] ('+FloatToStr(Mat.dB[sI])+') = '+FloatToStr(Mat.dB[sJ]));
-
-        LogDebugMessage('for sK := 0 to sUnknowns-1['+IntToStr(sUnknowns-1)+'] do');
         for sK := 0 to sUnknowns-1 do
         begin
-          LogDebugMessage('Mat.dA['+IntToStr(sJ)+']['+IntToStr(sK)+
-            '] := Mat.dA['+IntToStr(sJ)+']['+IntToStr(sK)+'] ('+
-            FloatToStr(Mat.dA[sJ][sK])+') - dCC ('+FloatToStr(dCC)+') * Mat.dA['+
-            IntToStr(sI)+']['+IntToStr(sK)+'] ('+
-            FloatToStr(Mat.dA[sI][sK])+') = '+
-            FloatToStr(Mat.dA[sJ][sK] - dCC * Mat.dA[sI][sK]));
-
           Mat.dA[sJ][sK]   :=
               Mat.dA[sJ][sK] - dCC * Mat.dA[sI][sK];
-
-          LogDebugMessage('Mat.dInv['+IntToStr(sJ)+']['+IntToStr(sK)+
-            '] := Mat.dInv['+IntToStr(sJ)+']['+IntToStr(sK)+'] ('+
-            FloatToStr(Mat.dInv[sJ][sK])+') - dCC ('+FloatToStr(dCC)+') * Mat.dA['+
-            IntToStr(sI)+']['+IntToStr(sK)+'] ('+
-            FloatToStr(Mat.dInv[sI][sK])+') = '+
-            FloatToStr(Mat.dInv[sJ][sK] - dCC * Mat.dInv[sI][sK]));
 
           Mat.dInv[sJ][sK] :=
               Mat.dInv[sJ][sK] - dCC * Mat.dInv[sI][sK];
@@ -3124,27 +3009,13 @@ begin
       end; {if}
     end; {for}
 
-  LogDebugMessage('for sI := 0 to sUnknowns-1['+IntToStr(sUnknowns-1)+'] do');
   for sI := 0 to sUnknowns-1 do
   begin
-    LogDebugMessage('if Mat.dA[sI][sI] ('+FloatToStr(Mat.dA[sI][sI])+
-      ') <> 0.0 then');
     if Mat.dA[sI][sI] <> 0.0 then
     begin
       Mat.dX[sI] := Mat.dB[sI] / Mat.dA[sI][sI];
-      LogDebugMessage('Mat.dX[sI] := Mat.dB[sI] ('+FloatToStr(Mat.dB[sI])+
-        ') / Mat.dA[sI][sI] ('+FloatToStr(Mat.dA[sI][sI])+') = '+
-        FloatToStr(Mat.dX[sI]));
-
-      LogDebugMessage('for sJ := 0 to sUnknowns-1['+IntToStr(sUnknowns-1)+'] do');
       for sJ := 0 to sUnknowns-1 do
       begin
-        LogDebugMessage('Mat.dInv['+IntToStr(sI)+']['+IntToStr(sJ)+
-          '] := Mat.dInv['+IntToStr(sI)+']['+IntToStr(sJ)+'] ('+
-          FloatToStr(Mat.dInv[sI][sJ])+') / Mat.dA['+IntToStr(sI)+']['+
-          IntToStr(sI)+'] ('+FloatToStr(Mat.dA[sI][sI])+') = '+
-          FloatToStr(Mat.dInv[sI][sJ] / Mat.dA[sI][sI]));
-
         Mat.dInv[sI][sJ] := Mat.dInv[sI][sJ] / Mat.dA[sI][sI];
       end;
     end; {if}
@@ -3444,21 +3315,257 @@ var
   x,
   y: Integer;
 begin
-  LogDebugMessage('VarianceMatrixByVF('+FloatToStr(dPostvarFactor)+','+
-    IntToStr(sParCount)+')');
-
-  LogDebugMessage('for x := 0 to sParCount-1['+IntToStr(sParCount-1)+'] do');
   for x := 0 to sParCount-1 do
   begin
-    LogDebugMessage('for y := 0 to sParCount-1['+IntToStr(sParCount-1)+'] do');
     for y := 0 to sParCount-1 do
     begin
       Mat.dInv[x][y] := dPostvarFactor * Mat.dInv[x][y];
-      LogDebugMessage('Mat.dInv['+IntToStr(x)+']['+IntToStr(y)+
-        '] := dPostvarFactor ('+FloatToStr(dPostvarFactor)+
-        ') * Mat.dInv['+IntToStr(x)+']['+IntToStr(y)+'] ('+
-        FloatToStr(Mat.dInv[x][y])+') = '+FloatToStr(Mat.dInv[x][y]));
     end;
+  end;
+end;
+
+function UC(
+  v, k, dof, dydxi:   array of Double;
+  var iSumUi2: Double;
+  var iSumUi4: Double): double;
+var
+  i: Integer;
+  sd, ui, ui2, ui4, SumUi2, SumUi4 :double;
+
+begin
+  SumUi2 := 0;
+  SumUi4 := 0;
+  for i := 0 to length(v) - 1 do
+  begin
+    sd := v[i] / k[i];
+    ui := sd * dydxi[i];
+    ui2:= sqr(ui);
+    ui4:= (sqr(ui2))/dof[i];
+    SumUi2 := SumUi2 + ui2;
+    SumUi4 := SumUi4 + ui4;
+  end;
+  iSumUi2 := iSumUi2 + SumUi2;
+  iSumUi4 := iSumUi4 + SumUi4;
+  Result:= sqrt(SumUi2);
+end;
+(*******************************************************************************
+@procedure UncertaintyBudget
+
+@description
+  Tabulation and summation of uncertainty sources.
+*******************************************************************************)
+procedure UncertaintyBudget;
+var
+ i:                 Integer;            // Loop Counter
+ v:                 Double;
+ k, dof, sd:        Double;             //Coverage factor
+ dydx:              Double;
+ iSumUi2, iSumUi4:  Double;
+
+ dDistance:         Double;
+ PillarOneRL:       Double;
+ PillarOneOS:       Double;
+ dHeightDiff:       Double;
+
+ dIntervalUncertainty: Double;
+
+ dX, dY, dXY, dX2: DOUBLE;              // Terms in equations
+ dSumX, dSumY:     DOUBLE;              // Terms in equations
+ dSumXY, dSumX2:   DOUBLE;              // Terms in equations
+
+ begin
+
+  dmBase.rxmemPillar.First;
+  PillarOneRL       := dmBase.rxmemPillar.FieldByName('PillarHeight').AsFloat;
+  PillarOneOS       := dmBase.rxmemPillar.FieldByName('HorizOffset').AsFloat;
+
+  iSumUi2 :=0;
+  iSumUi4 :=0;
+  dSumX  := 0.000;
+  dSumY  := 0.000;
+  dSumXY := 0.000;
+  dSumX2 := 0.000;
+  // ------------------------------------------
+  // 4. EDM zero offset
+  // ------------------------------------------
+  if dmMain.rxJobJobType.AsString = 'B' then
+    xCoord.StdDevEdmZO := UC([sqrt (Mat.dInv[xCoord.sXCount][xCoord.sXCount])*1000], //The EDM zero offset uncertainty - taken from the least squares analysis of the baseline data.
+                          [1],                                                     //k
+                          [Post.sDegFreedom],                                      //dof
+                          [1],                                                     //dydxi
+                          iSumUi2, iSumUi4);
+
+  // ------------------------------------------
+  // 10. centring (axial)
+  // ------------------------------------------
+  dydx := 1;
+  xCoord.StdDevCentring := UC([pre_StdDev.CentringInstrument,pre_StdDev.CentringReflector],            //Value
+                              [1,1],                                     //k
+                              [30,30],                                   //dof
+                              [dydx,dydx],                                     //dydxi
+                              iSumUi2, iSumUi4);
+
+  // ------------------------------------------
+  // 13. Rounding
+  // ------------------------------------------
+  dydx := 1;
+  xCoord.StdDevRound :=  UC([0.05],                                      //Value
+                         [sqrt(3)],                                      //k
+                         [100],                                          //dof
+                         [dydx],                                            //dydxi
+                         iSumUi2, iSumUi4);
+
+  for i := 0 to xCoord.sXCount - 1 do
+  begin
+    dmBase.rxmemPillar.Next;
+    dDistance := xCoord.dXCoord[i];
+    dHeightDiff := Abs((PillarOneRL) -
+                      (dmBase.rxmemPillar.FieldByName('PillarHeight').AsFloat));
+    if dmMain.rxJobJobType.AsString = 'B' then
+    begin
+	    // ------------------------------------------
+	    // 1. EDM scale factor
+	    // ------------------------------------------
+	    dydx :=  dDistance * 1000;
+	    xCoord.StdDevEdmSF[i] := UC([0.00000006],                          //Value
+	                             [2],                                      //k
+	                             [30],                                     //dof
+	                             [dydx],                                   //dydxi
+	                             iSumUi2, iSumUi4);
+	
+	    // ------------------------------------------
+	    // 2. EDM scale factor (temp. effect)
+	    // ------------------------------------------
+	    dydx :=  dDistance * 1000;
+	    xCoord.StdDevEdmSFtemp[i] := UC([0.0000002],                       //Value
+	                                 [sqrt(3)],                            //k
+	                                 [30],                                 //dof
+	                                 [dydx],                               //dydxi
+	                                 iSumUi2, iSumUi4);
+	
+	    // ------------------------------------------
+	    // 3. EDM scale factor (drift over time)
+	    // ------------------------------------------
+	    dydx :=  dDistance * 1000;
+	    xCoord.StdDevEdmSFtime[i] := UC([0.0000000085],                    //Value
+	                                 [sqrt(3)],                            //k
+	                                 [30],                                 //dof
+	                                 [dydx],                               //dydxi
+	                                 iSumUi2, iSumUi4);
+    end;
+    // ------------------------------------------
+    // 5. Temperature unc
+    // ------------------------------------------
+    dydx      := 0.000001 * dDistance * 1000;
+    xCoord.StdDevTemp[i]:= UC([pre_StdDev.Temperature, 0.05, 0.35],      //Value
+                              [1, sqrt(3), 2],                           //k
+                              [30, 30, 10],                              //dof
+                              [dydx, dydx, dydx],                        //dydxi
+                              iSumUi2, iSumUi4);
+
+    // ------------------------------------------
+    // 6. Pressure unc
+    // ------------------------------------------
+    dydx      := 0.0000003 * dDistance * 1000;
+    xCoord.StdDevPres[i]:= UC([pre_StdDev.Pressure, 0.005, 0.4],         //Value
+                              [1, sqrt(3), 2],                           //k
+                              [30, 30, 10],                              //dof
+                              [dydx, dydx, dydx],                        //dydxi
+                              iSumUi2, iSumUi4);
+
+    // ------------------------------------------
+    // 7. Humidity unc
+    // ------------------------------------------
+    dydx      := 0.000000006 * dDistance * 1000;
+    xCoord.StdDevHumi[i]:= UC([pre_StdDev.Humidity, 0.05, 1],            //Value
+                              [1, sqrt(3), 2],                           //k
+                              [30, 30, 10],                              //dof
+                              [dydx, dydx, dydx],                        //dydxi
+                              iSumUi2, iSumUi4);
+
+    // ------------------------------------------
+    // 8. LS fit unc fixed term & 9. LS fit unc proportional term
+    // LSA Std Dev of LSA Distances
+    // ------------------------------------------
+    if dmMain.rxJobJobType.AsString = 'B' then
+      xCoord.StdDevLSADist[i]:= UC([sqrt(Abs(Mat.dInv[i][i]))*1000],     //Value
+                              [1],                                       //k
+                              [Post.sDegFreedom],                        //dof
+                              [1],                                       //dydxi
+                              iSumUi2, iSumUi4);
+    if dmMain.rxJobJobType.AsString = 'I' then
+    begin
+      dydx :=  dDistance * 1000;
+      xCoord.StdDevLSADist[i]:= UC([Post.dParmStdDev[0],
+                                    Post.dParmStdDev[1]],                //Value
+                              [1,1],                                     //k
+                              [Post.sDegFreedom,Post.sDegFreedom],       //dof
+                              [1000,dydx],                               //dydxi
+                              iSumUi2, iSumUi4);
+    end;
+    // ------------------------------------------
+    // 11. Heights
+    // ------------------------------------------
+    v         := dHeightDiff/dDistance * sqrt(
+                sqr(pre_StdDev.HeightAboveAtPillar) +
+                sqr(pre_StdDev.HeightAboveToPillar) +
+                sqr(pre_StdDev.PillarHeightDiff));   //Combined effect of pillar, EDM and reflector height uncertainties
+    xCoord.StdDevHD[i]:= UC([v],            //Value
+                            [1],            //k
+                            [30],           //dof
+                            [1],            //dydxi
+                            iSumUi2, iSumUi4);
+
+    // ------------------------------------------
+    // 12. offsets (transverse)
+    // ------------------------------------------
+    dydx     := (PillarOneOS - dmBase.rxmemPillar.FieldByName('HorizOffset').AsFloat)
+                / dDistance;
+    xCoord.StdDevOS[i]:= UC([pre_StdDev.OffsetInstrument,pre_StdDev.OffsetReflector],            //Value
+                            [1,1],                  //k
+                            [2,2],                  //dof
+                            [dydx,dydx],            //dydxi
+                            iSumUi2, iSumUi4);
+
+    if dmMain.rxJobJobType.AsString = 'I' then
+      xCoord.StdDevBaseInterval[i] := UC([pre_StdDev.IntervalConstant +
+                            pre_StdDev.IntervalScale * dDistance /1000],
+                            [1],            //k
+                            [30],           //dof
+                            [1],            //dydxi
+                            iSumUi2, iSumUi4);
+
+    // ------------------------------------------
+    // Combining all standard deviations
+    // ------------------------------------------
+    sd        := sqrt(iSumUi2);
+    dof       := sqr(iSumUi2) / (iSumUi4);
+    k         := tttstudent(dof);
+    xCoord.CombinedUncertainty[i] := sd * k;
+
+    // ------------------------------------------
+    // Only the A type LSA uncertainties are used for the apriori standard
+    // deviations of the distances. A linear regression equation is calculated
+    // and these parameters are stored to be used in the EDM calibrations.
+    // This will be slightly different to xCoord.StdDevLSADist also stored here.
+    // ------------------------------------------
+
+    dX  := dDistance;
+    dY  := xCoord.StdDevLSADist[i];
+    dX2 := dX*dX;
+    dXY := dX*dY;
+    dSumX  := dSumX + dX;
+    dSumY  := dSumY + dY;
+    dSumXY := dSumXY + dXY;
+    dSumX2 := dSumX2 + dX2;
+
+  end;
+  if dmMain.rxJobJobType.AsString = 'B' then
+  begin
+    dBaselineUncertaintyConstant := (dSumX2 * dSumY - dSumX * dSumXY) /
+                                    (xCoord.sXCount * dSumX2 - dSumX * dSumX)*2;
+    dBaselineUncertaintyScale    := (xCoord.sXCount * dSumXY - dSumX * dSumY) /
+                                    (xCoord.sXCount * dSumX2 - dSumX * dSumX)*2;
   end;
 end;
 
@@ -3666,8 +3773,16 @@ begin
   //****************************************************************/
   sPage :=  EDMPageHeader(sPage,sTotalPages);
   PrintCalibrationParameters;
+
+  //sPage :=  EDMPageHeader(sPage,sTotalPages);     KW 3/08/2021
+  //PrintNationalStandards;
+
   sPage :=  EDMPageHeader(sPage,sTotalPages);
-  PrintNationalStandards;
+  PrintISO17123_4Tests;                       //    KW 3/08/2021
+
+  sPage :=  EDMPageHeader(sPage,sTotalPages);
+  PrintUncertaintyTbl;                       //    KW 3/08/2021
+
   sPage :=  EDMPageHeader(sPage,sTotalPages);
   PrintPostStatistics;
 
@@ -3676,14 +3791,180 @@ begin
   //***************************************************************/
   sPage :=  EDMPageHeader(sPage,sTotalPages);
   sPage :=  PrintResiduals(sPage,sTotalPages);
+  {
   //***************************************************************/
   // Print Histogram of standardised residuals                    */
   //***************************************************************/
   sPage :=  EDMPageHeader(sPage,sTotalPages);
-  BaseHistogram;
+  BaseHistogram;                                  KW 3/08/2021}
+  sPage :=  EDMPageHeader(sPage,sTotalPages);
+  PlotResiduals(Post.dObservedDistance,Post.dLSResidual, 'RESIDUALS FROM LEAST SQUARES FIT OF THE BASELINE MEASUREMENTS');
 
   Result := sPage;
 end;
+
+(*******************************************************************************
+@procedure PrintUncertaintyTbl;
+
+@description
+  Calculate and print the table used for intercomparisons;
+*******************************************************************************)
+procedure PrintUncertaintyTbl;
+var
+dDistance: Double;
+i:         Integer;
+begin
+
+  SetLength(xCoord.dXCoord,3);				//Distances
+  SetLength(xCoord.StdDevBaseInterval,3);
+  SetLength(xCoord.StdDevTemp,3);
+  SetLength(xCoord.StdDevPres,3);
+  SetLength(xCoord.StdDevHumi,3);
+  SetLength(xCoord.StdDevLSADist,3);
+  SetLength(xCoord.StdDevHD,3);
+  SetLength(xCoord.StdDevOS,3);
+  SetLength(xCoord.CombinedUncertainty,3);
+
+  xCoord.dXCoord[0] := 20; xCoord.dXCoord[1] :=  300; xCoord.dXCoord[2] := 600;
+  xCoord.sXcount := 3;
+  UncertaintyBudget;
+
+  writeln (pfRPTFile,' ');
+  writeln (pfRPTFile,' -----------------------------------------------------------------------------------------');
+  writeln (pfRPTFile,'|                                                                                         |');
+  writeln (pfRPTFile,'|                              SUMMARY OF UNCERTAINTY BUDGET                              |');
+  writeln (pfRPTFile,'|                                                                                         |');
+  writeln (pfRPTFile,'|-----------------------------------------------------------------------------------------|');
+  writeln(pfRPTFile, '       BASELINE                          LSA*            HEIGHT   PILLAR         COMBINED');
+  writeln(pfRPTFile, '       INTERVAL  TEMP.   PRESS.  HUMI.   DIST.  CENTRING  DIFF.   OFFSET ROUNDING UNCERT.');
+  writeln(pfRPTFile, format(' DIST. STD DEV  STD DEV STD DEV STD DEV STD DEV  STD DEV STD DEV STD DEV STD DEV  AT %3s',['95%']));
+  writeln(pfRPTFile, '  (m)    (mm)    (mm)    (mm)     (mm)   (mm)     (mm)    (mm)    (mm)    (mm)     (mm)');
+  writeln(pfRPTFile, ' ----- -------- ------- ------- ------- ------- -------- ------- ------- ------- ---------');
+  for i := 0 to 2 do
+  begin
+      writeln (pfRPTFile,Format('|%4.0f |  %3.2f  |  %3.2f |  %3.2f |  %3.2f |  %3.2f |  %3.2f  |  %3.2f |  %3.2f |  %3.2f |   %3.2f  |'
+      ,[xCoord.dXCoord[i]
+      ,xCoord.StdDevBaseInterval[i]
+      ,xCoord.StdDevTemp[i]
+      ,xCoord.StdDevPres[i]
+      ,xCoord.StdDevHumi[i]
+      ,xCoord.StdDevLSADist[i]
+      ,xCoord.StdDevCentring
+      ,xCoord.StdDevHD[i]
+      ,xCoord.StdDevOS[i]
+      ,xCoord.StdDevRound
+      ,xCoord.CombinedUncertainty[i]]));
+  end;
+  writeln(pfRPTFile, ' ');
+  writeln(pfRPTFile, ' LSA*     Least Squares Adjusted');
+  writeln(pfRPTFile, ' TEMP.    Temperature');
+  writeln(pfRPTFile, ' PRESS.   Pressure');
+  writeln(pfRPTFile, ' HUMI.    Humidity');
+  writeln(pfRPTFile, ' DIFF.    Difference');
+  writeln(pfRPTFile, ' UNCERT.  Uncertainty');
+  {writeln (pfRPTFile,Format(' | DISTANCE                  (m) | %4.0f | %4.0f | %4.0f |'
+      ,[xCoord.dXCoord[0],xCoord.dXCoord[1],xCoord.dXCoord[2]];
+  writeln (pfRPTFile,Format(' | TEMPERATURE              (mm) |%3.2f | %3.2f | %3.2f |'
+      ,[xCoord.StdDevTemp[0],xCoord.StdDevTemp[1],xCoord.StdDevTemp[2]];
+  writeln (pfRPTFile,Format(' | PRESSURE                 (mm) | %3.2f | %3.2f | %3.2f |'
+      ,[xCoord.StdDevPres[0],xCoord.StdDevPres[1],xCoord.StdDevPres[2]];
+  writeln (pfRPTFile,Format(' | HUMIDITY                 (mm) | %3.2f | %3.2f | %3.2f |'
+      ,[xCoord.StdDevHumi[0],xCoord.StdDevHumi[1],xCoord.StdDevHumi[2]];
+  writeln (pfRPTFile,Format(' | LEAST SQUARES ADJUSTMENT (mm) | %3.2f | %3.2f | %3.2f |'
+      ,[xCoord.StdDevLSADist[0],xCoord.StdDevLSADist[1],xCoord.StdDevLSADist[2]];
+  writeln (pfRPTFile,Format(' | CENTRING                 (mm) |%3.2f | %3.2f | %3.2f |'
+      ,[xCoord.StdDevTemp[0],xCoord.StdDevTemp[1],xCoord.StdDevTemp[2]];
+  writeln (pfRPTFile,Format(' | PILLAR HEIGHT DIFFERENCE (mm) | %3.2f | %3.2f | %3.2f |'
+      ,[xCoord.StdDevPres[0],xCoord.StdDevPres[1],xCoord.StdDevPres[2]];
+  writeln (pfRPTFile,Format(' | PILLAR OFFSET            (mm) | %3.2f | %3.2f | %3.2f |'
+      ,[xCoord.StdDevHumi[0],xCoord.StdDevHumi[1],xCoord.StdDevHumi[2]];
+  writeln (pfRPTFile,Format(' | ROUNDING                 (mm) | %3.2f | %3.2f | %3.2f |'
+      ,[xCoord.StdDevLSADist[0],xCoord.StdDevLSADist[1],xCoord.StdDevLSADist[2]];  }
+end;
+
+(*******************************************************************************
+@procedure PrintISO17123_4Tests;
+
+@description
+  Print the results of the statistical tests recommended by ISO 17123-4;
+*******************************************************************************)
+procedure PrintISO17123_4Tests;
+var
+  ExperimentalStdDevS, ExperimentalStdDevIC, TestTheoreticalValue: Double;
+  ManuSpec:           Double;
+  dist, dInterval:                     Double;
+  sPassFail:                           string;
+  i:  Integer;
+begin
+  cerEDM.dEdmManuPPM := dmMain.rxAtInstrumentModel.FieldByName('ModelManufStdDevPPM').AsFloat;
+  cerEDM.dEdmManuConstant  := dmMain.rxAtInstrumentModel.FieldByName('ModelManufStdDevConst').AsFloat * 1000;
+  writeln (pfRPTFile,' ');
+  writeln (pfRPTFile,' ----------------------------------------------------------------------------');
+  writeln (pfRPTFile,' |                                                                           |');
+  writeln (pfRPTFile,' |               STATISTICAL TESTS RECOMMENDED IN ISO17123-4                 |');
+  writeln (pfRPTFile,' |                                                                           |');
+  writeln (pfRPTFile,' |---------------------------------------------------------------------------|');
+  writeln (pfRPTFile,' |                                                                           |');
+  writeln (pfRPTFile,' | Test A. The experimental standard deviation is smaller to or equal to     |');
+  writeln (pfRPTFile,Format(' | the manufacturers specified standard deviation:±(%6.2f mm + %6.2f ppm)  |'
+    , [cerEDM.dEdmManuConstant
+    , cerEDM.dEdmManuPPM]));
+  writeln (pfRPTFile,' |                                                                           |');
+  writeln (pfRPTFile,' |                    DISTANCE        HYPOTHESIS       CONFIDENCE            |');
+  writeln (pfRPTFile,' |                    (metres)           TEST             LEVEL              |');
+  writeln (pfRPTFile,' |                   ----------       ----------       ----------            |');
+
+  dist := 0;
+  ExperimentalStdDevS  := sqrt(Post.dPostVarFactor);                            //ISO17123-4 Eq. 14
+  ExperimentalStdDevIC := sqrt(mat.dInv[0,0]/Post.dPostVarFactor)
+                          * ExperimentalStdDevS*1000;                           //ISO17123-4 Eq. 31
+  dInterval :=  50;
+  i := 0;
+  while dist < Post.dMaxDistance do
+  begin
+    dist := dist + dInterval;
+    if i > 1 then dInterval :=  100;
+    if dist > Post.dMaxDistance then dist := Post.dMaxDistance;
+
+    ManuSpec := dist * cerEDM.dEdmManuPPM/1000 + cerEDM.dEdmManuConstant;
+    TestTheoreticalValue := sqrt(CHISQ_INV(Post.sDegFreedom)/Post.sDegFreedom)
+                            * ManuSpec;                                         //ISO17123-4 Eq. 21
+
+    if ExperimentalStdDevS <= TestTheoreticalValue then sPassFail := 'ACCEPT';
+    if ExperimentalStdDevS >  TestTheoreticalValue then sPassFail := 'REJECT';
+    writeln (pfRPTFile,Format(' |                      %4.0f            %6s             %3s               |'
+      ,[dist,sPassFail,'95%']));
+
+    if i <=5 then
+    begin
+        cerEDM.dDistance[i] := dist;
+        cerEDM.ISOTestA[i] := sPassFail;
+    end;
+    i := i+1;
+  end;
+  writeln (pfRPTFile,' ----------------------------------------------------------------------------');
+
+  TestTheoreticalValue := tttstudent(Post.sDegFreedom) * ExperimentalStdDevIC;  //ISO17123-4 Eq.30
+  if abs(Post.dParm[0] * 1000.000) <= TestTheoreticalValue then cerEDM.ISOTestC := 'ACCEPT';
+  if abs(Post.dParm[0] * 1000.000) > TestTheoreticalValue then  cerEDM.ISOTestC := 'REJECT';
+  writeln (pfRPTFile,' ');
+  writeln (pfRPTFile,' ----------------------------------------------------------------------------');
+  writeln (pfRPTFile,' |                                                | COMPARISON | CONFIDENCE  |');
+  writeln (pfRPTFile,' |                NULL HYPOTHESIS                 |    TEST    |    LEVEL    |');
+  writeln (pfRPTFile,' |---------------------------------------------------------------------------|');
+  writeln (pfRPTFile,' |                                                |            |             |');
+  writeln (pfRPTFile,' | Test B. The experimental standard deviation of |            |             |');
+  writeln (pfRPTFile,' |         this calibration has not been compared |            |             |');
+  writeln (pfRPTFile,' |         toa ny previous calibration results.   |            |             |');
+  writeln (pfRPTFile,' ----------------------------------------------------------------------------');
+  writeln (pfRPTFile,' |                                                |            |             |');
+  writeln (pfRPTFile,Format(
+                     ' | Test C. The zero-point correction is equal to  |   %6s   |     %3s     |'
+                     ,[cerEDM.ISOTestC,'95%']));
+  writeln (pfRPTFile,' |         zero as specified by the manufacturer. |            |             |');
+  writeln (pfRPTFile,' ----------------------------------------------------------------------------');
+
+  end;
 
 (*******************************************************************************
 @procedure PrintCalibrationParameters;
@@ -3716,7 +3997,7 @@ begin
   writeln (pfRPTFile,' ');
   writeln (pfRPTFile,'      -------------------------------------------------------------------------------');
   writeln (pfRPTFile,'      |                                                                             |');
-  writeln (pfRPTFile,'      |           LEAST SQUARES ESTIMATED CALIBRATION PARAMETERS                    |');
+  writeln (pfRPTFile,'      |               LEAST SQUARES ESTIMATED CALIBRATION PARAMETERS                |');
   writeln (pfRPTFile,'      |                                                                             |');
   writeln (pfRPTFile,'      |-----------------------------------------------------------------------------|');
   writeln (pfRPTFile,'      |         Parameter           |   Value               |   Std Dev             |');
@@ -3887,6 +4168,16 @@ begin
 
   writeln (pfRPTFile,strLine);
 
+  writeln (pfRPTFile,' ');
+  writeln (pfRPTFile,
+    'When estimating the uncertainty of measured distances using this instrument, the standard');
+  writeln (pfRPTFile,
+    ' deviation of the scale parameter, index parameter and other influencing should be included');
+  writeln (pfRPTFile,
+    ' in the error budget. A sample error budget is supplied in this report. Further examples');
+  writeln (pfRPTFile,
+    ' are available in ISO17123-4:2012.');
+
   if hasLUM then
   begin
     writeln (pfRPTFile,' ');
@@ -4052,18 +4343,9 @@ begin
 
   strAuthority := dmMain.rxBaselineBaselineAuthority.AsString;
   if isDLI then
-  begin
     strAuthority := 'Landgate';
-    strSentence := 'The '+strAuthority+' accepts no responsibility for the'+
-    ' correctness or otherwise of this report. Independent assesment of the'+
-    ' instrument by the '+strAuthority+' is necessary if official certification is required';
-  end
-  else
-  begin
-    strSentence := strAuthority+' accepts no responsibility for the'+
-    ' correctness or otherwise of this report. Independent assesment of the'+
-    ' instrument by '+strAuthority+' is necessary if official certification is required';
-  end;
+	
+  strSentence := strAuthority+' accepts no responsibility for the correctness or otherwise of this report.';
 
   LinesFromSentence(strSentence, 70, aLines);
   for I := 0 to aLines.Count-1 do
@@ -4072,6 +4354,7 @@ begin
   end;
 
   aLines.free;
+
 end;
 
 (*******************************************************************************
@@ -4348,6 +4631,228 @@ begin
 end;
 
 (*******************************************************************************
+@function PrintUncertaintyBudget( sPage: Integer; sTotalPages: Integer): Integer;
+
+@description
+  Prints the Uncertainty Budget. Returns the next page number.
+*******************************************************************************)
+function PrintUncertaintyBudget(
+   sPage: Integer;                  // Page number
+   sTotalPages: Integer): Integer; // Total pages
+var
+  i: Integer;                       // Loop Counter
+  L0, L0a, L1, L2, L3, L4, L5, L6, L7, L8, L9, L10,
+  L11, L12, L13, L14, L15, brder, brder2, FirstPillar,
+  L3a, L4a, L5a, L5b, L6a, L7a, L11a, L13a : string;
+begin
+
+  writeln(pfRPTFile,
+  ' ------------------------------------------------------------------------------');
+  writeln(pfRPTFile,'');
+  writeln(pfRPTFile,
+  '                        SUMMARY OF UNCERTAINTY BUDGET');
+  writeln(pfRPTFile,'');
+  writeln(pfRPTFile,
+  ' ------------------------------------------------------------------------------');
+  writeln(pfRPTFile,'');
+
+  L0  := Format('|%-16s|',['UNCERTAINTY']);
+  L0a := Format('|%-16s|',['SOURCE']);
+  L1  := Format('|%-16s|',['FROM PILLAR']);
+  L2  := Format('|%-16s|',['TO PILLAR']);
+  L3a := Format('|%-16s|',['CERTIFIED']);
+  L3  := Format('|%-11s %4s|',['DISTANCE','(m)']);
+  L4a := Format('|%-16s|',['EDM SCALE']);
+  L4  := Format('|%-11s %4s|',['FACTOR','(mm)']);
+  L5a := Format('|%-16s|',['EDM TEMP','']);
+  L5b := Format('|%-16s|',['EFFECT ON SCALE']);
+  L5  := Format('|%-11s %4s|',['FACTOR','(mm)']);
+  L6a := Format('|%-16s|',['EDM SCALE']);
+  L6  := Format('|%-16s|',['FACTOR DRIFT(mm)']);
+  L7a := Format('|%-16s|',['EDM ZERO']);
+  L7  := Format('|%-11s %4s|',['OFFSET','(mm)']);
+  L8  := Format('|%-11s %4s|',['TEMPERATURE','(mm)']);
+  L9  := Format('|%-11s %4s|',['PRESSURE','(mm)']);
+  L10 := Format('|%-11s %4s|',['HUMIDITY','(mm)']);
+  L11a:= Format('|%-16s|',['LEAST SQUARES']);
+  L11 := Format('|%-11s %4s|',['ADJUSTMENT','(mm)']);
+  L12 := Format('|%-11s %4s|',['CENTRING','(mm)']);
+  L13a:= Format('|%-16s|',['PILLAR HEIGHT']);
+  L13 := Format('|%-11s %4s|',['DIFFERENCE','(mm)']);
+  L14 := Format('|%-11s %4s|',['OFFSET','(mm)']);
+  L15 := Format('|%-11s %4s|',['ROUNDING','(mm)']);
+  brder := ' ----------------';
+  brder2:= ' ----------------';
+
+  dmBase.rxFilteredDistance.First;
+  FirstPillar := dmBase.rxFilteredDistance.FieldByName('FromPillar').AsString;
+  for i :=0 to xCoord.sXCount - 1 do
+  begin
+     L0  := L0  + Format('%5s |',['Std']);
+     L0a := L0a + Format('%5s |',['Dev']);
+     L1  := L1  + Format('%5s |',[FirstPillar]);
+     L2  := L2  + Format('%5s |',[dmBase.rxFilteredDistance.FieldByName('ToPillar').AsString]);
+     //L3  := L3  + Format('%6.4f',[xCoord.dXCoord[i]]);
+     L4  := L4  + Format('%6.2f ',[xCoord.StdDevEdmSF[i]]);
+     L5  := L5  + Format('%6.2f ',[xCoord.StdDevEdmSFtemp[i]]);
+     L6  := L6  + Format('%6.2f ',[xCoord.StdDevEdmSFtime[i]]);
+     L7  := L7  + Format('%6.2f ',[xCoord.StdDevEdmZO]);
+     L8  := L8  + Format('%6.2f ',[xCoord.StdDevTemp[i]]);
+     L9  := L9  + Format('%6.2f ',[xCoord.StdDevPres[i]]);
+     L10 := L10 + Format('%6.2f ',[xCoord.StdDevHumi[i]]);
+     L11 := L11 + Format('%6.2f ',[xCoord.StdDevLSADist[i]]);
+     L12 := L12 + Format('%6.2f ',[xCoord.StdDevCentring]);
+     L13 := L13 + Format('%6.2f ',[xCoord.StdDevHD[i]]);
+     L14 := L14 + Format('%6.2f ',[xCoord.StdDevOS[i]]);
+     L15 := L15 + Format('%6.2f ',[xCoord.StdDevRound]);
+     brder := brder + ' ------';
+     dmBase.rxFilteredDistance.Next;
+  end;
+  writeln(pfRPTFile,brder);
+  writeln(pfRPTFile,L1);
+  writeln(pfRPTFile,L2);
+  writeln(pfRPTFile,brder);
+  writeln(pfRPTFile,L0);
+  writeln(pfRPTFile,L0a);
+  writeln(pfRPTFile,brder);
+  //writeln(pfRPTFile,L3a);
+  //writeln(pfRPTFile,L3);
+  //writeln(pfRPTFile,brder2);
+  writeln(pfRPTFile,L4a);
+  writeln(pfRPTFile,L4);
+  writeln(pfRPTFile,brder2);
+  writeln(pfRPTFile,L5a);
+  writeln(pfRPTFile,L5b);
+  writeln(pfRPTFile,L5);
+  writeln(pfRPTFile,brder2);
+  writeln(pfRPTFile,L6a);
+  writeln(pfRPTFile,L6);
+  writeln(pfRPTFile,brder2);
+  writeln(pfRPTFile,L7a);
+  writeln(pfRPTFile,L7);
+  writeln(pfRPTFile,brder2);
+  writeln(pfRPTFile,L8);
+  writeln(pfRPTFile,brder2);
+  writeln(pfRPTFile,L9);
+  writeln(pfRPTFile,brder2);
+  writeln(pfRPTFile,L10);
+  writeln(pfRPTFile,brder2);
+  writeln(pfRPTFile,L11a);
+  writeln(pfRPTFile,L11);
+  writeln(pfRPTFile,brder2);
+  writeln(pfRPTFile,L12);
+  writeln(pfRPTFile,brder2);
+  writeln(pfRPTFile,L13a);
+  writeln(pfRPTFile,L13);
+  writeln(pfRPTFile,brder2);
+  writeln(pfRPTFile,L14);
+  writeln(pfRPTFile,brder2);
+  writeln(pfRPTFile,L15);
+  writeln(pfRPTFile,brder);
+
+  Result := sPage;
+end;
+(*******************************************************************************
+@procedure PlotResiduals;
+
+@description
+  Prints the x-y plot of residuals Vs Distances
+*******************************************************************************)
+procedure PlotResiduals(
+  X_Axis, Y_Axis: array of double;
+  sHeader:  String);
+var
+  sElements: array[1..33,1..71] of string;
+  I, J, K: Integer;
+  strLine: String;
+  posStr:  integer;
+  OutofBounds: Boolean;
+begin
+  for I := 1 to 31 do
+  begin
+    for J := 1 to 71 do
+    begin
+      sElements[I,J] := ' ';
+      if (I = 6) or (I = 11) or (I = 21) or (I = 26) then
+        if (J > 10) and (int(J/5)=J/5) then sElements[I,J] := '-';
+      if (I = 16) and (J > 10) then              //Put in the middle x Column
+      begin
+        sElements[I,J] := '-';
+        if (int(J/5)=J/5) then sElements[I,J] := '+';
+      end;
+      if (I = 31) and (J > 10) then              //Put in the bottom x Column
+      begin
+        sElements[I,J] := '_';
+        if (int(J/5)=J/5) then sElements[I,J] := '.';
+      end;
+    end;
+    sElements[I,10] := '|';   //Put in the y Column
+    if (I = 1) or (I = 6) or (I = 11) or (I = 16) or (I = 21) or (I = 26) or (I = 31) then
+    begin
+    if (I > 20) then sElements[I,4] := '-'; // Put the y-axis labels
+      sElements[I,5] := '1';
+      if (I = 11) or (I = 16) or (I = 21) then sElements[I,5] := '0';
+      sElements[I,6] := '.';
+      sElements[I,7] := '5';
+      if (I = 6) or (I = 16) or (I = 26) then sElements[I,7] := '0';
+      sElements[I,8] := 'm';
+      sElements[I,9] := 'm';
+    end;
+  end;
+  sElements[13,1] := 'R';
+  sElements[14,1] := 'e';
+  sElements[15,1] := 's';
+  sElements[16,1] := 'i';
+  sElements[17,1] := 'd';
+  sElements[18,1] := 'u';
+  sElements[19,1] := 'a';
+  sElements[20,1] := 'l';
+
+  // Add the data to the Elements array
+  OutofBounds := False;
+  for K := 0 to length(X_Axis)-1 do
+  begin
+    J := round(X_Axis[K]/10)+10;
+		I := round(Y_Axis[K]*-10000)+16;
+    if (I <= 33) and (I >= 1) then
+      sElements[I,J] := 'o'
+    else
+      OutofBounds := True
+	end;
+
+  // Print it to the report file
+  writeln(pfRPTFile,
+  ' ------------------------------------------------------------------------------');
+  writeln(pfRPTFile,
+  ' |                                                                            |');
+  posStr := (74 - Length(sHeader)) div 2;
+  writeln(pfRPTFile,
+  format(' | %*s |', [74, sHeader + Format('%-*s', [posStr, ''])]));
+  writeln(pfRPTFile,
+  ' |                                                                            |');
+  writeln(pfRPTFile,
+  ' ------------------------------------------------------------------------------');
+  writeln(pfRPTFile,'');
+  for I := 1 to 31 do
+  begin
+    strLine := '';
+    for J := 1 to 71 do
+    begin
+      strLine := strLine + sElements[I,J];
+    end;
+    writeln(pfRPTFile, strLine);
+  end;
+  writeln(pfRPTFile,
+    '             50   100  150  200  250  300  350  400  450  500  550  600');
+  writeln(pfRPTFile,
+    '                                       Distance (m)');
+
+  writeln(pfRPTFile,' ');
+  if OutofBounds = True then
+    writeln(pfRPTFile,
+      'WARNING - Some residual values are outside the scale of this plot.');
+  end;
+(*******************************************************************************
 @procedure BaseHistogram;
 
 @description
@@ -4399,7 +4904,7 @@ begin
     end;                                                      
     if (dStdResidual > -2.0) and (dStdResidual <= -1.5) then  
     begin                                                     
-      Inc(sColCount[5]);                                      
+      Inc(sColCount[5]);
     end;                                                      
     if (dStdResidual > -1.5) and (dStdResidual <= -1.0) then
     begin
@@ -4845,7 +5350,7 @@ begin
             else                                                     
             begin
               strLine := strLine + '|   ';                           
-            end;                                                     
+            end;
           end
           else
           begin
@@ -5061,9 +5566,20 @@ begin
    // Allocate X Coordinate arrays
    //***************************************
     SetLength(xCoord.dXCor,xCoord.sXCount);
-    LogDebugMessage('SetLength(xCoord.dXCor, '+IntToStr(xCoord.sXCount)+')');
     SetLength(xCoord.dXCoord,xCoord.sXCount);
-    LogDebugMessage('SetLength(xCoord.dXCoord, '+IntToStr(xCoord.sXCount)+')');
+    SetLength(xCoord.StdDevEdmSF,xCoord.sXCount);
+    SetLength(xCoord.StdDevEdmSFtemp,xCoord.sXCount);
+    SetLength(xCoord.StdDevEdmSFtime,xCoord.sXCount);
+    SetLength(xCoord.StdDevTemp,xCoord.sXCount);
+    SetLength(xCoord.StdDevPres,xCoord.sXCount);
+    SetLength(xCoord.StdDevHumi,xCoord.sXCount);
+    SetLength(xCoord.StdDevLSADist,xCoord.sXCount);
+    SetLength(xCoord.StdDevHD,xCoord.sXCount);
+    SetLength(xCoord.StdDevOS,xCoord.sXCount);
+    SetLength(xCoord.CombinedUncertainty,xCoord.sXCount);
+    SetLength(xCoord.LUMUncertainty,xCoord.sXCount);
+    SetLength(xCoord.PublishUncertainty,xCoord.sXCount);
+
    //***************************************
    // Allocate post-adjustment arrays
    //***************************************
@@ -5125,7 +5641,7 @@ begin
     //**********************************************************************
     // Compute  reduced distance (corrected for slope and atmospherics)
     //**********************************************************************
-    ReduceDistance  ( sLineCount);
+    ReduceDistance  (sLineCount);
 
     frmProgress.pbarProgress.Position := 80;
     //**********************************************************************
@@ -5139,8 +5655,8 @@ begin
     //**********************************************************************
     pre.dStdDevConst  :=  pre_StdDev.ObsDistanceConstant;
     pre.dStdDevPPM    :=  pre_StdDev.ObsDistanceScale;
-    post.dStdDevConst :=  pre_StdDev.ObsDistanceConstant;
-    post.dStdDevPPM   :=  pre_StdDev.ObsDistanceScale;
+    //post.dStdDevConst :=  pre_StdDev.ObsDistanceConstant;
+    //post.dStdDevPPM   :=  pre_StdDev.ObsDistanceScale;
 
     //**********************************************************************
     // standard deviations (Include std dev of centring and Mets )
@@ -5237,16 +5753,7 @@ begin
     //  printf(' parameters by the a posteriori variance factor.');
     //**********************************************************************
     VarianceMatrixByVF(Post.dPostVarFactor, Post.sParameterCount);
-    {
-    if dmBase.rxDefault.Locate('Description','VarianceFactorControl',[]) then
-    begin
-      if dmBase.rxDefault.FieldByName('Default').AsFloat = 1 then
-      begin
-        VarianceMatrixByVF(Post.dPostVarFactor, Post.sParameterCount);
-      end
-    end;
-    }
-    
+
     //************************************************************
     // Std Dev of residuals
     //************************************************************
@@ -5264,6 +5771,11 @@ begin
     Student;
     frmProgress.pbarProgress.Position := 96;
 
+    //**********************************************************************
+    // Compute Uncertainty Budget
+    //**********************************************************************
+    UncertaintyBudget;                               //KW 3/08/2021
+
     //**********************************************
     // Print to Output File
     //**********************************************
@@ -5279,7 +5791,6 @@ begin
     except
       Result := False;
     end;
-    frmProgress.pbarProgress.Position := 100;
     CloseFile(pfRPTFile);
   except
     Result := False;
@@ -5332,8 +5843,6 @@ var
    sParCount: Integer;                 // Total number of parameters
    sFrom, sTo: Integer;
 begin
-  LogDebugMessage('BaseLeastSquareSolution2('+IntToStr(sLineCount)+', '+
-   FloatToStr(dUnitLength)+')');
   sParCount := Post.sParameterCount;  // Total number of parameters
 
   //***************************************************
@@ -5352,7 +5861,7 @@ begin
    Matrix (sParCount);
 
   //***********************************************
-  // New approximated coordinates & EDM constant
+  // New 'TRUE' coordinates & EDM constant
   //***********************************************
   for x :=0 to sParCount-1 do
   begin
@@ -5360,24 +5869,16 @@ begin
      Post.dParmStdDev[x] := Mat.dInv[x][x];
   end;
 
-  LogDebugMessage('for x :=0 to '+IntToStr(sParCount-2)+' do');
   for x :=0 to sParCount-2 do
   begin
     xCoord.dXCor[x]   := post.dParm[x];
-    LogDebugMessage('xCoord.dXCor['+IntToStr(x)+'] := post.dParm['+IntToStr(x)+
-      '] ('+FloatToStr(post.dParm[x])+')');
-
-    LogDebugMessage('xCoord.dXCoord['+IntToStr(x)+'] := '+
-      FloatToStr(xCoord.dXCoord[x])+' + '+ FloatToStr(xCoord.dXCor[x])+' = '+
-      FloatToStr(xCoord.dXCor[x]+xCoord.dXCoord[x]));
     xCoord.dXCoord[x] := xCoord.dXCoord[x] + xCoord.dXCor[x];
   end;
 
   xCoord.dConstant := post.dParm[sParCount-1];
-  LogDebugMessage('xCoord.dConstant := '+FloatToStr(post.dParm[sParCount-1]));
 
   //************************************************/
-  // New approximated 'TRUE' distances & residuals */
+  // New 'TRUE' distances & residuals */
   //************************************************/
   for x := 0 to sLineCount-1 do
   begin
@@ -5400,7 +5901,7 @@ begin
   Post.sDegFreedom := sLineCount - Post.sParameterCount;
   Post.sObservationCount := sLineCount;
   xCoord.dConstant := -xCoord.dConstant;
-  LogDebugMessage('xCoord.dConstant := '+FloatToStr(-xCoord.dConstant));
+
 end;
 
 (*******************************************************************************
@@ -5461,10 +5962,16 @@ begin
      sPage :=  PrintResiduals(sPage,sTotalPages);
 
     //**************************************************************
+    // Write Summary of the Uncertainty Budget
+    //**************************************************************
+     sPage :=  EDMPageHeader(sPage,sTotalPages);
+     sPage :=  PrintUncertaintyBudget(sPage,sTotalPages);
+
+    {//**************************************************************
     // Print Histogram of standardised residuals
     //**************************************************************
      sPage :=  EDMPageHeader(sPage,sTotalPages);
-     BaseHistogram;
+     BaseHistogram;}              //KW. 3/08/2021
 
     //**************************************************************
     // Print Accreditation and signatures
@@ -5557,136 +6064,41 @@ procedure  PrintLSParameters(
 var
  i,
  j:             Integer;              // Loop Counter
- dCorrection:       Double;             // Correction
- dStdDev:           Double;             // dStdDev
- dUncertainty:      Double;             // Uncertainty at 95%
- dInitialDistance: Double;
-
- dConstant:         Double;               // Constant part of EDM std dev
- dScale:            Double;               // Scale PPM  of EDM std dev
- dX, dY, dXY, dX2:  Double;               // Terms in equations
- dSumX, dSumY:      Double;               // Terms in equations
- dSumXY, dSumX2:    Double;               // Terms in equations
  sPillarID: Integer;
  strFromPillarNo, strToPillarNo: String;
  hasLUM: Boolean;
- dCalibUncertainty: Double;
+// dStdDev:           Double;             // dStdDev
+ dUncertainty:      Double;
+ dCalibUncertainty:    Double;
+ icUncertainty:        Double;
+ LUMdConstant:         Double;               // Constant part of EDM std dev
+ LUMdScale:            Double;               // Scale PPM  of EDM std dev
 begin
-  dSumX  := 0.000;
-  dSumY  := 0.000;
-  dSumXY := 0.000;
-  dSumX2 := 0.000;
 
   writeln(pfRPTFile,
   ' --------------------------------------------------------------------');
   writeln(pfRPTFile,
-  '           LEAST SQUARES ESTIMATED CERTIFIED BASELINE DISTANCES');
+  '           CERTIFIED BASELINE DISTANCES');
   writeln(pfRPTFile,
   ' --------------------------------------------------------------------');
   writeln(pfRPTFile,
-  ' PILLAR NUMBERS    INITIAL                 ADJUSTED');
+  ' PILLAR NUMBERS');
   writeln(pfRPTFile,
-  ' --------------    DISTANCE   CORRECTION   DISTANCE      UNCERTAINTY');
+  ' --------------    DISTANCE      UNCERTAINTY');
   writeln(pfRPTFile,
-  ' FROM     TO          (m)         (m)         (m)            (m)');
+  ' FROM     TO          (m)            (m)');
   writeln(pfRPTFile,
-  ' -----   -----     ---------  -----------  ---------     -----------');
+  ' -----   -----     ---------     -----------');
 
-  LogDebugMessage('xCoord records Contents (initialised)');
-  LogDebugMessage('-------------------------------------');
-  LogDebugMessage('XCoord.sXCount = '+IntToStr(XCoord.sXCount));
-  LogDebugMessage('XCoord.dConstant = '+FloatToStr(XCoord.dConstant));
-  for i := Low(XCoord.dXCor) to High(XCoord.dXCor) do
-    LogDebugMessage('XCoord.dXCor['+IntToStr(i)+'] = '+FloatToStr(XCoord.dXCor[i]));
-
-  for i := Low(XCoord.dXCoord) to High(XCoord.dXCoord) do
-    LogDebugMessage('XCoord.dXCoord['+IntToStr(i)+'] = '+FloatToStr(XCoord.dXCoord[i]));
-
-  LogDebugMessage('mat records Contents (initialised)');
-  LogDebugMessage('----------------------------------');
-  for I := Low(mat.dA) to High(mat.dA) do
-    for J := Low(mat.dA[i]) to High(mat.dA[i]) do
-      LogDebugMessage('mat.dA['+IntToStr(i)+']['+IntToStr(j)+'] = '+
-        FloatToStr(mat.dA[i][j]));
-
-  for I := Low(mat.dB) to High(mat.dB) do
-    LogDebugMessage('mat.dB['+IntToStr(i)+'] = '+FloatToStr(mat.dB[i]));
-
-  for I := Low(mat.dX) to High(mat.dX) do
-    LogDebugMessage('mat.dX['+IntToStr(i)+'] = '+FloatToStr(mat.dX[i]));
-
-  for I := Low(mat.dInv) to High(mat.dInv) do
-    for J := Low(mat.dInv[i]) to High(mat.dInv[i]) do
-      LogDebugMessage('mat.dInv['+IntToStr(i)+']['+IntToStr(j)+'] = '+
-        FloatToStr(mat.dInv[i][j]));
-
-  LogDebugMessage('OMat records Contents (initialised)');
-  LogDebugMessage('-----------------------------------');
-  for I := Low(OMat.dB) to High(OMat.dB) do
-    for J := Low(OMat.dB[i]) to High(OMat.dB[i]) do
-      LogDebugMessage('OMat.dB['+IntToStr(i)+']['+IntToStr(j)+'] = '+
-        FloatToStr(OMat.dB[i][j]));
-
-  for I := Low(OMat.dP) to High(OMat.dP) do
-    LogDebugMessage('OMat.dP['+IntToStr(i)+'] = '+FloatToStr(OMat.dP[i]));
-
-  for I := Low(OMat.dW) to High(OMat.dW) do
-    LogDebugMessage('OMat.dW['+IntToStr(i)+'] = '+FloatToStr(OMat.dW[i]));
-
-  for I := Low(OMat.dBP) to High(OMat.dBP) do
-    for J := Low(OMat.dBP[i]) to High(OMat.dBP[i]) do
-      LogDebugMessage('OMat.dBP['+IntToStr(i)+']['+IntToStr(j)+'] = '+
-        FloatToStr(OMat.dBP[i][j]));
-
-  LogDebugMessage('');
-  LogDebugMessage('---------------------------------------');
-  LogDebugMessage('Print Least Square Parameters('+IntToStr(sDistCount));
-  dInitialDistance := 0.0;
-  LogDebugMessage('dInitialDistance := 0.0');
   dmBase.rxFilteredDistance.First;
   dmBase.rxBaselineReport.EmptyTable;
 
-  LogDebugMessage('for i := 0 to '+IntToStr(sDistCount-1)+' do');
+  LUMdScale    := 0;
+  LUMdConstant := 0;
+  hasLUM := GetLUM(LUMdConstant, LUMdScale, 'F');
+
   for i := 0 to sDistCount-1 do
   begin
-    LogDebugMessage('dInitialDistance := '+FloatToStr(dInitialDistance)+' + '+
-      dmBase.rxFilteredDistance.FieldByName('DistLegalDistance').AsString+' = '+
-      FloatToStr(dInitialDistance +
-        dmBase.rxFilteredDistance.FieldByName('DistLegalDistance').AsFloat));
-
-    dInitialDistance := dInitialDistance +dmBase.rxFilteredDistance.FieldByName('DistLegalDistance').AsFloat;
-    dCorrection := xCoord.dXCoord[i] - dInitialDistance;
-    LogDebugMessage('dCorrection := xCoord.dXCoord['+IntToStr(i)+'] ('+
-      FloatToStr(xCoord.dXCoord[i])+') - dInitialDistance ('+
-      FloatToStr(dInitialDistance)+') = '+FloatToStr(dCorrection));
-
-    dStdDev := sqrt ( Mat.dInv[i][i]);
-    LogDebugMessage('dStdDev := sqrt ( Mat.dInv['+IntToStr(i)+']['+IntToStr(i)+
-      ']) = '+FloatToStr(dStdDev));
-    //**************************************************
-    //  Uncertainty at 95 % (Normal Density function)
-    //**************************************************
-    // dUncertainty := 1.96 * dStdDev;
-     dUncertainty := 2.0 * dStdDev;
-    LogDebugMessage('dUncertainty := 2.0 * dStdDev = '+FloatToStr(dUncertainty));
-    //**************************************************
-    //  Add Calibration uncertainties
-    //**************************************************
-    dCalibUncertainty := AddCalibrationUncertainties(dUncertainty, xCoord.dXCoord[i]);
-    LogDebugMessage('dCalibUncertainty = '+FloatToStr(dCalibUncertainty));
-    //**************************************************
-    //  Regression line computation
-    //**************************************************
-    dX  := xCoord.dXCoord[i];
-//    dY  := dUncertainty;
-    dY  := dCalibUncertainty;
-    dX2 := dX*dX;
-    dXY := dX*dY;
-    dSumX  := dSumX + dX;
-    dSumY  := dSumY + dY;
-    dSumXY := dSumXY + dXY;
-    dSumX2 := dSumX2 + dX2;
-
     //**************************************************
     //  Print adjusted pillar distances & uncertainties
     //**************************************************
@@ -5699,51 +6111,31 @@ begin
     dmBase.rxPillar.Locate('PillarID',IntToStr(sPillarID),[]);
     strToPillarNo := dmBase.rxPillar.FieldByName('PillarNo').AsString;
 
-    writeln(pfRPTFile,Format(' %5s   %5s     %9.4f  %9.4f    %9.4f     ±%10.5f',
-      [strFromPillarNo, strToPillarNo, dInitialDistance,
-      dCorrection, xCoord.dXCoord[i],dCalibUncertainty]));
-    LogDebugMessage('');
-    LogDebugMessage('-------Least squares estimated certified baseline distances-------');
-    LogDebugMessage('Pillar From, Pillar To, Initial Distance (m), Correction (m), Adjusted Distance (m), Uncertainty (m)');
-    LogDebugMessage(Format(' %5s   %5s     %9.4f  %9.4f    %9.4f     ±%10.5f',
-      [strFromPillarNo, strToPillarNo, dInitialDistance, dCorrection,
-      xCoord.dXCoord[i],dCalibUncertainty]));
-    LogDebugMessage('------------------------------------------------------------------');
-    LogDebugMessage('');
-          
-    dmBase.rxFilteredDistance.Next;
+    xCoord.LUMUncertainty[i] := LUMdScale * xCoord.dXCoord[i]/1000 + LUMdConstant;
+    if (xCoord.CombinedUncertainty[i] > xCoord.LUMUncertainty[i])
+    and hasLUM then
+      xCoord.PublishUncertainty[i] := xCoord.CombinedUncertainty[i]
+    else
+      xCoord.PublishUncertainty[i] := xCoord.LUMUncertainty[i];
 
+    dUncertainty := xCoord.PublishUncertainty[i]/1000;
+    writeln(pfRPTFile,Format(' %5s   %5s     %9.4f     ±' + sigfigs(dUncertainty,10,2),
+      [strFromPillarNo, strToPillarNo, xCoord.dXCoord[i]]));
+
+    dmBase.rxFilteredDistance.Next;
     with dmBase.rxBaselineReport do
     begin
       Append;
       FieldByName('From').AsString := strFromPillarNo;
       FieldByName('To').AsString := strToPillarNo;
-      FieldByName('InitialDistance').AsFloat := dInitialDistance;
-      FieldByName('Correction').AsFloat := dCorrection;
       FieldByName('AdjustedDistance').AsFloat := xCoord.dXCoord[i];
-      FieldByName('Uncertainty').AsFloat := dCalibUncertainty;
+      FieldByName('Uncertainty').AsFloat := dUncertainty;
       Post;
     end;
   end; {for}
   writeln(pfRPTFile,' ');
   writeln(pfRPTFile,
   ' ------------------------------------------------------------------------------');
-
-  //****************************************************
-  //  Compute/Print uncertainty of calibrated distances
-  //****************************************************
-  dConstant := (dSumX2 * dSumY - dSumX * dSumXY) /
-              (sDistCount * dSumX2 - dSumX * dSumX);
-  dScale    := (sDistCount * dSumXY - dSumX * dSumY) /
-              (sDistCount * dSumX2 - dSumX * dSumX);
-
-  dScale    := 1000000.0 * dScale;
-  dConstant := 1000.0 * dConstant;
-
-  dBaselineUncertaintyScale    := dScale;
-  dBaselineUncertaintyConstant := dConstant;
-
-  hasLUM := GetLUM(dConstant, dScale, 'F');
 
   writeln(pfRPTFile,'');
   if hasLUM then
@@ -5756,15 +6148,15 @@ begin
     writeln(pfRPTFile,'  All uncertainties have been scaled by the a posteriori variance factor.');
 
   writeln(pfRPTFile,'');
-  if GetLumUnitsFromDB='2' then
-  begin
-    writeln(pfRPTFile,'  The uncertainty of the certified distances is');
-    writeln(pfRPTFile,GetUncertaintyWithUnits(dConstant, dScale, '%6.2f', '%6.2f',
-      '  ',True, True, False));
-  end
-  else
-    writeln(pfRPTFile,GetUncertaintyWithUnits(dConstant, dScale, '%6.2f', '%6.2f',
-      '  The uncertainty of the certified distances is ', False));
+  //if GetLumUnitsFromDB='2' then
+  //begin
+  //  writeln(pfRPTFile,'  The uncertainty of the certified distances is');
+  //  writeln(pfRPTFile,GetUncertaintyWithUnits(dConstant, dScale, '%6.2f', '%6.2f',
+  //    '  ',True, True, False));
+  //end
+  //else
+  //  writeln(pfRPTFile,GetUncertaintyWithUnits(dConstant, dScale, '%6.2f', '%6.2f',
+  //    '  The uncertainty of the certified distances is ', False));
 
   //****************************************************************
   //  Print additive constant & uncertainty of verifying instrument
@@ -5776,17 +6168,16 @@ begin
    Format('  verifying EDM Instrument                      : %6.2f mm',
      [xCoord.dConstant * 1000.0]));
 
-  dStdDev := sqrt ( Mat.dInv[sDistCount][sDistCount]);
   //**************************************************
   //  Uncertainty at 95 % (Normal Density function)
   //**************************************************
-  dUncertainty := 1.96 * dStdDev;
+  icUncertainty := 2 * xCoord.StdDevEdmZO;
   writeln(pfRPTFile,'');
   writeln(pfRPTFile,
    '  Uncertainty of the additive constant');
   writeln(pfRPTFile,
    Format('  of verifying EDM Instrument                   : %6.2f mm',
-  [dUncertainty * 1000.0]));
+  [icUncertainty]));
 end;
 
 (*******************************************************************************
@@ -5932,6 +6323,7 @@ begin
     // Std Dev Baseline interval As Constant(mm) + Scale(ppm)
     //-------------------------------------------------------
     ComputeBaselineIntervalStdDev;
+
   end
   else
   begin
@@ -5968,13 +6360,13 @@ begin
     // Std Dev of the meteorological observations
     // ------------------------------------------
     ComputeStdDevAtmosphere(aLine);
-    pre_StdDev.Atmosphere := pre_StdDev.Atmosphere * dDistance /1000; // Convert PPM to mm
+    pre_StdDev.Atmosphere := pre_StdDev.AtmospherePPM * dDistance /1000; // Convert PPM to mm
     dHeightDiff := Abs((aLine.dAtPillarRL + aLine.dHeightAboveAtPillar) -
                       (aLine.dToPillarRL + aLine.dHeightAboveToPillar));
     // ------------------------------------------
     // Std Dev of the height difference
     // ------------------------------------------
-        pre_StdDev.HeightDifference := dHeightDiff/dDistance * sqrt(
+        pre_StdDev.HeightDifference := dHeightDiff/dDistance *sqrt(
         sqr(pre_StdDev.HeightAboveAtPillar) +
         sqr(pre_StdDev.HeightAboveToPillar) +
         sqr(pre_StdDev.PillarHeightDiff));
@@ -6107,7 +6499,7 @@ begin
 
   pre_StdDev.PartialWaterVapourPressure := dEE * pre_StdDev.Humidity/100;
 
-  pre_StdDev.Atmosphere := sqrt(sqr(dK * pre_StdDev.Temperature)+
+  pre_StdDev.AtmospherePPM := sqrt(sqr(dK * pre_StdDev.Temperature)+
                              sqr(dL * pre_StdDev.Pressure) +
                              sqr(dM * pre_StdDev.PartialWaterVapourPressure));
 end;
@@ -6176,19 +6568,25 @@ end;
 
 @description
   Compute the standard deviation of the calibrated baseline.
+  This code has been modified to use the scle and constant stored against the
+  baseline rather than recalculate them from the published standard deviations.
+  The stored scale and constant are only the Type A uncertainties from the LSA
+  calibration of the baseline
 *******************************************************************************)
 procedure ComputeBaselineIntervalStdDev;
 var
-  dConstant:        DOUBLE;              // Constant part of EDM std dev
+  {dConstant:        DOUBLE;              // Constant part of EDM std dev
   dScale:           DOUBLE;              // Scale PPM  of EDM std dev
   dX, dY, dXY, dX2: DOUBLE;              // Terms in equations
   dSumX, dSumY:     DOUBLE;              // Terms in equations
   dSumXY, dSumX2:   DOUBLE;              // Terms in equations
   dDistanceFromPillar1 : Double;
   dUncertaintyFromPillar1 : Double;
-  dUncertaintyConstant, dUncertaintyScale: DOUBLE;
+  dUncertaintyConstant, dUncertaintyScale: DOUBLE;}
+  sbaselineID: Integer;
+  a: double;
 begin
-  dSumX  := 0.000;
+  {dSumX  := 0.000;
   dSumY  := 0.000;
   dSumXY := 0.000;
   dSumX2 := 0.000;
@@ -6239,6 +6637,17 @@ begin
 
     pre_StdDev.IntervalConstant := dUncertaintyConstant/2.0;
     pre_StdDev.IntervalScale := dUncertaintyScale/2.0;
+  end; }
+
+  sbaselineID := dmMain.rxBaseline.FieldByName('BaselineId').AsInteger;
+  with dmBase.rxBaselineAccuracy do
+  begin
+    if Locate('BaselineID',sbaselineID,[]) then
+    begin
+      a := FieldByName('BaselineId').AsInteger;
+      pre_StdDev.IntervalConstant := FieldByName('UncertaintyConstant').AsFloat/2;
+      pre_StdDev.IntervalScale    := FieldByName('UncertaintyScale').AsFloat/2;
+    end;
   end;
 end;
 
@@ -6326,6 +6735,7 @@ var
   i, j: Integer;
   strFromFieldName, strToFieldName: String;
 begin
+
   //-------------------- Update baseline table -------------------------
   dmBase.doEvents := False;
   sBaseLineId := dmMain.rxBaseline.FieldByName('BaselineId').AsInteger;
@@ -6345,6 +6755,7 @@ begin
     begin
       First;
       dmBase.rxFilteredDistance.First;
+
       while not EOF do
       begin
         if dmBase.rxDistance.Locate('DistID',dmBase.rxFilteredDistance.FieldByName('DistID').AsString,[]) then
@@ -6380,7 +6791,7 @@ begin
       end;
     end;
   end
-  else
+  else // if isUsedByJobs then
   begin
     sNewBaselineID := dmBase.GetLastID(dmBase.rxBaseLine,'BaselineID');
     with dmBase.rxBaseline do
@@ -6466,6 +6877,7 @@ begin
       sNextPillarId := sNewPillarId;
       dmBase.rxNewLegalDistance.First;
       First;
+
       while not EOF do
       begin
         Edit;
@@ -6523,29 +6935,65 @@ end;
 @description
   Save the new baseline distances into a temporary table (dmBase.rxNewLegalDistance)
 *******************************************************************************)
-procedure  UpdateCertifiedDistanceRXTable(
-    sDistCount: Integer);              // Number of lines
+procedure  UpdateCertifiedDistanceRXTable(sDistCount: Integer);
 var
- sLoop:             Integer;            // Loop Counter
- dStdDev:           Double;             // dStdDev
- dUncertainty:      Double;             // Uncertainty at 95%
+ i:                    Integer;            // Loop Counter
+ ScleStdDev:           Double;             // Distance dependant part of Std dev
+ dStdDev:              Double;             // dStdDev
+ dIntervalUncertainty: Double;             // Uncertainty at 95%
+ dIntervalDistance, dPreviousDistance: Double;
+ (*
  dIntervalDistance, dPreviousDistance: Double;
  dIntervalUncertainty, dPrevUncertainty: Double;
+ Inst_Centering: Double;
  dCalibUncertainty: Double;
+ *)
 begin
-  dPreviousDistance := 0;
   dmBase.rxNewLegalDistance.EmptyTable;
-  dPrevUncertainty := 0;
-
-  for sLoop := 0 to sDistCount-1 do
+  dPreviousDistance := 0;
+ 
+  for i := 0 to sDistCount-1 do
   begin
+    if (i = 0) then
+    begin
+      dIntervalUncertainty := xCoord.CombinedUncertainty[i];
+    end
+    else
+    begin
+      dStdDev := Sqrt(ABS(
+                sqr(xCoord.StdDevEdmSF[i]) +
+                sqr(xCoord.StdDevEdmSFtemp[i]) +
+                sqr(xCoord.StdDevEdmSFtime[i]) +
+                sqr(xCoord.StdDevTemp[i] - xCoord.StdDevTemp[i-1]) +
+                sqr(xCoord.StdDevPres[i] - xCoord.StdDevPres[i-1]) +
+                sqr(xCoord.StdDevHumi[i] - xCoord.StdDevHumi[i-1]) +
+                sqr(xCoord.StdDevLSADist[i]) +
+                sqr(xCoord.StdDevHD[i]) +
+                sqr(xCoord.StdDevOS[i]) +
+                sqr(xCoord.StdDevEdmZO) +
+                sqr(xCoord.StdDevCentring) +
+                sqr(xCoord.StdDevRound)));
+
+      dIntervalUncertainty := dStdDev * 2;
+    end;
+    
+    dIntervalDistance := xCoord.dXCoord[i] - dPreviousDistance;
+    with dmBase.rxNewLegalDistance do
+    begin
+      Append;
+      FieldByName('LegalDistance').AsFloat := dIntervalDistance;
+      FieldByName('Uncertainty').AsFloat   := dIntervalUncertainty/1000;
+      Post;
+    end;
+    dPreviousDistance := xCoord.dXCoord[i];
+
+    (*
     dStdDev := sqrt ( Mat.dInv[sLoop][sLoop]);
     dUncertainty := 2.0 * dStdDev;
     dCalibUncertainty := AddCalibrationUncertainties(dUncertainty, xCoord.dXCoord[sLoop]);
 
     dIntervalDistance := xCoord.dXCoord[sLoop] - dPreviousDistance;
     dIntervalUncertainty := Sqrt(Abs(Sqr(dCalibUncertainty) + Sqr(dPrevUncertainty)));
-    dPrevUncertainty := dCalibUncertainty;
 
     with dmBase.rxNewLegalDistance do
     begin
@@ -6555,6 +7003,8 @@ begin
       Post;
     end;
     dPreviousDistance := xCoord.dXCoord[sLoop];
+    dPrevUncertainty  := dCalibUncertainty;
+    *)
   end;
 end;
 
@@ -6832,7 +7282,8 @@ begin
     lblVersionNumber.caption := strLine;
 
     lblCalibrationDate.caption := DateToStr(dmMain.rxJobJobStartCalibrationDate.AsDateTime);
-    lblComputationDate.caption := DateToStr(Date);
+    //  lblComputationDate.caption := DateToStr(Date);    KW 31/08/2021
+    lblComputationDate.caption := DateToStr(dmMain.rxJobJobEndCalibrationDate.AsDateTime);
     lblObserverName.Caption    := dmMain.rxJobJobObserverName.AsString;
     lblComputationTime.caption := TimeToStr(Time);
     lblEDMOwner.Caption := dmMain.rxJobJobInst1Owner.AsString;
@@ -6989,11 +7440,18 @@ begin
          memCorrectionTerms.Lines.Add(strLine);
       end;
     end;
-    strLine := Format(' The instrument correction has been determined from measurements in the range of %5.0f to %5.0f metres',
+    strLine := Format('The instrument correction has been determined from measurements in the range of %3.0f to %3.0f metres.',
     [cerEDM.dMinDistance, cerEDM.dMaxDistance]);
+    strLine := strLine + ' Quoted uncertainty refers to expanded uncertainty defined in the Guide to the Expresion ';
+    strLine := strLine + 'of Uncertainty in Measurements (GUM) by the Internationals Standards Organisation (ISO 1995). ';
+    strLine := strLine + 'Unlesss otherwise stated, a coverage factor of k=2 has been used to estimate a 95% confidence level.';
+    strLine := strLine + ' When estimating the uncertainty of measured distances using this instrument, the standard deviation';
+    strLine := strLine + ' of the scale parameter, index parameter and other influencing should be included in the error budget.';
+    strLine := strLine + ' A sample error budget is supplied in this report. Further examples are available in ISO17123-4:2012.';
+
     lblRange.caption := strLine;
 
-    memUncertainty.Lines.CLear;
+    {memUncertainty.Lines.CLear;
     strLine :='Minimum standard for the uncertainty of calibration of an EDM instrument';
     if GetLumUnitsFromDB='1' then
       strLine := strLine + Format(' is ±(%6.2f mm + %6.2f ppm) as described in terms of ', [cerEDM.dStdICConstant, cerEDM.dStdICPPM])
@@ -7009,13 +7467,13 @@ begin
     end;
     strLine := strLine + ' All uncertainties are specified at';
     strLine := strLine + Format(' the %2.0f %1s confidence level.',[dmMain.rxbaselineBaselineConfLevel.AsFloat,'%']);
-    strLine := strLine + ' A coverage factor of 2 has been used for the uncertainty computations.';
+    strLine := strLine + ' A coverage factor of 2 has been used for the uncertainty computations.';}    //KW 21/08/2021
 
     dUncertaintyConstant := cerEDM.dCalibUncert[0];
     dUncertaintyScale := cerEDM.dCalibUncert[1];
+    GetLUM(dUncertaintyConstant, dUncertaintyScale, 'G');
 
-    if GetLUM(dUncertaintyConstant, dUncertaintyScale, 'G') then
-    begin
+    {begin
       strLine := strLine +' The Least Uncertainty of Measurement as specified by the Accreditation Authority';
       strLine := strLine + ' has been used for the uncertainty of the instrument correction.';
     end;
@@ -7025,18 +7483,18 @@ begin
     if GetLumUnitsFromDB='2' then
       lblUncertainty.Left := 61
     else
-      lblUncertainty.Left := 136;
+      lblUncertainty.Left := 136;}
 
-    lblUncertainty.caption := GetUncertaintyWithUnits(dUncertaintyConstant,
-      dUncertaintyScale, '%6.2f', '%6.2f',
-      'Uncertainty of instrument correction: ');
+    TestA_Hypoth.caption := GetUncertaintyWithUnits(cerEDM.dEdmManuConstant,
+      cerEDM.dEdmManuPPM, '%6.2f', '%6.2f',
+      'The calculated experimental standard deviation is smaller than the stated manufacturers specifications: ');
 
     for sLoop := 0 to 5 do
     begin
-      if (cerEDM.cPass[sLoop] = 'Y') then
+      {if (cerEDM.cPass[sLoop] = 'Y') then
         szTest := 'PASS'
       else
-        szTest := 'FAIL';
+        szTest := 'FAIL';}
 
       szRemark := '            ';
       strLine := '';
@@ -7048,7 +7506,7 @@ begin
       if sLoop = 4 then lblDist5.caption := strField;
       if sLoop = 5 then lblDist6.caption := strField;
 
-      strField := '±'+Trim(Format('%8.2f',[cerEDM.dDistUncert[sLoop]]));
+      {strField := '±'+Trim(Format('%8.2f',[cerEDM.dDistUncert[sLoop]]));
       if sLoop = 0 then lblUncertainty1.caption := strField;
       if sLoop = 1 then lblUncertainty2.caption := strField;
       if sLoop = 2 then lblUncertainty3.caption := strField;
@@ -7062,28 +7520,23 @@ begin
       if sLoop = 2 then lblStandard3.caption := strField;
       if sLoop = 3 then lblStandard4.caption := strField;
       if sLoop = 4 then lblStandard5.caption := strField;
-      if sLoop = 5 then lblStandard6.caption := strField;
+      if sLoop = 5 then lblStandard6.caption := strField;}
 
       strField := Trim(szTest);
-      if sLoop = 0 then lblTest1.caption := strField;
-      if sLoop = 1 then lblTest2.caption := strField;
-      if sLoop = 2 then lblTest3.caption := strField;
-      if sLoop = 3 then lblTest4.caption := strField;
-      if sLoop = 4 then lblTest5.caption := strField;
-      if sLoop = 5 then lblTest6.caption := strField;
+      if sLoop = 0 then lblTest1.caption := cerEDM.ISOTestA[sLoop];
+      if sLoop = 1 then lblTest2.caption := cerEDM.ISOTestA[sLoop];
+      if sLoop = 2 then lblTest3.caption := cerEDM.ISOTestA[sLoop];
+      if sLoop = 3 then lblTest4.caption := cerEDM.ISOTestA[sLoop];
+      if sLoop = 4 then lblTest5.caption := cerEDM.ISOTestA[sLoop];
+      if sLoop = 5 then lblTest6.caption := cerEDM.ISOTestA[sLoop];
     end;
 
     dmBase.rxStandard.Locate('Type','E',[]);
-    if (cerEDM.cPassFail = 'P') then
-    begin
-      lblStandards.Caption :='This instrument satisfies the '+
-      dmBase.rxStandard.FieldByName('Authority').AsString + ' standards.';
-    end
-    else
-    begin
-      lblStandards.Caption :='This instrument does not satisfy the '+
-      dmBase.rxStandard.FieldByName('Authority').AsString + ' standards.';
-    end;
+
+    if cerEDM.ISOTestC = 'ACCEPT' then
+      TestC_Hypoth.Caption :='The experimental zero-point correction is equal to zero as specified by the manufacturer at a 95% confidence level.';
+    if cerEDM.ISOTestC = 'REJECT' then
+      TestC_Hypoth.Caption :='The experimental zero-point correction is not equal to zero as specified by the manufacturer at a 95% confidence level.';
 
     memAtmos.Lines.Clear;
 
@@ -7365,9 +7818,9 @@ begin
     lblVersionNumber.caption := strLine;
 
     lblCalibrationDate.caption := DateToStr(dmMain.rxJobJobStartCalibrationDate.AsDateTime);
-    lblComputationDate.caption := DateToStr(Date);
+    lblComputationDate.caption := DateToStr(dmMain.rxJobJobEndCalibrationDate.AsDateTime);
     lblObserverName.Caption    := dmMain.rxJobJobObserverName.AsString;
-    // lblComputationTime.caption := TimeToStr(Time);
+    
     lblEDMOwner.Caption := dmMain.rxJobJobInst1Owner.AsString;
     lblEDMMake.Caption := dmMain.rxAtInstrumentMakeMakeName.AsString;
     lblEDMModel.Caption := dmMain.rxAtInstrumentModelModelName.AsString;
@@ -7383,15 +7836,19 @@ begin
     lblBaselineLocation.Caption := dmMain.rxBaselineBaseLineLocation.AsString;
 
 
-    dUncertaintyConstant := dBaselineUncertaintyConstant;
+    {dUncertaintyConstant := dBaselineUncertaintyConstant;    KW Remove as not used
     dUncertaintyScale := dBaselineUncertaintyScale;
 
     hasLUM := GetLUM(dUncertaintyConstant, dUncertaintyScale, 'F');
+    }
 
-
-    lblStandards.Caption :=
-      GetUncertaintyWithUnits(dUncertaintyConstant, dUncertaintyScale, '%6.2f',
-        '%6.2f', '  The uncertainty of the certified distances is ');
+    lblStandards.Caption :='';
+    lblCoverageFactor.Caption := 'Uncertainty refers to the expanded uncertainty as defined in' +
+                                  ' JCGM 100:2008 - Guide to the Expression of Uncertainty in Measurements (GUM).' +
+                                  ' A coverage factor of k=2 has been used to estimate a 95% confidence level';
+     (*KW remove the statement of uncertainty from formula.
+    //  GetUncertaintyWithUnits(dUncertaintyConstant, dUncertaintyScale, '%6.2f',
+    ///    '%6.2f', '  The uncertainty of the certified distances is ');
     if hasLUM then
     begin
       lblCoverageFactor.Caption :=
@@ -7405,7 +7862,7 @@ begin
                                  'All uncertainties are specified at the 95% confidence level';
       lblCoverageFactor.Caption := lblCoverageFactor.Caption + ' and have been scaled by the a posteriori variance factor.';
     end;
-
+    *)
 
     memProcedure.Lines.Clear;
     for sLoop := 0 to frmJob.memProcedure.Lines.Count-1 do
@@ -7520,7 +7977,7 @@ begin
     lblVersionNumber.caption := strLine;
 
     lblCalibrationDate.caption := DateToStr(dmMain.rxJobJobStartCalibrationDate.AsDateTime);
-    lblComputationDate.caption := DateToStr(Date);
+    lblComputationDate.caption := DateToStr(dmMain.rxJobJobEndCalibrationDate.AsDateTime);
     lblObserverName.Caption    := dmMain.rxJobJobObserverName.AsString;
     lblEDMOwner.Caption := dmMain.rxJobJobInst1Owner.AsString;
     lblEDMMake.Caption := dmMain.rxAtInstrumentMakeMakeName.AsString;
@@ -7536,15 +7993,9 @@ begin
     lblBaselineLocation.Caption := dmMain.rxBaselineBaseLineLocation.AsString;
 
     dmBase.rxStandard.Locate('Type','F',[]);
-    if dBaselineUncertaintyConstant < dmBase.rxStandard.FieldByName('StandardConstant').AsFloat then
-       dUncertaintyConstant := dmBase.rxStandard.FieldByName('StandardConstant').AsFloat
-    else
-       dUncertaintyConstant := dBaselineUncertaintyConstant;
 
-    if dBaselineUncertaintyScale < dmBase.rxStandard.FieldByName('StandardScale').AsFloat then
-       dUncertaintyScale := dmBase.rxStandard.FieldByName('StandardScale').AsFloat
-    else
-       dUncertaintyScale := dBaselineUncertaintyScale;
+    dUncertaintyConstant := dmBase.rxStandard.FieldByName('StandardConstant').AsFloat;
+    dUncertaintyScale := dmBase.rxStandard.FieldByName('StandardScale').AsFloat;
 
     lblStandards.Caption :=
       GetUncertaintyWithUnits(dUncertaintyConstant, dUncertaintyScale, '%6.2f',
@@ -8159,16 +8610,17 @@ begin
         sPillarID := FieldByName('PillarFromID').AsInteger;
         dmBase.rxPillar.Locate('PillarID',IntToStr(sPillarID),[]);
         strFromPillarNo := dmBase.rxPillar.FieldByName('PillarNo').AsString;
+        strFromPillarNo := FieldByName('FromPillar').AsString;
 
         sPillarID := FieldByName('PillarToID').AsInteger;
         dmBase.rxPillar.Locate('PillarID',IntToStr(sPillarID),[]);
         strToPillarNo := dmBase.rxPillar.FieldByName('PillarNo').AsString;
 
         writeln(pfRPTFile,
-        Format(' %5s   %5s     %9.4f     ±%9.5f',
+        Format(' %5s   %5s     %9.4f     ±' + sigfigs(FieldByName('DistSigma').AsFloat,9,2),
          [strFromPillarNo, strToPillarNo,
-         FieldByName('DistLegalDistance').AsFloat,
-         FieldByName('DistSigma').AsFloat]));
+         FieldByName('DistLegalDistance').AsFloat]
+         ));
        Next;
       end;
     end;
@@ -8528,37 +8980,33 @@ var
   dB:         DOUBLE;               // Scale term
   dStdDev, dCalibUncertainty:  DOUBLE;               // Distance
 begin
-  LogDebugMessage('AddCalibrationUncertainties('+FloatToStr(dUncertainty)+', '+
-    FloatToStr(dDistance)+')');
   //***************************************************************
   // Scale Term
   //***************************************************************
   dScale  := dmMain.rxAtInstrumentInstStdDevPPM.AsFloat;
-  LogDebugMessage('dScale = '+FloatToStr(dScale));
   dSTemp := dmMain.rxJobJobStdDevTemp.AsFloat;
-  LogDebugMessage('dSTemp = '+FloatToStr(dSTemp));
   dSPres := dmMain.rxJobJobStdDevPressure.AsFloat * 0.3;
-  LogDebugMessage('dSPres = '+FloatToStr(dSPres));
 
   dB := sqrt(dScale*dScale + dSTemp*dSTemp + dSPres*dSPres)/ 1000000;
-  LogDebugMessage('dB := sqrt(dScale*dScale + dSTemp*dSTemp + dSPres*dSPres)/ 1000000');
-  LogDebugMessage('dB = '+FloatToStr(dB));
   //***************************************************************
   // Constant term  (Only include scale components)
   //***************************************************************
   dStdDev := dDistance*dB;
-  LogDebugMessage('dStdDev := dDistance ('+FloatToStr(dDistance)+') * dB ('+
-    FloatToStr(dStdDev)+') = '+FloatToStr(dStdDev));
 
   dCalibUncertainty := 2* dStdDev;
-  LogDebugMessage('dCalibUncertainty := 2* dStdDev ('+
-    FloatToStr(dStdDev)+') = '+FloatToStr(dCalibUncertainty));
 
   Result := sqrt( sqr(dUncertainty)+ sqr(dCalibUncertainty));
-  LogDebugMessage('Result := sqrt( sqr(dUncertainty ['+FloatToStr(dUncertainty)+
-    ']) + sqr(dCalibUncertainty ['+FloatToStr(dCalibUncertainty)+']) = '+
-    FloatToStr(Result));
 
+end;
+
+function GetUncertaintyCertifiedDistance(dCertifiedDistance: Double): Double;
+begin
+  result := 0;
+  if dCertifiedDistance=0 then
+    exit
+  else
+//    result := 0.5 + 1.47 * power(10, -3) * dCertifiedDistance;
+    result := (0.5 + (0.00147 * dCertifiedDistance))/1000  ;
 end;
 
 (*******************************************************************************
@@ -8728,18 +9176,670 @@ begin
   end;
 end;
 
+function sigfigs(
+  aVal: double;   //the number to be formatted as with significant figures
+  sLen: integer;  //define the length of the returned string
+  sFig: integer):string;      //The number of significant figures
+var
+  dps :integer;
+  fmt :string;
+  aLog:double;
+
+begin
+
+  aLog  := int(log10(abs(aVal)));
+  if abs(aVal)>1 then aLog := int(log10(abs(aVal)))+1;      //The log10 function in delphi acts different to expected
+  dps   := trunc(sFig - aLog);                   //Calculate the number of decimal places
+  aVal:= round(aVal*power(10,dps))/power(10,dps);      //round to desired significant figures
+
+  if (dps < 0) then dps := 0;        //prevent negative significant figures.
+  fmt := '%' + floatToStr(sLen) + '.' + floatToStr(dps) + 'f';
+
+  Result:=format(fmt,[aVal]);
+
+end;
+(*******************************************************************************
+@procedure CHISQ_INV;
+
+@description
+  Returns the inverse of the left-tailed probability of the chi-squared
+  distribution for degrees of freedom 1-300 at 95% probability
+*******************************************************************************)
+function CHISQ_INV(
+  dof: double):double;      //The number of degrees of freedom
+
+begin
+  dof:=int(dof);
+  if (dof = 1) 	 then Result := 3.84145882069412;
+  if (dof = 2) 	 then Result := 5.99146454710798;
+  if (dof = 3) 	 then Result := 7.81472790325118;
+  if (dof = 4) 	 then Result := 9.48772903678116;
+  if (dof = 5) 	 then Result := 11.0704976935164;
+  if (dof = 6) 	 then Result := 12.591587243744;
+  if (dof = 7) 	 then Result := 14.0671404493402;
+  if (dof = 8) 	 then Result := 15.5073130558654;
+  if (dof = 9) 	 then Result := 16.9189776046204;
+  if (dof = 10)	 then Result := 18.3070380532751;
+  if (dof = 11)	 then Result := 19.6751375726825;
+  if (dof = 12)	 then Result := 21.0260698174831;
+  if (dof = 13)	 then Result := 22.3620324948269;
+  if (dof = 14)	 then Result := 23.6847913048406;
+  if (dof = 15)	 then Result := 24.9957901397286;
+  if (dof = 16)	 then Result := 26.2962276048642;
+  if (dof = 17)	 then Result := 27.5871116382753;
+  if (dof = 18)	 then Result := 28.8692994303926;
+  if (dof = 19)	 then Result := 30.1435272056462;
+  if (dof = 20)	 then Result := 31.4104328442309;
+  if (dof = 21)	 then Result := 32.6705733409173;
+  if (dof = 22)	 then Result := 33.9244384714438;
+  if (dof = 23)	 then Result := 35.172461626908;
+  if (dof = 24)	 then Result := 36.4150285018073;
+  if (dof = 25)	 then Result := 37.6524841334828;
+  if (dof = 26)	 then Result := 38.88513865983;
+  if (dof = 27)	 then Result := 40.1132720694136;
+  if (dof = 28)	 then Result := 41.3371381514274;
+  if (dof = 29)	 then Result := 42.5569678042927;
+  if (dof = 30)	 then Result := 43.7729718257422;
+  if (dof = 31)	 then Result := 44.9853432803651;
+  if (dof = 32)	 then Result := 46.1942595202785;
+  if (dof = 33)	 then Result := 47.3998839190809;
+  if (dof = 34)	 then Result := 48.6023673672942;
+  if (dof = 35)	 then Result := 49.8018495682019;
+  if (dof = 36)	 then Result := 50.9984601657106;
+  if (dof = 37)	 then Result := 52.1923197301029;
+  if (dof = 38)	 then Result := 53.3835406229693;
+  if (dof = 39)	 then Result := 54.5722277589417;
+  if (dof = 40)	 then Result := 55.758479278887;
+  if (dof = 41)	 then Result := 56.9423871468241;
+  if (dof = 42)	 then Result := 58.124037680868;
+  if (dof = 43)	 then Result := 59.3035120268998;
+  if (dof = 44)	 then Result := 60.4808865823364;
+  if (dof = 45)	 then Result := 61.6562333762796;
+  if (dof = 46)	 then Result := 62.8296204114082;
+  if (dof = 47)	 then Result := 64.001111972218;
+  if (dof = 48)	 then Result := 65.1707689035698;
+  if (dof = 49)	 then Result := 66.3386488629688;
+  if (dof = 50)	 then Result := 67.5048065495412;
+  if (dof = 51)	 then Result := 68.6692939122858;
+  if (dof = 52)	 then Result := 69.8321603398481;
+  if (dof = 53)	 then Result := 70.9934528337823;
+  if (dof = 54)	 then Result := 72.1532161670231;
+  if (dof = 55)	 then Result := 73.3114930290833;
+  if (dof = 56)	 then Result := 74.4683241593094;
+  if (dof = 57)	 then Result := 75.6237484693761;
+  if (dof = 58)	 then Result := 76.7778031560615;
+  if (dof = 59)	 then Result := 77.9305238052304;
+  if (dof = 60)	 then Result := 79.0819444878487;
+  if (dof = 61)	 then Result := 80.2320978487627;
+  if (dof = 62)	 then Result := 81.3810151888991;
+  if (dof = 63)	 then Result := 82.5287265414718;
+  if (dof = 64)	 then Result := 83.675260742721;
+  if (dof = 65)	 then Result := 84.8206454976567;
+  if (dof = 66)	 then Result := 85.964907441231;
+  if (dof = 67)	 then Result := 87.1080721953219;
+  if (dof = 68)	 then Result := 88.2501644218741;
+  if (dof = 69)	 then Result := 89.391207872508;
+  if (dof = 70)	 then Result := 90.5312254348807;
+  if (dof = 71)	 then Result := 91.6702391760548;
+  if (dof = 72)	 then Result := 92.8082703831077;
+  if (dof = 73)	 then Result := 93.9453396011922;
+  if (dof = 74)	 then Result := 95.0814666692432;
+  if (dof = 75)	 then Result := 96.2166707535038;
+  if (dof = 76)	 then Result := 97.350970379033;
+  if (dof = 77)	 then Result := 98.4843834593404;
+  if (dof = 78)	 then Result := 99.6169273242838;
+  if (dof = 79)	 then Result := 100.74861874635;
+  if (dof = 80)	 then Result := 101.879473965436;
+  if (dof = 81)	 then Result := 103.009508712226;
+  if (dof = 82)	 then Result := 104.138738230274;
+  if (dof = 83)	 then Result := 105.26717729686;
+  if (dof = 84)	 then Result := 106.394840242723;
+  if (dof = 85)	 then Result := 107.521740970719;
+  if (dof = 86)	 then Result := 108.647892973508;
+  if (dof = 87)	 then Result := 109.773309350288;
+  if (dof = 88)	 then Result := 110.898002822684;
+  if (dof = 89)	 then Result := 112.021985749808;
+  if (dof = 90)	 then Result := 113.145270142555;
+  if (dof = 91)	 then Result := 114.267867677194;
+  if (dof = 92)	 then Result := 115.389789708267;
+  if (dof = 93)	 then Result := 116.511047280874;
+  if (dof = 94)	 then Result := 117.631651142346;
+  if (dof = 95)	 then Result := 118.751611753367;
+  if (dof = 96)	 then Result := 119.870939298567;
+  if (dof = 97)	 then Result := 120.98964369661;
+  if (dof = 98)	 then Result := 122.107734609819;
+  if (dof = 99)	 then Result := 123.225221453362;
+  if (dof = 100) then Result := 124.342113404004;
+  if (dof = 101) then Result := 125.458419408482;
+  if (dof = 102) then Result := 126.574148191494;
+  if (dof = 103) then Result := 127.689308263338;
+  if (dof = 104) then Result := 128.803907927218;
+  if (dof = 105) then Result := 129.917955286229;
+  if (dof = 106) then Result := 131.031458250049;
+  if (dof = 107) then Result := 132.144424541337;
+  if (dof = 108) then Result := 133.256861701868;
+  if (dof = 109) then Result := 134.368777098411;
+  if (dof = 110) then Result := 135.480177928359;
+  if (dof = 111) then Result := 136.591071225135;
+  if (dof = 112) then Result := 137.701463863371;
+  if (dof = 113) then Result := 138.811362563885;
+  if (dof = 114) then Result := 139.920773898456;
+  if (dof = 115) then Result := 141.02970429441;
+  if (dof = 116) then Result := 142.138160039026;
+  if (dof = 117) then Result := 143.246147283775;
+  if (dof = 118) then Result := 144.353672048385;
+  if (dof = 119) then Result := 145.460740224765;
+  if (dof = 120) then Result := 146.567357580767;
+  if (dof = 121) then Result := 147.673529763818;
+  if (dof = 122) then Result := 148.779262304405;
+  if (dof = 123) then Result := 149.884560619441;
+  if (dof = 124) then Result := 150.989430015505;
+  if (dof = 125) then Result := 152.093875691958;
+  if (dof = 126) then Result := 153.197902743956;
+  if (dof = 127) then Result := 154.30151616535;
+  if (dof = 128) then Result := 155.404720851482;
+  if (dof = 129) then Result := 156.507521601885;
+  if (dof = 130) then Result := 157.609923122889;
+  if (dof = 131) then Result := 158.711930030134;
+  if (dof = 132) then Result := 159.813546850998;
+  if (dof = 133) then Result := 160.914778026943;
+  if (dof = 134) then Result := 162.015627915781;
+  if (dof = 135) then Result := 163.11610079386;
+  if (dof = 136) then Result := 164.216200858185;
+  if (dof = 137) then Result := 165.315932228459;
+  if (dof = 138) then Result := 166.415298949064;
+  if (dof = 139) then Result := 167.514304990978;
+  if (dof = 140) then Result := 168.61295425362;
+  if (dof = 141) then Result := 169.711250566649;
+  if (dof = 142) then Result := 170.809197691695;
+  if (dof = 143) then Result := 171.90679932404;
+  if (dof = 144) then Result := 173.004059094245;
+  if (dof = 145) then Result := 174.100980569726;
+  if (dof = 146) then Result := 175.197567256281;
+  if (dof = 147) then Result := 176.29382259957;
+  if (dof = 148) then Result := 177.389749986549;
+  if (dof = 149) then Result := 178.485352746859;
+  if (dof = 150) then Result := 179.580634154181;
+  if (dof = 151) then Result := 180.675597427534;
+  if (dof = 152) then Result := 181.770245732555;
+  if (dof = 153) then Result := 182.864582182723;
+  if (dof = 154) then Result := 183.958609840556;
+  if (dof = 155) then Result := 185.052331718773;
+  if (dof = 156) then Result := 186.145750781417;
+  if (dof = 157) then Result := 187.238869944954;
+  if (dof = 158) then Result := 188.331692079329;
+  if (dof = 159) then Result := 189.424220009004;
+  if (dof = 160) then Result := 190.516456513959;
+  if (dof = 161) then Result := 191.608404330663;
+  if (dof = 162) then Result := 192.700066153028;
+  if (dof = 163) then Result := 193.791444633324;
+  if (dof = 164) then Result := 194.88254238308;
+  if (dof = 165) then Result := 195.973361973949;
+  if (dof = 166) then Result := 197.063905938561;
+  if (dof = 167) then Result := 198.154176771341;
+  if (dof = 168) then Result := 199.244176929317;
+  if (dof = 169) then Result := 200.333908832898;
+  if (dof = 170) then Result := 201.42337486663;
+  if (dof = 171) then Result := 202.512577379941;
+  if (dof = 172) then Result := 203.601518687858;
+  if (dof = 173) then Result := 204.69020107171;
+  if (dof = 174) then Result := 205.778626779806;
+  if (dof = 175) then Result := 206.866798028108;
+  if (dof = 176) then Result := 207.95471700087;
+  if (dof = 177) then Result := 209.042385851279;
+  if (dof = 178) then Result := 210.12980670206;
+  if (dof = 179) then Result := 211.216981646085;
+  if (dof = 180) then Result := 212.303912746952;
+  if (dof = 181) then Result := 213.390602039558;
+  if (dof = 182) then Result := 214.477051530651;
+  if (dof = 183) then Result := 215.563263199378;
+  if (dof = 184) then Result := 216.649238997807;
+  if (dof = 185) then Result := 217.734980851449;
+  if (dof = 186) then Result := 218.820490659756;
+  if (dof = 187) then Result := 219.905770296615;
+  if (dof = 188) then Result := 220.990821610828;
+  if (dof = 189) then Result := 222.075646426575;
+  if (dof = 190) then Result := 223.160246543877;
+  if (dof = 191) then Result := 224.244623739036;
+  if (dof = 192) then Result := 225.328779765074;
+  if (dof = 193) then Result := 226.412716352154;
+  if (dof = 194) then Result := 227.496435208002;
+  if (dof = 195) then Result := 228.579938018305;
+  if (dof = 196) then Result := 229.663226447109;
+  if (dof = 197) then Result := 230.74630213721;
+  if (dof = 198) then Result := 231.829166710528;
+  if (dof = 199) then Result := 232.911821768476;
+  if (dof = 200) then Result := 233.994268892325;
+  if (dof = 201) then Result := 235.076509643554;
+  if (dof = 202) then Result := 236.158545564194;
+  if (dof = 203) then Result := 237.24037817717;
+  if (dof = 204) then Result := 238.322008986627;
+  if (dof = 205) then Result := 239.403439478252;
+  if (dof = 206) then Result := 240.484671119593;
+  if (dof = 207) then Result := 241.565705360364;
+  if (dof = 208) then Result := 242.646543632752;
+  if (dof = 209) then Result := 243.727187351706;
+  if (dof = 210) then Result := 244.807637915228;
+  if (dof = 211) then Result := 245.887896704661;
+  if (dof = 212) then Result := 246.967965084957;
+  if (dof = 213) then Result := 248.047844404956;
+  if (dof = 214) then Result := 249.127535997645;
+  if (dof = 215) then Result := 250.20704118042;
+  if (dof = 216) then Result := 251.286361255342;
+  if (dof = 217) then Result := 252.365497509384;
+  if (dof = 218) then Result := 253.444451214672;
+  if (dof = 219) then Result := 254.523223628728;
+  if (dof = 220) then Result := 255.601815994703;
+  if (dof = 221) then Result := 256.680229541603;
+  if (dof = 222) then Result := 257.758465484515;
+  if (dof = 223) then Result := 258.836525024829;
+  if (dof = 224) then Result := 259.914409350448;
+  if (dof = 225) then Result := 260.992119636005;
+  if (dof = 226) then Result := 262.069657043065;
+  if (dof = 227) then Result := 263.147022720329;
+  if (dof = 228) then Result := 264.224217803834;
+  if (dof = 229) then Result := 265.301243417145;
+  if (dof = 230) then Result := 266.378100671549;
+  if (dof = 231) then Result := 267.45479066624;
+  if (dof = 232) then Result := 268.531314488501;
+  if (dof = 233) then Result := 269.607673213888;
+  if (dof = 234) then Result := 270.683867906404;
+  if (dof = 235) then Result := 271.759899618669;
+  if (dof = 236) then Result := 272.835769392096;
+  if (dof = 237) then Result := 273.911478257054;
+  if (dof = 238) then Result := 274.987027233029;
+  if (dof = 239) then Result := 276.062417328789;
+  if (dof = 240) then Result := 277.137649542537;
+  if (dof = 241) then Result := 278.212724862068;
+  if (dof = 242) then Result := 279.287644264921;
+  if (dof = 243) then Result := 280.362408718521;
+  if (dof = 244) then Result := 281.437019180335;
+  if (dof = 245) then Result := 282.511476598006;
+  if (dof = 246) then Result := 283.585781909499;
+  if (dof = 247) then Result := 284.659936043236;
+  if (dof = 248) then Result := 285.733939918233;
+  if (dof = 249) then Result := 286.807794444232;
+  if (dof = 250) then Result := 287.881500521831;
+  if (dof = 251) then Result := 288.955059042613;
+  if (dof = 252) then Result := 290.028470889273;
+  if (dof = 253) then Result := 291.10173693574;
+  if (dof = 254) then Result := 292.174858047296;
+  if (dof = 255) then Result := 293.247835080701;
+  if (dof = 256) then Result := 294.320668884306;
+  if (dof = 257) then Result := 295.39336029817;
+  if (dof = 258) then Result := 296.465910154169;
+  if (dof = 259) then Result := 297.538319276114;
+  if (dof = 260) then Result := 298.610588479854;
+  if (dof = 261) then Result := 299.682718573386;
+  if (dof = 262) then Result := 300.754710356962;
+  if (dof = 263) then Result := 301.826564623188;
+  if (dof = 264) then Result := 302.898282157129;
+  if (dof = 265) then Result := 303.96986373641;
+  if (dof = 266) then Result := 305.041310131311;
+  if (dof = 267) then Result := 306.112622104867;
+  if (dof = 268) then Result := 307.18380041296;
+  if (dof = 269) then Result := 308.254845804417;
+  if (dof = 270) then Result := 309.325759021097;
+  if (dof = 271) then Result := 310.396540797983;
+  if (dof = 272) then Result := 311.467191863273;
+  if (dof = 273) then Result := 312.537712938465;
+  if (dof = 274) then Result := 313.608104738444;
+  if (dof = 275) then Result := 314.678367971565;
+  if (dof = 276) then Result := 315.748503339739;
+  if (dof = 277) then Result := 316.818511538513;
+  if (dof = 278) then Result := 317.888393257151;
+  if (dof = 279) then Result := 318.958149178711;
+  if (dof = 280) then Result := 320.027779980128;
+  if (dof = 281) then Result := 321.097286332285;
+  if (dof = 282) then Result := 322.166668900092;
+  if (dof = 283) then Result := 323.235928342558;
+  if (dof = 284) then Result := 324.305065312867;
+  if (dof = 285) then Result := 325.374080458446;
+  if (dof = 286) then Result := 326.44297442104;
+  if (dof = 287) then Result := 327.511747836777;
+  if (dof = 288) then Result := 328.58040133624;
+  if (dof = 289) then Result := 329.648935544535;
+  if (dof = 290) then Result := 330.717351081352;
+  if (dof = 291) then Result := 331.785648561038;
+  if (dof = 292) then Result := 332.853828592656;
+  if (dof = 293) then Result := 333.921891780048;
+  if (dof = 294) then Result := 334.989838721903;
+  if (dof = 295) then Result := 336.057670011813;
+  if (dof = 296) then Result := 337.125386238334;
+  if (dof = 297) then Result := 338.192987985048;
+  if (dof = 298) then Result := 339.260475830621;
+  if (dof = 299) then Result := 340.327850348859;
+  if (dof = 300) then Result := 341.395112108769;
+  if (dof > 300) then Result := 342.462261674608;
+
+end;
+(*******************************************************************************
+@procedure tttstudent;
+
+@description
+  Returns 95% confidence from the two tailed inverse of the Student t
+  distribution for degrees of freedom 1-300
+*******************************************************************************)
+function tttstudent(
+  dof: double):double;      //The number of degrees of freedom
+
+begin
+  dof:=int(dof);
+  if (dof = 1) 	 then Result:= 12.70620474;
+  if (dof = 2) 	 then Result:= 4.30265273;
+  if (dof = 3) 	 then Result:= 3.182446305;
+  if (dof = 4) 	 then Result:= 2.776445105;
+  if (dof = 5) 	 then Result:= 2.570581836;
+  if (dof = 6) 	 then Result:= 2.446911851;
+  if (dof = 7) 	 then Result:= 2.364624252;
+  if (dof = 8) 	 then Result:= 2.306004135;
+  if (dof = 9) 	 then Result:= 2.262157163;
+  if (dof = 10)	 then Result:= 2.228138852;
+  if (dof = 11)	 then Result:= 2.20098516;
+  if (dof = 12)	 then Result:= 2.17881283;
+  if (dof = 13)	 then Result:= 2.160368656;
+  if (dof = 14)	 then Result:= 2.144786688;
+  if (dof = 15)	 then Result:= 2.131449546;
+  if (dof = 16)	 then Result:= 2.119905299;
+  if (dof = 17)	 then Result:= 2.109815578;
+  if (dof = 18)	 then Result:= 2.10092204;
+  if (dof = 19)	 then Result:= 2.093024054;
+  if (dof = 20)	 then Result:= 2.085963447;
+  if (dof = 21)	 then Result:= 2.079613845;
+  if (dof = 22)	 then Result:= 2.073873068;
+  if (dof = 23)	 then Result:= 2.06865761;
+  if (dof = 24)	 then Result:= 2.063898562;
+  if (dof = 25)	 then Result:= 2.059538553;
+  if (dof = 26)	 then Result:= 2.055529439;
+  if (dof = 27)	 then Result:= 2.051830516;
+  if (dof = 28)	 then Result:= 2.048407142;
+  if (dof = 29)	 then Result:= 2.045229642;
+  if (dof = 30)	 then Result:= 2.042272456;
+  if (dof = 31)	 then Result:= 2.039513446;
+  if (dof = 32)	 then Result:= 2.036933343;
+  if (dof = 33)	 then Result:= 2.034515297;
+  if (dof = 34)	 then Result:= 2.032244509;
+  if (dof = 35)	 then Result:= 2.030107928;
+  if (dof = 36)	 then Result:= 2.028094001;
+  if (dof = 37)	 then Result:= 2.026192463;
+  if (dof = 38)	 then Result:= 2.024394164;
+  if (dof = 39)	 then Result:= 2.02269092;
+  if (dof = 40)	 then Result:= 2.02107539;
+  if (dof = 41)	 then Result:= 2.01954097;
+  if (dof = 42)	 then Result:= 2.018081703;
+  if (dof = 43)	 then Result:= 2.016692199;
+  if (dof = 44)	 then Result:= 2.015367574;
+  if (dof = 45)	 then Result:= 2.014103389;
+  if (dof = 46)	 then Result:= 2.012895599;
+  if (dof = 47)	 then Result:= 2.011740514;
+  if (dof = 48)	 then Result:= 2.010634758;
+  if (dof = 49)	 then Result:= 2.009575237;
+  if (dof = 50)	 then Result:= 2.008559112;
+  if (dof = 51)	 then Result:= 2.00758377;
+  if (dof = 52)	 then Result:= 2.006646805;
+  if (dof = 53)	 then Result:= 2.005745995;
+  if (dof = 54)	 then Result:= 2.004879288;
+  if (dof = 55)	 then Result:= 2.004044783;
+  if (dof = 56)	 then Result:= 2.003240719;
+  if (dof = 57)	 then Result:= 2.002465459;
+  if (dof = 58)	 then Result:= 2.001717484;
+  if (dof = 59)	 then Result:= 2.000995378;
+  if (dof = 60)	 then Result:= 2.000297822;
+  if (dof = 61)	 then Result:= 1.999623585;
+  if (dof = 62)	 then Result:= 1.998971517;
+  if (dof = 63)	 then Result:= 1.998340543;
+  if (dof = 64)	 then Result:= 1.997729654;
+  if (dof = 65)	 then Result:= 1.997137908;
+  if (dof = 66)	 then Result:= 1.996564419;
+  if (dof = 67)	 then Result:= 1.996008354;
+  if (dof = 68)	 then Result:= 1.995468931;
+  if (dof = 69)	 then Result:= 1.994945415;
+  if (dof = 70)	 then Result:= 1.994437112;
+  if (dof = 71)	 then Result:= 1.993943368;
+  if (dof = 72)	 then Result:= 1.993463567;
+  if (dof = 73)	 then Result:= 1.992997126;
+  if (dof = 74)	 then Result:= 1.992543495;
+  if (dof = 75)	 then Result:= 1.992102154;
+  if (dof = 76)	 then Result:= 1.99167261;
+  if (dof = 77)	 then Result:= 1.991254395;
+  if (dof = 78)	 then Result:= 1.990847069;
+  if (dof = 79)	 then Result:= 1.99045021;
+  if (dof = 80)	 then Result:= 1.990063421;
+  if (dof = 81)	 then Result:= 1.989686323;
+  if (dof = 82)	 then Result:= 1.989318557;
+  if (dof = 83)	 then Result:= 1.98895978;
+  if (dof = 84)	 then Result:= 1.988609667;
+  if (dof = 85)	 then Result:= 1.988267907;
+  if (dof = 86)	 then Result:= 1.987934206;
+  if (dof = 87)	 then Result:= 1.987608282;
+  if (dof = 88)	 then Result:= 1.987289865;
+  if (dof = 89)	 then Result:= 1.9869787 ;
+  if (dof = 90)	 then Result:= 1.986674541;
+  if (dof = 91)	 then Result:= 1.986377154;
+  if (dof = 92)	 then Result:= 1.986086317;
+  if (dof = 93)	 then Result:= 1.985801814;
+  if (dof = 94)	 then Result:= 1.985523442;
+  if (dof = 95)	 then Result:= 1.985251004;
+  if (dof = 96)	 then Result:= 1.984984312;
+  if (dof = 97)	 then Result:= 1.984723186;
+  if (dof = 98)	 then Result:= 1.984467455;
+  if (dof = 99)	 then Result:= 1.984216952;
+  if (dof = 100) then Result:= 1.983971519;
+  if (dof = 101) then Result:= 1.983731003;
+  if (dof = 102) then Result:= 1.983495259;
+  if (dof = 103) then Result:= 1.983264145;
+  if (dof = 104) then Result:= 1.983037526;
+  if (dof = 105) then Result:= 1.982815274;
+  if (dof = 106) then Result:= 1.982597262;
+  if (dof = 107) then Result:= 1.98238337;
+  if (dof = 108) then Result:= 1.982173483;
+  if (dof = 109) then Result:= 1.98196749;
+  if (dof = 110) then Result:= 1.981765282;
+  if (dof = 111) then Result:= 1.981566757;
+  if (dof = 112) then Result:= 1.981371815;
+  if (dof = 113) then Result:= 1.981180359;
+  if (dof = 114) then Result:= 1.980992298;
+  if (dof = 115) then Result:= 1.980807541;
+  if (dof = 116) then Result:= 1.980626002;
+  if (dof = 117) then Result:= 1.980447599;
+  if (dof = 118) then Result:= 1.980272249;
+  if (dof = 119) then Result:= 1.980099876;
+  if (dof = 120) then Result:= 1.979930405;
+  if (dof = 121) then Result:= 1.979763763;
+  if (dof = 122) then Result:= 1.979599878;
+  if (dof = 123) then Result:= 1.979438685;
+  if (dof = 124) then Result:= 1.979280117;
+  if (dof = 125) then Result:= 1.979124109;
+  if (dof = 126) then Result:= 1.978970602;
+  if (dof = 127) then Result:= 1.978819535;
+  if (dof = 128) then Result:= 1.97867085;
+  if (dof = 129) then Result:= 1.978524491;
+  if (dof = 130) then Result:= 1.978380405;
+  if (dof = 131) then Result:= 1.978238539;
+  if (dof = 132) then Result:= 1.978098842;
+  if (dof = 133) then Result:= 1.977961264;
+  if (dof = 134) then Result:= 1.977825758;
+  if (dof = 135) then Result:= 1.977692277;
+  if (dof = 136) then Result:= 1.977560777;
+  if (dof = 137) then Result:= 1.977431212;
+  if (dof = 138) then Result:= 1.977303542;
+  if (dof = 139) then Result:= 1.977177724;
+  if (dof = 140) then Result:= 1.97705372;
+  if (dof = 141) then Result:= 1.976931489;
+  if (dof = 142) then Result:= 1.976810994;
+  if (dof = 143) then Result:= 1.976692198;
+  if (dof = 144) then Result:= 1.976575066;
+  if (dof = 145) then Result:= 1.976459563;
+  if (dof = 146) then Result:= 1.976345655;
+  if (dof = 147) then Result:= 1.976233309;
+  if (dof = 148) then Result:= 1.976122494;
+  if (dof = 149) then Result:= 1.976013178;
+  if (dof = 150) then Result:= 1.975905331;
+  if (dof = 151) then Result:= 1.975798924;
+  if (dof = 152) then Result:= 1.975693928;
+  if (dof = 153) then Result:= 1.975590315;
+  if (dof = 154) then Result:= 1.975488058;
+  if (dof = 155) then Result:= 1.975387131;
+  if (dof = 156) then Result:= 1.975287508;
+  if (dof = 157) then Result:= 1.975189163;
+  if (dof = 158) then Result:= 1.975092073;
+  if (dof = 159) then Result:= 1.974996213;
+  if (dof = 160) then Result:= 1.97490156;
+  if (dof = 161) then Result:= 1.974808092;
+  if (dof = 162) then Result:= 1.974715786;
+  if (dof = 163) then Result:= 1.974624621;
+  if (dof = 164) then Result:= 1.974534576;
+  if (dof = 165) then Result:= 1.97444563;
+  if (dof = 166) then Result:= 1.974357764;
+  if (dof = 167) then Result:= 1.974270957;
+  if (dof = 168) then Result:= 1.974185191;
+  if (dof = 169) then Result:= 1.974100447;
+  if (dof = 170) then Result:= 1.974016708;
+  if (dof = 171) then Result:= 1.973933954;
+  if (dof = 172) then Result:= 1.973852169;
+  if (dof = 173) then Result:= 1.973771337;
+  if (dof = 174) then Result:= 1.97369144;
+  if (dof = 175) then Result:= 1.973612462;
+  if (dof = 176) then Result:= 1.973534388;
+  if (dof = 177) then Result:= 1.973457202;
+  if (dof = 178) then Result:= 1.973380889;
+  if (dof = 179) then Result:= 1.973305434;
+  if (dof = 180) then Result:= 1.973230823;
+  if (dof = 181) then Result:= 1.973157042;
+  if (dof = 182) then Result:= 1.973084077;
+  if (dof = 183) then Result:= 1.973011915;
+  if (dof = 184) then Result:= 1.972940542;
+  if (dof = 185) then Result:= 1.972869946;
+  if (dof = 186) then Result:= 1.972800114;
+  if (dof = 187) then Result:= 1.972731033;
+  if (dof = 188) then Result:= 1.972662692;
+  if (dof = 189) then Result:= 1.972595079;
+  if (dof = 190) then Result:= 1.972528182;
+  if (dof = 191) then Result:= 1.97246199;
+  if (dof = 192) then Result:= 1.972396491;
+  if (dof = 193) then Result:= 1.972331676;
+  if (dof = 194) then Result:= 1.972267533;
+  if (dof = 195) then Result:= 1.972204051;
+  if (dof = 196) then Result:= 1.972141222;
+  if (dof = 197) then Result:= 1.972079034;
+  if (dof = 198) then Result:= 1.972017478;
+  if (dof = 199) then Result:= 1.971956544;
+  if (dof = 200) then Result:= 1.971896224;
+  if (dof = 201) then Result:= 1.971836507;
+  if (dof = 202) then Result:= 1.971777385;
+  if (dof = 203) then Result:= 1.971718848;
+  if (dof = 204) then Result:= 1.971660889;
+  if (dof = 205) then Result:= 1.971603499;
+  if (dof = 206) then Result:= 1.971546669;
+  if (dof = 207) then Result:= 1.971490392;
+  if (dof = 208) then Result:= 1.971434659;
+  if (dof = 209) then Result:= 1.971379462;
+  if (dof = 210) then Result:= 1.971324793;
+  if (dof = 211) then Result:= 1.971270646;
+  if (dof = 212) then Result:= 1.971217013;
+  if (dof = 213) then Result:= 1.971163885;
+  if (dof = 214) then Result:= 1.971111258;
+  if (dof = 215) then Result:= 1.971059122;
+  if (dof = 216) then Result:= 1.971007472;
+  if (dof = 217) then Result:= 1.970956301;
+  if (dof = 218) then Result:= 1.970905601;
+  if (dof = 219) then Result:= 1.970855367;
+  if (dof = 220) then Result:= 1.970805592;
+  if (dof = 221) then Result:= 1.97075627;
+  if (dof = 222) then Result:= 1.970707395;
+  if (dof = 223) then Result:= 1.970658961;
+  if (dof = 224) then Result:= 1.970610961;
+  if (dof = 225) then Result:= 1.97056339;
+  if (dof = 226) then Result:= 1.970516243;
+  if (dof = 227) then Result:= 1.970469513;
+  if (dof = 228) then Result:= 1.970423195;
+  if (dof = 229) then Result:= 1.970377283;
+  if (dof = 230) then Result:= 1.970331773;
+  if (dof = 231) then Result:= 1.970286659;
+  if (dof = 232) then Result:= 1.970241936;
+  if (dof = 233) then Result:= 1.970197599;
+  if (dof = 234) then Result:= 1.970153643;
+  if (dof = 235) then Result:= 1.970110062;
+  if (dof = 236) then Result:= 1.970066853;
+  if (dof = 237) then Result:= 1.97002401;
+  if (dof = 238) then Result:= 1.96998153;
+  if (dof = 239) then Result:= 1.969939406;
+  if (dof = 240) then Result:= 1.969897635;
+  if (dof = 241) then Result:= 1.969856213;
+  if (dof = 242) then Result:= 1.969815134;
+  if (dof = 243) then Result:= 1.969774395;
+  if (dof = 244) then Result:= 1.969733992;
+  if (dof = 245) then Result:= 1.969693921;
+  if (dof = 246) then Result:= 1.969654176;
+  if (dof = 247) then Result:= 1.969614755;
+  if (dof = 248) then Result:= 1.969575654;
+  if (dof = 249) then Result:= 1.969536868;
+  if (dof = 250) then Result:= 1.969498393;
+  if (dof = 251) then Result:= 1.969460227;
+  if (dof = 252) then Result:= 1.969422365;
+  if (dof = 253) then Result:= 1.969384804;
+  if (dof = 254) then Result:= 1.96934754;
+  if (dof = 255) then Result:= 1.96931057;
+  if (dof = 256) then Result:= 1.96927389;
+  if (dof = 257) then Result:= 1.969237496;
+  if (dof = 258) then Result:= 1.969201386;
+  if (dof = 259) then Result:= 1.969165556;
+  if (dof = 260) then Result:= 1.969130003;
+  if (dof = 261) then Result:= 1.969094724;
+  if (dof = 262) then Result:= 1.969059715;
+  if (dof = 263) then Result:= 1.969024974;
+  if (dof = 264) then Result:= 1.968990497;
+  if (dof = 265) then Result:= 1.968956281;
+  if (dof = 266) then Result:= 1.968922324;
+  if (dof = 267) then Result:= 1.968888622;
+  if (dof = 268) then Result:= 1.968855173;
+  if (dof = 269) then Result:= 1.968821974;
+  if (dof = 270) then Result:= 1.968789022;
+  if (dof = 271) then Result:= 1.968756314;
+  if (dof = 272) then Result:= 1.968723847;
+  if (dof = 273) then Result:= 1.96869162;
+  if (dof = 274) then Result:= 1.968659628;
+  if (dof = 275) then Result:= 1.968627871;
+  if (dof = 276) then Result:= 1.968596344;
+  if (dof = 277) then Result:= 1.968565046;
+  if (dof = 278) then Result:= 1.968533975;
+  if (dof = 279) then Result:= 1.968503127;
+  if (dof = 280) then Result:= 1.9684725;
+  if (dof = 281) then Result:= 1.968442092;
+  if (dof = 282) then Result:= 1.968411901;
+  if (dof = 283) then Result:= 1.968381923;
+  if (dof = 284) then Result:= 1.968352158;
+  if (dof = 285) then Result:= 1.968322603;
+  if (dof = 286) then Result:= 1.968293255;
+  if (dof = 287) then Result:= 1.968264113;
+  if (dof = 288) then Result:= 1.968235174;
+  if (dof = 289) then Result:= 1.968206436;
+  if (dof = 290) then Result:= 1.968177896;
+  if (dof = 291) then Result:= 1.968149554;
+  if (dof = 292) then Result:= 1.968121407;
+  if (dof = 293) then Result:= 1.968093453;
+  if (dof = 294) then Result:= 1.968065689;
+  if (dof = 295) then Result:= 1.968038115;
+  if (dof = 296) then Result:= 1.968010728;
+  if (dof = 297) then Result:= 1.967983525;
+  if (dof = 298) then Result:= 1.967956506;
+  if (dof = 299) then Result:= 1.967929669;
+  if (dof = 300) then Result:= 1.967903011;
+  if (dof > 300) then Result:= 1.96;
+end;
+
 initialization
   DebugLogfile := TStringlist.Create;
 
 finalization
   LogfileCount := 0;
 
-  if DirectoryExists('C:\Program Files (x86)\Calibration\Baseline') then
+  if DirectoryExists('C:\Dev\Baseline\Database') then
   begin
-    while FileExists('C:\Program Files (x86)\Calibration\Baseline\DebugLog'+IntToStr(LogfileCount)+'.txt') do
+    while FileExists('C:\Dev\Baseline\Database\DebugLog'+IntToStr(LogfileCount)+'.txt') do
       Inc(LogfileCount);
 
-    DebugLogfile.SaveToFile('C:\Program Files (x86)\Calibration\Baseline\DebugLog'+IntToStr(LogfileCount)+'.txt');
+    DebugLogfile.SaveToFile('C:\Dev\Baseline\Database\DebugLog'+IntToStr(LogfileCount)+'.txt');
   end; {if}
 
   DebugLogfile.Free;

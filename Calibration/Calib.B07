@@ -1,0 +1,112 @@
+
+ 
+                  Job Identification: TC_TS30_364182_Jun21_BUSS        Page 23 of 28
+ 
+            CALIBRATION OF BASELINE: Busselton 2021
+            CALIBRATION PROGRAM: BASELINE Version 7.0.0.9
+            WESTERN AUSTRALIAN LAND INFORMATION AUTHORITY
+ 
+ Baseline name       : Busselton 2021           Computation Date : 1/09/2021             
+ Date of calibration : 15/06/2021               Computation Time : 2:59:33 PM            
+ 
+ EDM Instrument make  : Leica              Reflector make       : Leica
+ EDM Instrument model : TS 30              Reflector model      : GPH1P
+ Serial number        : 364182             Serial number        : 100
+ Instrument owner     : 1 Midland Square Midland
+ 
+ ------------------------------------------------------------------------------
+                        SUMMARY OF LINEAR MISCLOSES
+ ------------------------------------------------------------------------------
+ PILLAR NUMBERS     FIXED     OBSERVED              A PRIORI
+ --------------    DISTANCE   DISTANCE   MISCLOSE   STD. DEV.
+ INSTR   REFL         (m)        (m)        (m)        (m)
+ -----   -----     ---------  ---------  ---------  ---------
+     1       2       20.4005    20.4001     0.0004    0.00030
+     1       3      122.3867   122.3863     0.0003    0.00030
+     1       4      305.9887   305.9881     0.0006    0.00031
+     1       5      448.7905   448.7898     0.0006    0.00032
+     1       6      509.9730   509.9727     0.0003    0.00032
+     2       6      489.5724   489.5731    -0.0006    0.00032
+     2       5      428.3899   428.3891     0.0009    0.00032
+     2       4      285.5882   285.5872     0.0010    0.00031
+     2       3      101.9861   101.9858     0.0003    0.00030
+     2       1       20.4005    20.4006     0.0000    0.00030
+     3       1      122.3867   122.3865     0.0002    0.00030
+     3       2      101.9861   101.9859     0.0003    0.00030
+     3       4      183.6020   183.6019     0.0001    0.00030
+     3       5      326.4038   326.4034     0.0004    0.00031
+     3       6      387.5863   387.5855     0.0008    0.00031
+     4       6      203.9842   203.9833     0.0009    0.00030
+     4       5      142.8017   142.8013     0.0004    0.00030
+     4       3      183.6020   183.6019     0.0001    0.00030
+     4       2      285.5882   285.5877     0.0004    0.00031
+     4       1      305.9887   305.9884     0.0004    0.00031
+     5       1      448.7905   448.7901     0.0004    0.00032
+     5       2      428.3899   428.3901    -0.0002    0.00032
+     5       3      326.4038   326.4035     0.0003    0.00031
+     5       4      142.8017   142.8016     0.0002    0.00030
+     5       6       61.1825    61.1818     0.0007    0.00030
+     6       5       61.1825    61.1823     0.0002    0.00030
+     6       4      203.9842   203.9839     0.0003    0.00030
+     6       3      387.5863   387.5862     0.0001    0.00031
+     6       2      489.5724   489.5720     0.0004    0.00032
+     6       1      509.9730   509.9726     0.0004    0.00032
+ 
+ ------------------------------------------------------------------------------
+ 
+
+ 
+                  Job Identification: TC_TS30_364182_Jun21_BUSS        Page 24 of 28
+ 
+            CALIBRATION OF BASELINE: Busselton 2021
+            CALIBRATION PROGRAM: BASELINE Version 7.0.0.9
+            WESTERN AUSTRALIAN LAND INFORMATION AUTHORITY
+ 
+ Baseline name       : Busselton 2021           Computation Date : 1/09/2021             
+ Date of calibration : 15/06/2021               Computation Time : 2:59:33 PM            
+ 
+ EDM Instrument make  : Leica              Reflector make       : Leica
+ EDM Instrument model : TS 30              Reflector model      : GPH1P
+ Serial number        : 364182             Serial number        : 100
+ Instrument owner     : 1 Midland Square Midland
+ 
+ ------------------------------------------------------------------------------
+ |                                                                            |
+ |                       RESIDUALS FROM LINEAR MISCLOSES                      |
+ |                                                                            |
+ ------------------------------------------------------------------------------
+
+    1.5mm|                                                             
+         |                                                             
+         |                                                             
+         |                                                             
+         |                                                             
+    1.0mm|    -    -    -    -    -   o-    -    -    -    -    -    - 
+         |                   o                      o                  
+         |                                      o                      
+         |     o                                                       
+         |                              o             o                
+    0.5mm|    -    -    -    -    -    -    -    -    -    -    -    - 
+         | o           o              o o o           o   o o          
+R        |         o o       o            o                 o          
+e        |     o     o o                                               
+s        |                 o                    o                      
+i   0.0mm|-o--+----+----+----+----+----+----+----+----+----+----+----+-
+d        |                                                             
+u        |                                          o                  
+a        |                                                             
+l        |                                                             
+   -0.5mm|    -    -    -    -    -    -    -    -    -    -    -    - 
+         |                                                o            
+         |                                                             
+         |                                                             
+         |                                                             
+   -1.0mm|    -    -    -    -    -    -    -    -    -    -    -    - 
+         |                                                             
+         |                                                             
+         |                                                             
+         |                                                             
+   -1.5mm|____.____.____.____.____.____.____.____.____.____.____.____._
+             50   100  150  200  250  300  350  400  450  500  550  600
+                                       Distance (m)
+ 

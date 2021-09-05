@@ -384,7 +384,7 @@ begin
   else
   begin
     tsEDMTraceability.TabVisible := False;
-    dbgridUncertainty1.ReadOnly := True;
+    dbgridUncertainty1.ReadOnly := False;
     dbgridUncertainty1.Color := clBtnFace;
     dbnavUNcertainty1.VisibleButtons := [nbFirst,nbPrior,nbNext,nbLast];
     dbgridUncertainty2.ReadOnly := True;

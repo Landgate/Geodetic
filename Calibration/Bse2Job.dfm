@@ -2289,7 +2289,7 @@ object frmJob: TfrmJob
         Width = 236
         Height = 21
         MaxLength = 38
-        TabOrder = 0
+        TabOrder = 4
       end
       object pnlButtonsEDM: TPanel
         Left = 639
@@ -2297,7 +2297,7 @@ object frmJob: TfrmJob
         Width = 93
         Height = 474
         Align = alRight
-        TabOrder = 2
+        TabOrder = 0
         object lblPageEDM: TLabel
           Left = 48
           Top = 8
@@ -2404,7 +2404,7 @@ object frmJob: TfrmJob
         Width = 140
         Height = 21
         ItemHeight = 13
-        TabOrder = 1
+        TabOrder = 7
         Text = 'EDM'
         Items.Strings = (
           'EDM'
@@ -2418,7 +2418,7 @@ object frmJob: TfrmJob
         Alignment = taLeftJustify
         BevelOuter = bvLowered
         Caption = ' EDM'
-        TabOrder = 3
+        TabOrder = 12
       end
       object pnlJob3: TPanel
         Left = 28
@@ -2427,7 +2427,7 @@ object frmJob: TfrmJob
         Height = 21
         Alignment = taLeftJustify
         BevelOuter = bvLowered
-        TabOrder = 4
+        TabOrder = 13
       end
       object pnlBaseline3: TPanel
         Left = 286
@@ -2436,7 +2436,7 @@ object frmJob: TfrmJob
         Height = 21
         Alignment = taLeftJustify
         BevelOuter = bvLowered
-        TabOrder = 5
+        TabOrder = 14
       end
       object rxdblcAtInstrumentMake: TRxDBLookupCombo
         Left = 21
@@ -2447,7 +2447,7 @@ object frmJob: TfrmJob
         LookupField = 'MakeID'
         LookupDisplay = 'MakeName'
         LookupSource = dmMain.dsAtInstrumentMake
-        TabOrder = 6
+        TabOrder = 1
         OnCloseUp = rxdblcAtInstrumentMakeCloseUp
         OnExit = rxdblcAtInstrumentMakeExit
       end
@@ -2460,7 +2460,7 @@ object frmJob: TfrmJob
         LookupField = 'ModelID'
         LookupDisplay = 'ModelName'
         LookupSource = dmMain.dsAtInstrumentModel
-        TabOrder = 7
+        TabOrder = 2
         OnCloseUp = rxdblcAtInstrumentModelCloseUp
         OnExit = rxdblcAtInstrumentModelExit
       end
@@ -2473,7 +2473,7 @@ object frmJob: TfrmJob
         LookupField = 'InstID'
         LookupDisplay = 'InstSerialNo'
         LookupSource = dmMain.dsAtInstrument
-        TabOrder = 8
+        TabOrder = 3
         OnCloseUp = rxdblcAtInstrumentCloseUp
         OnExit = rxdblcAtInstrumentCloseUp
       end
@@ -2485,7 +2485,7 @@ object frmJob: TfrmJob
         Caption = 'Pulse Distance Meter'
         DataField = 'isPulseMeter'
         DataSource = dmMain.dsAtInstrumentModel
-        TabOrder = 9
+        TabOrder = 6
         ValueChecked = 'True'
         ValueUnchecked = 'False'
       end
@@ -2495,7 +2495,7 @@ object frmJob: TfrmJob
         Width = 248
         Height = 21
         MaxLength = 40
-        TabOrder = 10
+        TabOrder = 5
       end
       object dbedtUnitWaveLength: TwwDBEdit
         Left = 21
@@ -2504,7 +2504,7 @@ object frmJob: TfrmJob
         Height = 21
         DataField = 'ModelUnitLength'
         DataSource = dmMain.dsAtInstrumentModel
-        TabOrder = 11
+        TabOrder = 8
         UnboundDataType = wwDefault
         WantReturns = False
         WordWrap = False
@@ -2516,7 +2516,7 @@ object frmJob: TfrmJob
         Height = 21
         DataField = 'ModelCarrierWaveLength'
         DataSource = dmMain.dsAtInstrumentModel
-        TabOrder = 12
+        TabOrder = 9
         UnboundDataType = wwDefault
         WantReturns = False
         WordWrap = False
@@ -2528,7 +2528,7 @@ object frmJob: TfrmJob
         Height = 21
         DataField = 'ModelModFreq'
         DataSource = dmMain.dsAtInstrumentModel
-        TabOrder = 13
+        TabOrder = 10
         UnboundDataType = wwDefault
         WantReturns = False
         WordWrap = False
@@ -2540,7 +2540,7 @@ object frmJob: TfrmJob
         Height = 21
         DataField = 'ManuRefractiveIndex'
         DataSource = dmMain.dsAtInstrumentModel
-        TabOrder = 14
+        TabOrder = 11
         UnboundDataType = wwDefault
         WantReturns = False
         WordWrap = False
@@ -4081,7 +4081,7 @@ object frmJob: TfrmJob
         Width = 291
         Height = 70
         Caption = 'Uncertainty of Centring (95%)'
-        TabOrder = 1
+        TabOrder = 5
         object lblUncertaintyCentringEDM: TLabel
           Left = 18
           Top = 22
@@ -4141,7 +4141,7 @@ object frmJob: TfrmJob
         Width = 203
         Height = 101
         Caption = 'Uncertainty of height difference (95%)'
-        TabOrder = 2
+        TabOrder = 1
         object lblUncertaintyEDMHeight: TLabel
           Left = 31
           Top = 22
@@ -4227,7 +4227,7 @@ object frmJob: TfrmJob
         Width = 203
         Height = 116
         Caption = 'Meteorological uncertainties (95%)'
-        TabOrder = 3
+        TabOrder = 2
         object lblUncertaintyTemp: TLabel
           Left = 21
           Top = 23
@@ -4340,7 +4340,7 @@ object frmJob: TfrmJob
         Width = 507
         Height = 50
         Caption = 'Uncertainty of Baseline interval (95%)'
-        TabOrder = 5
+        TabOrder = 7
         object pnlBaselineAccuracy: TPanel
           Left = 9
           Top = 17
@@ -4386,7 +4386,7 @@ object frmJob: TfrmJob
         Width = 203
         Height = 60
         Caption = 'Rejection Criterion'
-        TabOrder = 6
+        TabOrder = 3
         object Label93: TLabel
           Left = 125
           Top = 25
@@ -4413,7 +4413,7 @@ object frmJob: TfrmJob
         Width = 291
         Height = 156
         Caption = 'Manufacturer'#39's Specifications of E.D.M. instrument'
-        TabOrder = 7
+        TabOrder = 6
         Visible = False
         object cbManufacturerSpecs: TCheckBox
           Left = 19

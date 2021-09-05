@@ -25,19 +25,16 @@ uses
   fmLUMUnitsNonDB in 'fmLUMUnitsNonDB.pas' {FrameLUMUnitsNonDB: TFrame},
   fmNewLUMUnits in 'fmNewLUMUnits.pas' {FrameNewLumUnits: TFrame},
   fmOldLUMUnits in 'fmOldLUMUnits.pas' {FrameOldLUMUnits: TFrame},
-  fmLUMUnits in 'fmLUMUnits.pas' {FrameLUMUnits: TFrame};
-
-//  TCClient in 'C:\Program Files\Automated QA\TestComplete 3\Open Apps\Delphi&BCB\TCClient.pas',
-//  tcPublicInfo in 'C:\Program Files\Automated QA\TestComplete 4\Open Apps\Delphi&BCB\tcPublicInfo.pas',
-//  tcOpenAppClasses in 'C:\Program Files\Automated QA\TestComplete 4\Open Apps\Delphi&BCB\tcOpenAppClasses.pas',
-//  TCOpenApp in 'C:\Program Files\Automated QA\TestComplete 4\Open Apps\Delphi&BCB\TCOpenApp.pas';
+  fmLUMUnits in 'fmLUMUnits.pas' {FrameLUMUnits: TFrame},
+  Bse2elips in 'Bse2elips.pas' {frmEllipsoid};
 
 {$R *.res}
+{$MAXSTACKSIZE 4194304}
 
 begin
   Application.Initialize;
   Application.Title := 'Baseline Calibration';
-  Application.HelpFile := 'S:\Smartplan\Team1\Development\Calibration\Baseline\baseline.chm';
+  Application.HelpFile := 'baseline.chm';
   Application.CreateForm(TfrmMain, frmMain);
   Application.CreateForm(TdmBase, dmBase);
   Application.CreateForm(TdmMain, dmMain);
@@ -53,5 +50,6 @@ begin
   Application.CreateForm(TfrmBaselineCertificate, frmBaselineCertificate);
   Application.CreateForm(TfrmBaselineCertificate2, frmBaselineCertificate2);
   Application.CreateForm(TfrmDisclaimer, frmDisclaimer);
+  Application.CreateForm(TfrmEllipsoid, frmEllipsoid);
   Application.Run;
 end.

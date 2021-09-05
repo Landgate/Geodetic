@@ -55,24 +55,16 @@ type
     DetailBand1: TQRBand;
     QRDBText11: TQRDBText;
     QRDBText1: TQRDBText;
-    QRDBText2: TQRDBText;
-    QRDBText3: TQRDBText;
     QRDBText4: TQRDBText;
     dbTxtUncertainty: TQRDBText;
     ColumnHeaderBand1: TQRBand;
     QRLabel27: TQRLabel;
     QRLabel28: TQRLabel;
     QRLabel29: TQRLabel;
-    QRLabel30: TQRLabel;
-    QRLabel31: TQRLabel;
     QRLabel32: TQRLabel;
-    QRLabel34: TQRLabel;
     QRLabel39: TQRLabel;
-    Correction: TQRLabel;
     QRLabel41: TQRLabel;
     QRLabel42: TQRLabel;
-    QRLabel43: TQRLabel;
-    QRLabel44: TQRLabel;
     lblObserver: TQRLabel;
     QRLabel9: TQRLabel;
     QRLabel10: TQRLabel;
@@ -134,7 +126,7 @@ var
 implementation
 
 {$R *.DFM}
-uses BSEdmMain, BSEDM;
+uses BSEdmMain, BSEDM, BseCalib;
 
 (*******************************************************************************
 @procedure qrEDMStartPage(Sender: TCustomQuickRep);
@@ -144,9 +136,13 @@ uses BSEdmMain, BSEDM;
 *******************************************************************************)
 procedure TfrmBaselineCertificate.dbTxtUncertaintyPrint(sender: TObject;
   var Value: string);
+  var fValue: double;
 begin
+  fValue := strToFloat(Value);
+  Value  := sigfigs(fValue,7,2);
   if Pos('±', Value) = 0 then
     Value := '±'+Value;
+
 end;
 
 procedure TfrmBaselineCertificate.qrEDMStartPage(Sender: TCustomQuickRep);

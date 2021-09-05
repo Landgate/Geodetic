@@ -1,0 +1,93 @@
+ 
+                  Job Identification: TC_TS30_364182_Jun21_BUSS        Page 1 of 28
+ 
+            CALIBRATION OF BASELINE: Busselton 2021
+            CALIBRATION PROGRAM: BASELINE Version 7.0.0.9
+            WESTERN AUSTRALIAN LAND INFORMATION AUTHORITY
+ 
+ Baseline name       : Busselton 2021           Computation Date : 1/09/2021             
+ Date of calibration : 15/06/2021               Computation Time : 2:59:33 PM            
+ 
+ EDM Instrument make  : Leica              Reflector make       : Leica
+ EDM Instrument model : TS 30              Reflector model      : GPH1P
+ Serial number        : 364182             Serial number        : 100
+ Instrument owner     : 1 Midland Square Midland
+ 
+ 
+ 
+ ------------------------------------------------------------
+ |                                                          |
+ |                  INSTRUMENT PARAMETERS                   |
+ |                                                          |
+ |----------------------------------------------------------|
+ |                                         |                |
+ |  EDM additive constant                  |   0.000        |
+ |  Reflector additive constant            |   0.000        |
+ |  Unit length in metres                  |   1.50000      |
+ |  Modulation frequency in Hertz          | 100000000      |
+ |  Carrier wavelength in nanometres       | 658.000        |
+ |  Manufacturer's EDM std dev constant    |   0.001        |
+ |  Manufacturer's EDM std dev PPM         |   1.000        |
+ |  Std dev centring of instruments        |   0.4000       |
+ |  Mets dial is set                       |                |
+ |  Thermometer correction in Celsius      |    0.000       |
+ |  Barometer correction in hectapascals   |    0.000       |
+ |                                         |                |
+ ------------------------------------------------------------
+
+ 
+                  Job Identification: TC_TS30_364182_Jun21_BUSS        Page 2 of 28
+ 
+            CALIBRATION OF BASELINE: Busselton 2021
+            CALIBRATION PROGRAM: BASELINE Version 7.0.0.9
+            WESTERN AUSTRALIAN LAND INFORMATION AUTHORITY
+ 
+ Baseline name       : Busselton 2021           Computation Date : 1/09/2021             
+ Date of calibration : 15/06/2021               Computation Time : 2:59:33 PM            
+ 
+ EDM Instrument make  : Leica              Reflector make       : Leica
+ EDM Instrument model : TS 30              Reflector model      : GPH1P
+ Serial number        : 364182             Serial number        : 100
+ Instrument owner     : 1 Midland Square Midland
+ 
+ -----------------------------------------------------------------------------------
+ |                                                                                  |
+ |                                BASELINE DETAILS                                  |
+ |                                                                                  |
+ |----------------------------------------------------------------------------------|
+ |                             |                                                    |
+ | Baseline name               | Busselton 2021                                     |
+ | Baseline location           | Busselton bypass road                              |
+ | Baseline authority          | Landgate                                           |
+ | Authority Address           | 1 Midland Square Midland                           |
+ | Baseline calibration date   | 25/08/2021                                         |
+ | Baseline reference          | JN20212228                                         |
+ |                             |                                                    |
+ ------------------------------------------------------------------------------------
+ 
+ ---------------------------------------------------------------------------
+ |                                                                          |
+ |                     LEAST SQUARES ADJUSTMENT OPTION                      |
+ |                                                                          |
+ |--------------------------------------------------------------------------|
+ |                                                                          |
+ | A baseline of known lengths is assumed.                                  |
+ |                                                                          |
+ | The known lengths are the certified distances between the pillars of the |
+ | baseline. All certified distances are on the same horizontal plane at a  |
+ | specified reference height and on the same vertical plane running        |
+ | through the first and last stations.                                     |
+ |                                                                          |
+ | For the calibration of EDM instruments the least squares estimates for   |
+ | the additive constant, scale correction and short periodic error         |
+ | corrections are determined.                                              |
+ |                                                                          |
+ | For the re-calibration of certified distances the least squares          |
+ | estimates for the certified distance corrections and the additive        |
+ | constant of the verifying EDM instrument are determined.                 |
+ |                                                                          |
+ | The Least Uncertainty of Measurement(LUM)is required for accreditation   |
+ | LUM for the certified baseline distances =                               |
+ | ±( 0.50 +  1.30 x 10¯³ L) mm where L = length in metres                  |
+ |                                                                          |
+ ----------------------------------------------------------------------------

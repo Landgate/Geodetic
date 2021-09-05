@@ -195,36 +195,6 @@ object dmBase: TdmBase
       FieldName = 'StdDevHeight'
     end
   end
-  object vedtLatitude: TDisplayFmt
-    Text = '0'
-    FieldType = vftLatitude
-    Hemisphere = hsLeading
-    PositiveNorth = True
-    PositiveEast = True
-    DecimalPlaces = 5
-    DMSFormat = dfExpanded
-    MinValue = -90.000000000000000000
-    MaxValue = 90.000000000000000000
-    DateFormat = 'd/m/yyyy'
-    TimeFormat = 'h:mm:ss'
-    Left = 109
-    Top = 334
-  end
-  object vedtLongitude: TDisplayFmt
-    Text = '0'
-    FieldType = vftLongitude
-    Hemisphere = hsLeading
-    PositiveNorth = True
-    PositiveEast = True
-    DecimalPlaces = 5
-    DMSFormat = dfExpanded
-    MinValue = -180.000000000000000000
-    MaxValue = 180.000000000000000000
-    DateFormat = 'd/m/yyyy'
-    TimeFormat = 'h:mm:ss'
-    Left = 176
-    Top = 334
-  end
   object rxmemStdDev: TRxMemoryData
     Active = True
     FieldDefs = <
@@ -1567,21 +1537,6 @@ object dmBase: TdmBase
     object rxJobNumberBarometers: TIntegerField
       FieldName = 'NumberBarometers'
     end
-  end
-  object vedtAngle: TDisplayFmt
-    Text = '0'
-    FieldType = vftDMS
-    Hemisphere = hsNone
-    PositiveNorth = True
-    PositiveEast = True
-    DecimalPlaces = 2
-    DMSFormat = dfExpanded
-    MinValue = -360.000000000000000000
-    MaxValue = 360.000000000000000000
-    DateFormat = 'd/m/yyyy'
-    TimeFormat = 'h:mm:ss'
-    Left = 247
-    Top = 334
   end
   object dsEllipsoid: TwwDataSource
     DataSet = rxEllipsoid

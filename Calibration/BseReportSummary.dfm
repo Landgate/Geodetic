@@ -4,8 +4,8 @@ object frmReportSummary: TfrmReportSummary
   BorderIcons = []
   BorderStyle = bsSingle
   Caption = 'Certificate'
-  ClientHeight = 934
-  ClientWidth = 794
+  ClientHeight = 1906
+  ClientWidth = 842
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,10 +17,10 @@ object frmReportSummary: TfrmReportSummary
   PixelsPerInch = 96
   TextHeight = 13
   object qrEDM: TQuickRep
-    Left = 16
-    Top = -584
+    Left = 0
+    Top = 8
     Width = 794
-    Height = 1123
+    Height = 1409
     Frame.Color = clBlack
     Frame.DrawTop = False
     Frame.DrawBottom = False
@@ -82,7 +82,7 @@ object frmReportSummary: TfrmReportSummary
     PrevInitialZoom = qrZoomToFit
     object PageFooterBand1: TQRBand
       Left = 38
-      Top = 1485
+      Top = 1717
       Width = 718
       Height = 80
       Frame.Color = clBlack
@@ -217,7 +217,7 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           29.104166666666670000
           1680.104166666667000000
-          367.770833333333400000
+          367.770833333333300000
           190.500000000000000000)
         Alignment = taRightJustify
         AlignToBand = False
@@ -268,9 +268,9 @@ object frmReportSummary: TfrmReportSummary
         FontSize = 7
       end
       object qrshapeHorizontalLine: TQRShape
-        Left = 4
+        Left = 0
         Top = 1
-        Width = 721
+        Width = 725
         Height = 9
         Frame.Color = clBlack
         Frame.DrawTop = False
@@ -279,9 +279,9 @@ object frmReportSummary: TfrmReportSummary
         Frame.DrawRight = False
         Size.Values = (
           23.812500000000000000
-          10.583333333333330000
+          0.000000000000000000
           2.645833333333333000
-          1907.645833333333000000)
+          1918.229166666667000000)
         Shape = qrsHorLine
         VertAdjust = 0
       end
@@ -1847,9 +1847,9 @@ object frmReportSummary: TfrmReportSummary
         Frame.DrawRight = False
         Size.Values = (
           47.625000000000000000
-          624.416666666666800000
-          42.333333333333340000
-          304.270833333333400000)
+          624.416666666666700000
+          42.333333333333330000
+          304.270833333333300000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
@@ -1955,9 +1955,9 @@ object frmReportSummary: TfrmReportSummary
     end
     object QRBand3: TQRBand
       Left = 38
-      Top = 773
+      Top = 969
       Width = 718
-      Height = 712
+      Height = 748
       Frame.Color = clBlack
       Frame.DrawTop = False
       Frame.DrawBottom = False
@@ -1969,14 +1969,169 @@ object frmReportSummary: TfrmReportSummary
       ForceNewColumn = False
       ForceNewPage = False
       Size.Values = (
-        1883.833333333333000000
+        1979.083333333333000000
         1899.708333333333000000)
       PreCaluculateBandHeight = False
       KeepOnOnePage = False
       BandType = rbSummary
+      object lblDist1: TQRLabel
+        Left = 205
+        Top = 150
+        Width = 48
+        Height = 17
+        Frame.Color = clBlack
+        Frame.DrawTop = False
+        Frame.DrawBottom = False
+        Frame.DrawLeft = False
+        Frame.DrawRight = False
+        Size.Values = (
+          44.979166666666670000
+          542.395833333333300000
+          396.875000000000000000
+          127.000000000000000000)
+        Alignment = taRightJustify
+        AlignToBand = False
+        AutoSize = False
+        AutoStretch = False
+        Caption = '50'
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = []
+        ParentFont = False
+        Transparent = False
+        WordWrap = True
+        FontSize = 10
+      end
+      object lblTest1: TQRLabel
+        Left = 320
+        Top = 152
+        Width = 67
+        Height = 17
+        Frame.Color = clBlack
+        Frame.DrawTop = False
+        Frame.DrawBottom = False
+        Frame.DrawLeft = False
+        Frame.DrawRight = False
+        Size.Values = (
+          44.979166666666670000
+          846.666666666666700000
+          402.166666666666700000
+          177.270833333333300000)
+        Alignment = taLeftJustify
+        AlignToBand = False
+        AutoSize = False
+        AutoStretch = False
+        Caption = 'ACCEPT'
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = []
+        ParentFont = False
+        Transparent = False
+        WordWrap = True
+        FontSize = 10
+      end
+      object QRLabel8: TQRLabel
+        Left = 205
+        Top = 125
+        Width = 70
+        Height = 17
+        Frame.Color = clBlack
+        Frame.DrawTop = False
+        Frame.DrawBottom = True
+        Frame.DrawLeft = False
+        Frame.DrawRight = False
+        Size.Values = (
+          44.979166666666670000
+          542.395833333333300000
+          330.729166666666700000
+          185.208333333333300000)
+        Alignment = taCenter
+        AlignToBand = False
+        AutoSize = False
+        AutoStretch = False
+        Caption = '(metres)'
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = [fsBold]
+        ParentFont = False
+        Transparent = False
+        WordWrap = True
+        FontSize = 10
+      end
+      object QRLabel38: TQRLabel
+        Left = 293
+        Top = 125
+        Width = 116
+        Height = 17
+        Frame.Color = clBlack
+        Frame.DrawTop = False
+        Frame.DrawBottom = True
+        Frame.DrawLeft = False
+        Frame.DrawRight = False
+        Size.Values = (
+          44.979166666666670000
+          775.229166666666700000
+          330.729166666666700000
+          306.916666666666700000)
+        Alignment = taCenter
+        AlignToBand = False
+        AutoSize = False
+        AutoStretch = False
+        Caption = 'Comparison Test'
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = [fsBold]
+        ParentFont = False
+        Transparent = False
+        WordWrap = True
+        FontSize = 10
+      end
+      object QRLabel37: TQRLabel
+        Left = 415
+        Top = 125
+        Width = 78
+        Height = 17
+        Frame.Color = clBlack
+        Frame.DrawTop = False
+        Frame.DrawBottom = True
+        Frame.DrawLeft = False
+        Frame.DrawRight = False
+        Size.Values = (
+          44.979166666666670000
+          1098.020833333333000000
+          330.729166666666700000
+          206.375000000000000000)
+        Alignment = taCenter
+        AlignToBand = False
+        AutoSize = False
+        AutoStretch = False
+        Caption = 'Level'
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = [fsBold]
+        ParentFont = False
+        Transparent = False
+        WordWrap = True
+        FontSize = 10
+      end
       object QRShape8: TQRShape
         Left = 0
-        Top = 335
+        Top = 367
         Width = 721
         Height = 2
         Frame.Color = clBlack
@@ -1987,15 +2142,15 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           5.291666666666667000
           0.000000000000000000
-          886.354166666666900000
+          971.020833333333300000
           1907.645833333333000000)
         Shape = qrsHorLine
         VertAdjust = 0
       end
       object lblAtmosHeader: TQRLabel
-        Left = 92
-        Top = 342
-        Width = 433
+        Left = 4
+        Top = 385
+        Width = 701
         Height = 30
         Frame.Color = clBlack
         Frame.DrawTop = False
@@ -2004,9 +2159,9 @@ object frmReportSummary: TfrmReportSummary
         Frame.DrawRight = False
         Size.Values = (
           79.375000000000000000
-          243.416666666666700000
-          904.875000000000000000
-          1145.645833333333000000)
+          10.583333333333330000
+          1018.645833333333000000
+          1854.729166666667000000)
         Alignment = taCenter
         AlignToBand = False
         AutoSize = False
@@ -2024,9 +2179,9 @@ object frmReportSummary: TfrmReportSummary
         FontSize = 12
       end
       object lblLineTraceability: TQRShape
-        Left = 8
-        Top = 438
-        Width = 721
+        Left = 0
+        Top = 483
+        Width = 729
         Height = 2
         Frame.Color = clBlack
         Frame.DrawTop = False
@@ -2035,26 +2190,26 @@ object frmReportSummary: TfrmReportSummary
         Frame.DrawRight = False
         Size.Values = (
           5.291666666666667000
-          21.166666666666670000
-          1158.875000000000000000
-          1907.645833333333000000)
+          0.000000000000000000
+          1277.937500000000000000
+          1928.812500000000000000)
         Shape = qrsHorLine
         VertAdjust = 0
       end
       object memTraceability: TQRMemo
         Left = 8
-        Top = 449
+        Top = 490
         Width = 688
-        Height = 53
+        Height = 46
         Frame.Color = clBlack
         Frame.DrawTop = False
         Frame.DrawBottom = False
         Frame.DrawLeft = False
         Frame.DrawRight = False
         Size.Values = (
-          140.229166666666700000
+          121.708333333333300000
           21.166666666666670000
-          1187.979166666667000000
+          1296.458333333333000000
           1820.333333333333000000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -2066,16 +2221,14 @@ object frmReportSummary: TfrmReportSummary
             'To obtain a Regulation 13 Certificate for the purpose of legal t' +
             'raceabilty to the legal Commonwealth standard of length contact ' +
             'the Verifying Authority responsible for length measurements in y' +
-            'our State or Territory.'
-          'asdasdasd'
-          'aaa')
+            'our State or Territory.')
         Transparent = False
         WordWrap = True
         FontSize = 10
       end
       object memProcedure: TQRMemo
         Left = 8
-        Top = 502
+        Top = 536
         Width = 689
         Height = 67
         Frame.Color = clBlack
@@ -2086,7 +2239,7 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           177.270833333333300000
           21.166666666666670000
-          1328.208333333333000000
+          1418.166666666667000000
           1822.979166666667000000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -2107,7 +2260,7 @@ object frmReportSummary: TfrmReportSummary
       end
       object lblEntry: TQRLabel
         Left = 9
-        Top = 572
+        Top = 606
         Width = 83
         Height = 18
         Frame.Color = clBlack
@@ -2118,7 +2271,7 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           47.625000000000000000
           23.812500000000000000
-          1513.416666666667000000
+          1603.375000000000000000
           219.604166666666700000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -2138,7 +2291,7 @@ object frmReportSummary: TfrmReportSummary
       end
       object lblPosition: TQRLabel
         Left = 8
-        Top = 604
+        Top = 638
         Width = 52
         Height = 18
         Frame.Color = clBlack
@@ -2149,7 +2302,7 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           47.625000000000000000
           21.166666666666670000
-          1598.083333333333000000
+          1688.041666666667000000
           137.583333333333300000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -2169,7 +2322,7 @@ object frmReportSummary: TfrmReportSummary
       end
       object lblSign: TQRLabel
         Left = 8
-        Top = 632
+        Top = 666
         Width = 60
         Height = 18
         Frame.Color = clBlack
@@ -2180,7 +2333,7 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           47.625000000000000000
           21.166666666666670000
-          1672.166666666667000000
+          1762.125000000000000000
           158.750000000000000000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -2199,9 +2352,9 @@ object frmReportSummary: TfrmReportSummary
         FontSize = 10
       end
       object memAtmos: TQRMemo
-        Left = 9
-        Top = 409
-        Width = 693
+        Left = 4
+        Top = 452
+        Width = 698
         Height = 26
         Frame.Color = clBlack
         Frame.DrawTop = False
@@ -2209,10 +2362,10 @@ object frmReportSummary: TfrmReportSummary
         Frame.DrawLeft = False
         Frame.DrawRight = False
         Size.Values = (
-          68.791666666666680000
-          23.812500000000000000
-          1082.145833333333000000
-          1833.562500000000000000)
+          68.791666666666670000
+          10.583333333333330000
+          1195.916666666667000000
+          1846.791666666667000000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = False
@@ -2229,9 +2382,9 @@ object frmReportSummary: TfrmReportSummary
         FontSize = 10
       end
       object QRLabel22: TQRLabel
-        Left = 127
+        Left = 3
         Top = 8
-        Width = 348
+        Width = 702
         Height = 21
         Frame.Color = clBlack
         Frame.DrawTop = False
@@ -2240,14 +2393,14 @@ object frmReportSummary: TfrmReportSummary
         Frame.DrawRight = False
         Size.Values = (
           55.562500000000000000
-          336.020833333333400000
+          7.937500000000000000
           21.166666666666670000
-          920.750000000000000000)
+          1857.375000000000000000)
         Alignment = taCenter
         AlignToBand = False
         AutoSize = False
         AutoStretch = False
-        Caption = 'Uncertainty of the Instrument Correction'
+        Caption = 'Statistical Tests'
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -2260,22 +2413,22 @@ object frmReportSummary: TfrmReportSummary
         FontSize = 12
       end
       object memUncertainty: TQRRichText
-        Left = 4
-        Top = 30
-        Width = 701
-        Height = 84
+        Left = 10
+        Top = 35
+        Width = 694
+        Height = 24
         Frame.Color = clBlack
         Frame.DrawTop = False
         Frame.DrawBottom = False
         Frame.DrawLeft = False
         Frame.DrawRight = False
         Size.Values = (
-          222.250000000000000000
-          10.583333333333330000
-          79.375000000000000000
-          1854.729166666667000000)
+          63.500000000000000000
+          26.458333333333330000
+          92.604166666666670000
+          1836.208333333333000000)
         Alignment = taLeftJustify
-        AutoStretch = False
+        AutoStretch = True
         Color = clWindow
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -2283,42 +2436,14 @@ object frmReportSummary: TfrmReportSummary
         Font.Name = 'Arial'
         Font.Style = []
         Lines.Strings = (
-          'The minimum '
-          'standard for the '
-          'uncertainty of '
-          'calibration of an '
-          'EDM instrument '
-          'for cadastral '
-          'surveys is +/-'
-          '(4.00mm + '
-          '20.00 ppm) as '
-          'described in '
-          'terms of '
-          'Recommendatio'
-          'n No.8 of the '
-          'Working Party '
-          'of the National '
-          'Standards '
-          'Commission '
-          'on the '
-          'calibration of '
-          'EDM Equipment '
-          'of February 1st, '
-          '1983. All '
-          'uncertainties '
-          'are specified at '
-          'the 95% '
-          'confidence level.'
-          'A coverage '
-          'factor of 2 has '
-          'been used in '
-          'the uncertainty '
-          'computations.')
+          
+            'Two statistical tests recommended in ISO 17123-4:2012 have been ' +
+            'performed on the EDM instrument calibration.')
       end
-      object lblUncertainty: TQRLabel
-        Left = 146
-        Top = 113
-        Width = 380
+      object lblTestA: TQRLabel
+        Left = 37
+        Top = 65
+        Width = 44
         Height = 18
         Frame.Color = clBlack
         Frame.DrawTop = False
@@ -2327,14 +2452,14 @@ object frmReportSummary: TfrmReportSummary
         Frame.DrawRight = False
         Size.Values = (
           47.625000000000000000
-          386.291666666666700000
-          298.979166666666700000
-          1005.416666666667000000)
+          97.895833333333330000
+          171.979166666666700000
+          116.416666666666700000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
         AutoStretch = False
-        Caption = 'Uncertainty of EDM instrument correction : 3.27 mm + 2 ppm'
+        Caption = 'Test A:'
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -2347,19 +2472,19 @@ object frmReportSummary: TfrmReportSummary
         FontSize = 10
       end
       object QRLabel5: TQRLabel
-        Left = 148
-        Top = 154
+        Left = 205
+        Top = 107
         Width = 70
-        Height = 18
+        Height = 17
         Frame.Color = clBlack
         Frame.DrawTop = False
         Frame.DrawBottom = False
         Frame.DrawLeft = False
         Frame.DrawRight = False
         Size.Values = (
-          47.625000000000000000
-          391.583333333333400000
-          407.458333333333400000
+          44.979166666666670000
+          542.395833333333300000
+          283.104166666666700000
           185.208333333333300000)
         Alignment = taCenter
         AlignToBand = False
@@ -2377,181 +2502,26 @@ object frmReportSummary: TfrmReportSummary
         WordWrap = True
         FontSize = 10
       end
-      object QRLabel8: TQRLabel
-        Left = 148
-        Top = 171
-        Width = 70
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = True
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          391.583333333333400000
-          452.437500000000000000
-          185.208333333333300000)
-        Alignment = taCenter
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = '(metres)'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = [fsBold]
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object QRLabel13: TQRLabel
-        Left = 224
-        Top = 137
-        Width = 90
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          592.666666666666800000
-          362.479166666666700000
-          238.125000000000000000)
-        Alignment = taCenter
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = 'Instrument'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = [fsBold]
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object QRLabel20: TQRLabel
-        Left = 224
-        Top = 154
-        Width = 90
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          592.666666666666800000
-          407.458333333333400000
-          238.125000000000000000)
-        Alignment = taCenter
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = 'Uncertainty'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = [fsBold]
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object QRLabel24: TQRLabel
-        Left = 224
-        Top = 171
-        Width = 90
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = True
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          592.666666666666800000
-          452.437500000000000000
-          238.125000000000000000)
-        Alignment = taCenter
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = '(mm)'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = [fsBold]
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object QRLabel35: TQRLabel
-        Left = 321
-        Top = 137
-        Width = 78
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          849.312500000000000000
-          362.479166666666700000
-          206.375000000000000000)
-        Alignment = taCenter
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = 'Minimum'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = [fsBold]
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
       object QRLabel36: TQRLabel
-        Left = 321
-        Top = 154
+        Left = 415
+        Top = 107
         Width = 78
-        Height = 18
+        Height = 17
         Frame.Color = clBlack
         Frame.DrawTop = False
         Frame.DrawBottom = False
         Frame.DrawLeft = False
         Frame.DrawRight = False
         Size.Values = (
-          47.625000000000000000
-          849.312500000000000000
-          407.458333333333400000
+          44.979166666666670000
+          1098.020833333333000000
+          283.104166666666700000
           206.375000000000000000)
         Alignment = taCenter
         AlignToBand = False
         AutoSize = False
         AutoStretch = False
-        Caption = 'Standard'
+        Caption = 'Confidence'
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -2562,115 +2532,10 @@ object frmReportSummary: TfrmReportSummary
         Transparent = False
         WordWrap = True
         FontSize = 10
-      end
-      object QRLabel37: TQRLabel
-        Left = 321
-        Top = 171
-        Width = 78
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = True
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          849.312500000000000000
-          452.437500000000000000
-          206.375000000000000000)
-        Alignment = taCenter
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = '(mm)'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = [fsBold]
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object QRLabel38: TQRLabel
-        Left = 405
-        Top = 170
-        Width = 116
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = True
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          1071.562500000000000000
-          449.791666666666700000
-          306.916666666666700000)
-        Alignment = taCenter
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = 'Comparison Test'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = [fsBold]
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object lblStandards: TQRLabel
-        Left = 8
-        Top = 316
-        Width = 704
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          21.166666666666670000
-          836.083333333333400000
-          1862.666666666667000000)
-        Alignment = taCenter
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = 'lblStandards'
-        Color = clWhite
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object QRShape5: TQRShape
-        Left = 148
-        Top = 305
-        Width = 373
-        Height = 7
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          18.520833333333330000
-          391.583333333333400000
-          806.979166666666800000
-          986.895833333333400000)
-        Shape = qrsHorLine
-        VertAdjust = 0
       end
       object lblTerm3: TQRLabel
         Left = 268
-        Top = 372
+        Top = 415
         Width = 76
         Height = 18
         Frame.Color = clBlack
@@ -2681,7 +2546,7 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           47.625000000000000000
           709.083333333333300000
-          984.250000000000000000
+          1098.020833333333000000
           201.083333333333300000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -2701,7 +2566,7 @@ object frmReportSummary: TfrmReportSummary
       end
       object lblV10: TQRLabel
         Left = 364
-        Top = 378
+        Top = 421
         Width = 115
         Height = 18
         Frame.Color = clBlack
@@ -2711,9 +2576,9 @@ object frmReportSummary: TfrmReportSummary
         Frame.DrawRight = False
         Size.Values = (
           47.625000000000000000
-          963.083333333333400000
-          1000.125000000000000000
-          304.270833333333400000)
+          963.083333333333300000
+          1113.895833333333000000
+          304.270833333333300000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
@@ -2732,7 +2597,7 @@ object frmReportSummary: TfrmReportSummary
       end
       object lblV6: TQRLabel
         Left = 246
-        Top = 378
+        Top = 421
         Width = 9
         Height = 18
         Frame.Color = clBlack
@@ -2743,7 +2608,7 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           47.625000000000000000
           650.875000000000000000
-          1000.125000000000000000
+          1113.895833333333000000
           23.812500000000000000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -2763,7 +2628,7 @@ object frmReportSummary: TfrmReportSummary
       end
       object lblV9: TQRLabel
         Left = 350
-        Top = 378
+        Top = 421
         Width = 5
         Height = 18
         Frame.Color = clBlack
@@ -2774,7 +2639,7 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           47.625000000000000000
           926.041666666666700000
-          1000.125000000000000000
+          1113.895833333333000000
           13.229166666666670000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -2794,7 +2659,7 @@ object frmReportSummary: TfrmReportSummary
       end
       object lblV2: TQRLabel
         Left = 90
-        Top = 378
+        Top = 421
         Width = 5
         Height = 18
         Frame.Color = clBlack
@@ -2805,7 +2670,7 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           47.625000000000000000
           238.125000000000000000
-          1000.125000000000000000
+          1113.895833333333000000
           13.229166666666670000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -2825,7 +2690,7 @@ object frmReportSummary: TfrmReportSummary
       end
       object lblV5: TQRLabel
         Left = 160
-        Top = 388
+        Top = 431
         Width = 78
         Height = 18
         Frame.Color = clBlack
@@ -2836,7 +2701,7 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           47.625000000000000000
           423.333333333333300000
-          1026.583333333333000000
+          1140.354166666667000000
           206.375000000000000000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -2856,7 +2721,7 @@ object frmReportSummary: TfrmReportSummary
       end
       object lblTerm2: TQRLabel
         Left = 160
-        Top = 372
+        Top = 415
         Width = 78
         Height = 18
         Frame.Color = clBlack
@@ -2867,7 +2732,7 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           47.625000000000000000
           423.333333333333300000
-          984.250000000000000000
+          1098.020833333333000000
           206.375000000000000000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -2887,7 +2752,7 @@ object frmReportSummary: TfrmReportSummary
       end
       object lblV8: TQRLabel
         Left = 268
-        Top = 388
+        Top = 431
         Width = 78
         Height = 18
         Frame.Color = clBlack
@@ -2897,8 +2762,8 @@ object frmReportSummary: TfrmReportSummary
         Frame.DrawRight = False
         Size.Values = (
           47.625000000000000000
-          709.083333333333400000
-          1026.583333333333000000
+          709.083333333333300000
+          1140.354166666667000000
           206.375000000000000000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -2918,7 +2783,7 @@ object frmReportSummary: TfrmReportSummary
       end
       object lblV1: TQRLabel
         Left = 8
-        Top = 378
+        Top = 421
         Width = 76
         Height = 18
         Frame.Color = clBlack
@@ -2929,7 +2794,7 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           47.625000000000000000
           21.166666666666670000
-          1000.125000000000000000
+          1113.895833333333000000
           201.083333333333300000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -2949,7 +2814,7 @@ object frmReportSummary: TfrmReportSummary
       end
       object lblTerm1: TQRLabel
         Left = 100
-        Top = 378
+        Top = 421
         Width = 40
         Height = 18
         Frame.Color = clBlack
@@ -2959,8 +2824,8 @@ object frmReportSummary: TfrmReportSummary
         Frame.DrawRight = False
         Size.Values = (
           47.625000000000000000
-          264.583333333333400000
-          1000.125000000000000000
+          264.583333333333300000
+          1113.895833333333000000
           105.833333333333300000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -2980,7 +2845,7 @@ object frmReportSummary: TfrmReportSummary
       end
       object lblV3: TQRLabel
         Left = 146
-        Top = 378
+        Top = 421
         Width = 5
         Height = 18
         Frame.Color = clBlack
@@ -2991,7 +2856,7 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           47.625000000000000000
           386.291666666666700000
-          1000.125000000000000000
+          1113.895833333333000000
           13.229166666666670000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -3011,7 +2876,7 @@ object frmReportSummary: TfrmReportSummary
       end
       object lblEntryLine1: TQRShape
         Left = 99
-        Top = 582
+        Top = 616
         Width = 228
         Height = 15
         Frame.Color = clBlack
@@ -3022,7 +2887,7 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           39.687500000000000000
           261.937500000000000000
-          1539.875000000000000000
+          1629.833333333333000000
           603.250000000000000000)
         Pen.Style = psDot
         Shape = qrsHorLine
@@ -3030,7 +2895,7 @@ object frmReportSummary: TfrmReportSummary
       end
       object lblPositionLine1: TQRShape
         Left = 65
-        Top = 612
+        Top = 646
         Width = 262
         Height = 15
         Frame.Color = clBlack
@@ -3041,15 +2906,15 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           39.687500000000000000
           171.979166666666700000
-          1619.250000000000000000
-          693.208333333333400000)
+          1709.208333333333000000
+          693.208333333333300000)
         Pen.Style = psDot
         Shape = qrsHorLine
         VertAdjust = 0
       end
       object lblSignLine1: TQRShape
         Left = 73
-        Top = 640
+        Top = 674
         Width = 254
         Height = 15
         Frame.Color = clBlack
@@ -3060,15 +2925,15 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           39.687500000000000000
           193.145833333333300000
-          1693.333333333333000000
-          672.041666666666800000)
+          1783.291666666667000000
+          672.041666666666700000)
         Pen.Style = psDot
         Shape = qrsHorLine
         VertAdjust = 0
       end
       object lblEntry2: TQRLabel
         Left = 357
-        Top = 574
+        Top = 608
         Width = 120
         Height = 18
         Frame.Color = clBlack
@@ -3079,7 +2944,7 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           47.625000000000000000
           944.562500000000000000
-          1518.708333333333000000
+          1608.666666666667000000
           317.500000000000000000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -3099,7 +2964,7 @@ object frmReportSummary: TfrmReportSummary
       end
       object lblPosition2: TQRLabel
         Left = 356
-        Top = 605
+        Top = 639
         Width = 52
         Height = 18
         Frame.Color = clBlack
@@ -3109,8 +2974,8 @@ object frmReportSummary: TfrmReportSummary
         Frame.DrawRight = False
         Size.Values = (
           47.625000000000000000
-          941.916666666666800000
-          1600.729166666667000000
+          941.916666666666700000
+          1690.687500000000000000
           137.583333333333300000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -3130,7 +2995,7 @@ object frmReportSummary: TfrmReportSummary
       end
       object lblSign2: TQRLabel
         Left = 356
-        Top = 632
+        Top = 666
         Width = 117
         Height = 18
         Frame.Color = clBlack
@@ -3140,8 +3005,8 @@ object frmReportSummary: TfrmReportSummary
         Frame.DrawRight = False
         Size.Values = (
           47.625000000000000000
-          941.916666666666800000
-          1672.166666666667000000
+          941.916666666666700000
+          1762.125000000000000000
           309.562500000000000000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -3161,7 +3026,7 @@ object frmReportSummary: TfrmReportSummary
       end
       object lblEntryLine2: TQRShape
         Left = 480
-        Top = 582
+        Top = 616
         Width = 195
         Height = 15
         Frame.Color = clBlack
@@ -3172,7 +3037,7 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           39.687500000000000000
           1270.000000000000000000
-          1539.875000000000000000
+          1629.833333333333000000
           515.937500000000000000)
         Pen.Style = psDot
         Shape = qrsHorLine
@@ -3180,7 +3045,7 @@ object frmReportSummary: TfrmReportSummary
       end
       object lblPositionLine2: TQRShape
         Left = 413
-        Top = 613
+        Top = 647
         Width = 262
         Height = 15
         Frame.Color = clBlack
@@ -3191,15 +3056,15 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           39.687500000000000000
           1092.729166666667000000
-          1621.895833333333000000
-          693.208333333333400000)
+          1711.854166666667000000
+          693.208333333333300000)
         Pen.Style = psDot
         Shape = qrsHorLine
         VertAdjust = 0
       end
       object lblSignLine2: TQRShape
         Left = 476
-        Top = 641
+        Top = 675
         Width = 199
         Height = 15
         Frame.Color = clBlack
@@ -3210,57 +3075,26 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           39.687500000000000000
           1259.416666666667000000
-          1695.979166666667000000
-          526.520833333333400000)
+          1785.937500000000000000
+          526.520833333333300000)
         Pen.Style = psDot
         Shape = qrsHorLine
         VertAdjust = 0
       end
-      object lblDist1: TQRLabel
-        Left = 148
-        Top = 193
-        Width = 48
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          391.583333333333400000
-          510.645833333333300000
-          127.000000000000000000)
-        Alignment = taRightJustify
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = '50'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = []
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
       object lblDist2: TQRLabel
-        Left = 148
-        Top = 211
+        Left = 205
+        Top = 168
         Width = 48
-        Height = 18
+        Height = 17
         Frame.Color = clBlack
         Frame.DrawTop = False
         Frame.DrawBottom = False
         Frame.DrawLeft = False
         Frame.DrawRight = False
         Size.Values = (
-          47.625000000000000000
-          391.583333333333400000
-          558.270833333333400000
+          44.979166666666670000
+          542.395833333333300000
+          444.500000000000000000
           127.000000000000000000)
         Alignment = taRightJustify
         AlignToBand = False
@@ -3279,19 +3113,19 @@ object frmReportSummary: TfrmReportSummary
         FontSize = 10
       end
       object lblDist3: TQRLabel
-        Left = 148
-        Top = 231
+        Left = 205
+        Top = 188
         Width = 48
-        Height = 18
+        Height = 17
         Frame.Color = clBlack
         Frame.DrawTop = False
         Frame.DrawBottom = False
         Frame.DrawLeft = False
         Frame.DrawRight = False
         Size.Values = (
-          47.625000000000000000
-          391.583333333333400000
-          611.187500000000000000
+          44.979166666666670000
+          542.395833333333300000
+          497.416666666666700000
           127.000000000000000000)
         Alignment = taRightJustify
         AlignToBand = False
@@ -3310,19 +3144,19 @@ object frmReportSummary: TfrmReportSummary
         FontSize = 10
       end
       object lblDist4: TQRLabel
-        Left = 148
-        Top = 249
+        Left = 205
+        Top = 206
         Width = 48
-        Height = 18
+        Height = 17
         Frame.Color = clBlack
         Frame.DrawTop = False
         Frame.DrawBottom = False
         Frame.DrawLeft = False
         Frame.DrawRight = False
         Size.Values = (
-          47.625000000000000000
-          391.583333333333400000
-          658.812500000000000000
+          44.979166666666670000
+          542.395833333333300000
+          545.041666666666700000
           127.000000000000000000)
         Alignment = taRightJustify
         AlignToBand = False
@@ -3341,19 +3175,19 @@ object frmReportSummary: TfrmReportSummary
         FontSize = 10
       end
       object lblDist5: TQRLabel
-        Left = 148
-        Top = 267
+        Left = 205
+        Top = 224
         Width = 48
-        Height = 18
+        Height = 17
         Frame.Color = clBlack
         Frame.DrawTop = False
         Frame.DrawBottom = False
         Frame.DrawLeft = False
         Frame.DrawRight = False
         Size.Values = (
-          47.625000000000000000
-          391.583333333333400000
-          706.437500000000000000
+          44.979166666666670000
+          542.395833333333300000
+          592.666666666666700000
           127.000000000000000000)
         Alignment = taRightJustify
         AlignToBand = False
@@ -3372,19 +3206,19 @@ object frmReportSummary: TfrmReportSummary
         FontSize = 10
       end
       object lblDist6: TQRLabel
-        Left = 148
-        Top = 285
+        Left = 205
+        Top = 244
         Width = 48
-        Height = 18
+        Height = 17
         Frame.Color = clBlack
         Frame.DrawTop = False
         Frame.DrawBottom = False
         Frame.DrawLeft = False
         Frame.DrawRight = False
         Size.Values = (
-          47.625000000000000000
-          391.583333333333400000
-          754.062500000000000000
+          44.979166666666670000
+          542.395833333333300000
+          645.583333333333300000
           127.000000000000000000)
         Alignment = taRightJustify
         AlignToBand = False
@@ -3402,424 +3236,21 @@ object frmReportSummary: TfrmReportSummary
         WordWrap = True
         FontSize = 10
       end
-      object lblUncertainty1: TQRLabel
-        Left = 244
-        Top = 193
-        Width = 48
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          645.583333333333400000
-          510.645833333333300000
-          127.000000000000000000)
-        Alignment = taRightJustify
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = '1.22'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = []
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object lblUncertainty2: TQRLabel
-        Left = 244
-        Top = 211
-        Width = 48
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          645.583333333333400000
-          558.270833333333400000
-          127.000000000000000000)
-        Alignment = taRightJustify
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = '50'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = []
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object lblUncertainty3: TQRLabel
-        Left = 244
-        Top = 231
-        Width = 48
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          645.583333333333400000
-          611.187500000000000000
-          127.000000000000000000)
-        Alignment = taRightJustify
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = '50'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = []
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object lblUncertainty4: TQRLabel
-        Left = 244
-        Top = 249
-        Width = 48
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          645.583333333333400000
-          658.812500000000000000
-          127.000000000000000000)
-        Alignment = taRightJustify
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = '50'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = []
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object lblUncertainty5: TQRLabel
-        Left = 244
-        Top = 267
-        Width = 48
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          645.583333333333400000
-          706.437500000000000000
-          127.000000000000000000)
-        Alignment = taRightJustify
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = '50'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = []
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object lblUncertainty6: TQRLabel
-        Left = 244
-        Top = 285
-        Width = 48
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          645.583333333333400000
-          754.062500000000000000
-          127.000000000000000000)
-        Alignment = taRightJustify
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = '50'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = []
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object lblStandard1: TQRLabel
-        Left = 330
-        Top = 193
-        Width = 48
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          873.124999999999900000
-          510.645833333333300000
-          127.000000000000000000)
-        Alignment = taRightJustify
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = '5.00'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = []
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object lblStandard2: TQRLabel
-        Left = 330
-        Top = 211
-        Width = 48
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          873.124999999999900000
-          558.270833333333400000
-          127.000000000000000000)
-        Alignment = taRightJustify
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = '50'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = []
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object lblStandard3: TQRLabel
-        Left = 330
-        Top = 231
-        Width = 48
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          873.124999999999900000
-          611.187500000000000000
-          127.000000000000000000)
-        Alignment = taRightJustify
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = '50'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = []
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object lblStandard4: TQRLabel
-        Left = 330
-        Top = 249
-        Width = 48
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          873.124999999999900000
-          658.812500000000000000
-          127.000000000000000000)
-        Alignment = taRightJustify
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = '50'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = []
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object lblStandard5: TQRLabel
-        Left = 330
-        Top = 267
-        Width = 48
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          873.124999999999900000
-          706.437500000000000000
-          127.000000000000000000)
-        Alignment = taRightJustify
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = '50'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = []
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object lblStandard6: TQRLabel
-        Left = 330
-        Top = 285
-        Width = 48
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          873.124999999999900000
-          754.062500000000000000
-          127.000000000000000000)
-        Alignment = taRightJustify
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = '50'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = []
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object lblTest1: TQRLabel
-        Left = 442
-        Top = 194
-        Width = 48
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          1169.458333333333000000
-          513.291666666666800000
-          127.000000000000000000)
-        Alignment = taLeftJustify
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = 'PASS'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = []
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
       object lblTest2: TQRLabel
-        Left = 442
-        Top = 210
-        Width = 48
-        Height = 18
+        Left = 320
+        Top = 170
+        Width = 67
+        Height = 17
         Frame.Color = clBlack
         Frame.DrawTop = False
         Frame.DrawBottom = False
         Frame.DrawLeft = False
         Frame.DrawRight = False
         Size.Values = (
-          47.625000000000000000
-          1169.458333333333000000
-          555.625000000000000000
-          127.000000000000000000)
+          44.979166666666670000
+          846.666666666666700000
+          449.791666666666700000
+          177.270833333333300000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = False
@@ -3837,20 +3268,20 @@ object frmReportSummary: TfrmReportSummary
         FontSize = 10
       end
       object lblTest3: TQRLabel
-        Left = 442
-        Top = 230
-        Width = 48
-        Height = 18
+        Left = 320
+        Top = 188
+        Width = 67
+        Height = 17
         Frame.Color = clBlack
         Frame.DrawTop = False
         Frame.DrawBottom = False
         Frame.DrawLeft = False
         Frame.DrawRight = False
         Size.Values = (
-          47.625000000000000000
-          1169.458333333333000000
-          608.541666666666800000
-          127.000000000000000000)
+          44.979166666666670000
+          846.666666666666700000
+          497.416666666666700000
+          177.270833333333300000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = False
@@ -3868,20 +3299,20 @@ object frmReportSummary: TfrmReportSummary
         FontSize = 10
       end
       object lblTest4: TQRLabel
-        Left = 442
-        Top = 248
-        Width = 48
-        Height = 18
+        Left = 320
+        Top = 206
+        Width = 67
+        Height = 17
         Frame.Color = clBlack
         Frame.DrawTop = False
         Frame.DrawBottom = False
         Frame.DrawLeft = False
         Frame.DrawRight = False
         Size.Values = (
-          47.625000000000000000
-          1169.458333333333000000
-          656.166666666666800000
-          127.000000000000000000)
+          44.979166666666670000
+          846.666666666666700000
+          545.041666666666700000
+          177.270833333333300000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = False
@@ -3899,20 +3330,20 @@ object frmReportSummary: TfrmReportSummary
         FontSize = 10
       end
       object lblTest5: TQRLabel
-        Left = 442
-        Top = 266
-        Width = 48
-        Height = 18
+        Left = 320
+        Top = 224
+        Width = 67
+        Height = 17
         Frame.Color = clBlack
         Frame.DrawTop = False
         Frame.DrawBottom = False
         Frame.DrawLeft = False
         Frame.DrawRight = False
         Size.Values = (
-          47.625000000000000000
-          1169.458333333333000000
-          703.791666666666800000
-          127.000000000000000000)
+          44.979166666666670000
+          846.666666666666700000
+          592.666666666666700000
+          177.270833333333300000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = False
@@ -3930,20 +3361,20 @@ object frmReportSummary: TfrmReportSummary
         FontSize = 10
       end
       object lblTest6: TQRLabel
-        Left = 442
-        Top = 286
-        Width = 48
-        Height = 18
+        Left = 320
+        Top = 244
+        Width = 67
+        Height = 17
         Frame.Color = clBlack
         Frame.DrawTop = False
         Frame.DrawBottom = False
         Frame.DrawLeft = False
         Frame.DrawRight = False
         Size.Values = (
-          47.625000000000000000
-          1169.458333333333000000
-          756.708333333333400000
-          127.000000000000000000)
+          44.979166666666670000
+          846.666666666666700000
+          645.583333333333300000
+          177.270833333333300000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = False
@@ -3962,7 +3393,7 @@ object frmReportSummary: TfrmReportSummary
       end
       object lblDate1: TQRLabel
         Left = 9
-        Top = 662
+        Top = 696
         Width = 32
         Height = 18
         Frame.Color = clBlack
@@ -3973,8 +3404,8 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           47.625000000000000000
           23.812500000000000000
-          1751.541666666667000000
-          84.666666666666680000)
+          1841.500000000000000000
+          84.666666666666670000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
@@ -3993,7 +3424,7 @@ object frmReportSummary: TfrmReportSummary
       end
       object lblDateLine1: TQRShape
         Left = 45
-        Top = 672
+        Top = 706
         Width = 280
         Height = 15
         Frame.Color = clBlack
@@ -4004,15 +3435,15 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           39.687500000000000000
           119.062500000000000000
-          1778.000000000000000000
-          740.833333333333400000)
+          1867.958333333333000000
+          740.833333333333300000)
         Pen.Style = psDot
         Shape = qrsHorLine
         VertAdjust = 0
       end
       object lblDate2: TQRLabel
         Left = 355
-        Top = 662
+        Top = 696
         Width = 32
         Height = 18
         Frame.Color = clBlack
@@ -4022,9 +3453,9 @@ object frmReportSummary: TfrmReportSummary
         Frame.DrawRight = False
         Size.Values = (
           47.625000000000000000
-          939.270833333333400000
-          1751.541666666667000000
-          84.666666666666680000)
+          939.270833333333300000
+          1841.500000000000000000
+          84.666666666666670000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
@@ -4043,7 +3474,7 @@ object frmReportSummary: TfrmReportSummary
       end
       object lblDateLine2: TQRShape
         Left = 392
-        Top = 672
+        Top = 706
         Width = 281
         Height = 15
         Frame.Color = clBlack
@@ -4054,18 +3485,383 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           39.687500000000000000
           1037.166666666667000000
-          1778.000000000000000000
-          743.479166666666800000)
+          1867.958333333333000000
+          743.479166666666700000)
         Pen.Style = psDot
         Shape = qrsHorLine
         VertAdjust = 0
+      end
+      object QRShape5: TQRShape
+        Left = 205
+        Top = 264
+        Width = 294
+        Height = 7
+        Frame.Color = clBlack
+        Frame.DrawTop = False
+        Frame.DrawBottom = False
+        Frame.DrawLeft = False
+        Frame.DrawRight = False
+        Size.Values = (
+          18.520833333333330000
+          542.395833333333300000
+          698.500000000000000000
+          777.875000000000000000)
+        Shape = qrsHorLine
+        VertAdjust = 0
+      end
+      object TestA_Hypoth: TQRLabel
+        Left = 90
+        Top = 65
+        Width = 599
+        Height = 34
+        Frame.Color = clBlack
+        Frame.DrawTop = False
+        Frame.DrawBottom = False
+        Frame.DrawLeft = False
+        Frame.DrawRight = False
+        Size.Values = (
+          89.958333333333330000
+          238.125000000000000000
+          171.979166666666700000
+          1584.854166666667000000)
+        Alignment = taLeftJustify
+        AlignToBand = False
+        AutoSize = False
+        AutoStretch = False
+        Caption = 
+          'The calculated experimental standard deviation is smaller than t' +
+          'he stated manufacturers specifications:'
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = []
+        ParentFont = False
+        Transparent = False
+        WordWrap = True
+        FontSize = 10
+      end
+      object lblTestC: TQRLabel
+        Left = 37
+        Top = 330
+        Width = 44
+        Height = 18
+        Frame.Color = clBlack
+        Frame.DrawTop = False
+        Frame.DrawBottom = False
+        Frame.DrawLeft = False
+        Frame.DrawRight = False
+        Size.Values = (
+          47.625000000000000000
+          97.895833333333330000
+          873.125000000000000000
+          116.416666666666700000)
+        Alignment = taLeftJustify
+        AlignToBand = False
+        AutoSize = True
+        AutoStretch = False
+        Caption = 'Test C:'
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = [fsBold]
+        ParentFont = False
+        Transparent = False
+        WordWrap = True
+        FontSize = 10
+      end
+      object TestC_Hypoth: TQRLabel
+        Left = 90
+        Top = 330
+        Width = 599
+        Height = 18
+        Frame.Color = clBlack
+        Frame.DrawTop = False
+        Frame.DrawBottom = False
+        Frame.DrawLeft = False
+        Frame.DrawRight = False
+        Size.Values = (
+          47.625000000000000000
+          238.125000000000000000
+          873.125000000000000000
+          1584.854166666667000000)
+        Alignment = taLeftJustify
+        AlignToBand = False
+        AutoSize = False
+        AutoStretch = False
+        Caption = 
+          'Test C Hypothesis Test C Hypothesis Test C Hypothesis Test C Hyp' +
+          'othesis '
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = []
+        ParentFont = False
+        Transparent = False
+        WordWrap = True
+        FontSize = 10
+      end
+      object QRLabel13: TQRLabel
+        Left = 438
+        Top = 170
+        Width = 48
+        Height = 17
+        Frame.Color = clBlack
+        Frame.DrawTop = False
+        Frame.DrawBottom = False
+        Frame.DrawLeft = False
+        Frame.DrawRight = False
+        Size.Values = (
+          44.979166666666670000
+          1158.875000000000000000
+          449.791666666666700000
+          127.000000000000000000)
+        Alignment = taLeftJustify
+        AlignToBand = False
+        AutoSize = False
+        AutoStretch = False
+        Caption = '95%'
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = []
+        ParentFont = False
+        Transparent = False
+        WordWrap = True
+        FontSize = 10
+      end
+      object QRLabel20: TQRLabel
+        Left = 438
+        Top = 152
+        Width = 48
+        Height = 17
+        Frame.Color = clBlack
+        Frame.DrawTop = False
+        Frame.DrawBottom = False
+        Frame.DrawLeft = False
+        Frame.DrawRight = False
+        Size.Values = (
+          44.979166666666670000
+          1158.875000000000000000
+          402.166666666666700000
+          127.000000000000000000)
+        Alignment = taLeftJustify
+        AlignToBand = False
+        AutoSize = False
+        AutoStretch = False
+        Caption = '95%'
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = []
+        ParentFont = False
+        Transparent = False
+        WordWrap = True
+        FontSize = 10
+      end
+      object QRLabel24: TQRLabel
+        Left = 438
+        Top = 188
+        Width = 48
+        Height = 17
+        Frame.Color = clBlack
+        Frame.DrawTop = False
+        Frame.DrawBottom = False
+        Frame.DrawLeft = False
+        Frame.DrawRight = False
+        Size.Values = (
+          44.979166666666670000
+          1158.875000000000000000
+          497.416666666666700000
+          127.000000000000000000)
+        Alignment = taLeftJustify
+        AlignToBand = False
+        AutoSize = False
+        AutoStretch = False
+        Caption = '95%'
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = []
+        ParentFont = False
+        Transparent = False
+        WordWrap = True
+        FontSize = 10
+      end
+      object QRLabel28: TQRLabel
+        Left = 438
+        Top = 206
+        Width = 48
+        Height = 17
+        Frame.Color = clBlack
+        Frame.DrawTop = False
+        Frame.DrawBottom = False
+        Frame.DrawLeft = False
+        Frame.DrawRight = False
+        Size.Values = (
+          44.979166666666670000
+          1158.875000000000000000
+          545.041666666666700000
+          127.000000000000000000)
+        Alignment = taLeftJustify
+        AlignToBand = False
+        AutoSize = False
+        AutoStretch = False
+        Caption = '95%'
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = []
+        ParentFont = False
+        Transparent = False
+        WordWrap = True
+        FontSize = 10
+      end
+      object QRLabel29: TQRLabel
+        Left = 438
+        Top = 224
+        Width = 48
+        Height = 17
+        Frame.Color = clBlack
+        Frame.DrawTop = False
+        Frame.DrawBottom = False
+        Frame.DrawLeft = False
+        Frame.DrawRight = False
+        Size.Values = (
+          44.979166666666670000
+          1158.875000000000000000
+          592.666666666666700000
+          127.000000000000000000)
+        Alignment = taLeftJustify
+        AlignToBand = False
+        AutoSize = False
+        AutoStretch = False
+        Caption = '95%'
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = []
+        ParentFont = False
+        Transparent = False
+        WordWrap = True
+        FontSize = 10
+      end
+      object QRLabel30: TQRLabel
+        Left = 438
+        Top = 244
+        Width = 48
+        Height = 17
+        Frame.Color = clBlack
+        Frame.DrawTop = False
+        Frame.DrawBottom = False
+        Frame.DrawLeft = False
+        Frame.DrawRight = False
+        Size.Values = (
+          44.979166666666670000
+          1158.875000000000000000
+          645.583333333333300000
+          127.000000000000000000)
+        Alignment = taLeftJustify
+        AlignToBand = False
+        AutoSize = False
+        AutoStretch = False
+        Caption = '95%'
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = []
+        ParentFont = False
+        Transparent = False
+        WordWrap = True
+        FontSize = 10
+      end
+      object QRLabel31: TQRLabel
+        Left = 37
+        Top = 287
+        Width = 44
+        Height = 18
+        Frame.Color = clBlack
+        Frame.DrawTop = False
+        Frame.DrawBottom = False
+        Frame.DrawLeft = False
+        Frame.DrawRight = False
+        Size.Values = (
+          47.625000000000000000
+          97.895833333333330000
+          759.354166666666700000
+          116.416666666666700000)
+        Alignment = taLeftJustify
+        AlignToBand = False
+        AutoSize = True
+        AutoStretch = False
+        Caption = 'Test B:'
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = [fsBold]
+        ParentFont = False
+        Transparent = False
+        WordWrap = True
+        FontSize = 10
+      end
+      object QRLabel32: TQRLabel
+        Left = 90
+        Top = 287
+        Width = 599
+        Height = 34
+        Frame.Color = clBlack
+        Frame.DrawTop = False
+        Frame.DrawBottom = False
+        Frame.DrawLeft = False
+        Frame.DrawRight = False
+        Size.Values = (
+          89.958333333333330000
+          238.125000000000000000
+          759.354166666666700000
+          1584.854166666667000000)
+        Alignment = taLeftJustify
+        AlignToBand = False
+        AutoSize = False
+        AutoStretch = False
+        Caption = 
+          'The exprimental standard deviation of this calibration has not b' +
+          'een compared to any previous calibration results.'
+        Color = clWhite
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = []
+        ParentFont = False
+        Transparent = False
+        WordWrap = True
+        FontSize = 10
       end
     end
     object qrbandSummary: TQRBand
       Left = 38
       Top = 173
       Width = 718
-      Height = 600
+      Height = 796
       Frame.Color = clBlack
       Frame.DrawTop = False
       Frame.DrawBottom = False
@@ -4078,7 +3874,7 @@ object frmReportSummary: TfrmReportSummary
       ForceNewColumn = False
       ForceNewPage = False
       Size.Values = (
-        1587.500000000000000000
+        2106.083333333333000000
         1899.708333333333000000)
       PreCaluculateBandHeight = False
       KeepOnOnePage = False
@@ -4096,7 +3892,7 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           47.625000000000000000
           15.875000000000000000
-          359.833333333333400000
+          359.833333333333300000
           388.937500000000000000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -4127,7 +3923,7 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           47.625000000000000000
           15.875000000000000000
-          407.458333333333400000
+          407.458333333333300000
           341.312500000000000000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -4159,7 +3955,7 @@ object frmReportSummary: TfrmReportSummary
           47.625000000000000000
           15.875000000000000000
           211.666666666666700000
-          312.208333333333400000)
+          312.208333333333300000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
@@ -4190,7 +3986,7 @@ object frmReportSummary: TfrmReportSummary
           47.625000000000000000
           15.875000000000000000
           306.916666666666700000
-          375.708333333333400000)
+          375.708333333333300000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
@@ -4445,7 +4241,7 @@ object frmReportSummary: TfrmReportSummary
           47.625000000000000000
           1492.250000000000000000
           63.500000000000000000
-          304.270833333333400000)
+          304.270833333333300000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
@@ -4500,8 +4296,8 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           47.625000000000000000
           1137.708333333333000000
-          359.833333333333400000
-          256.645833333333400000)
+          359.833333333333300000
+          256.645833333333300000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
@@ -4531,8 +4327,8 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           44.979166666666670000
           1137.708333333333000000
-          407.458333333333400000
-          320.145833333333400000)
+          407.458333333333300000
+          320.145833333333300000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
@@ -4563,7 +4359,7 @@ object frmReportSummary: TfrmReportSummary
           47.625000000000000000
           1137.708333333333000000
           259.291666666666700000
-          264.583333333333400000)
+          264.583333333333300000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
@@ -4655,7 +4451,7 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           47.625000000000000000
           15.875000000000000000
-          566.208333333333400000
+          566.208333333333300000
           100.541666666666700000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -4716,8 +4512,8 @@ object frmReportSummary: TfrmReportSummary
         Frame.DrawRight = False
         Size.Values = (
           47.625000000000000000
-          825.500000000000100000
-          566.208333333333400000
+          825.500000000000000000
+          566.208333333333300000
           158.750000000000000000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -4747,9 +4543,9 @@ object frmReportSummary: TfrmReportSummary
         Frame.DrawRight = False
         Size.Values = (
           44.979166666666670000
-          825.500000000000100000
+          825.500000000000000000
           619.125000000000000000
-          359.833333333333400000)
+          359.833333333333300000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
@@ -4913,18 +4709,18 @@ object frmReportSummary: TfrmReportSummary
       object lblRange: TQRLabel
         Left = 8
         Top = 648
-        Width = 664
-        Height = 18
+        Width = 697
+        Height = 113
         Frame.Color = clBlack
         Frame.DrawTop = False
         Frame.DrawBottom = False
         Frame.DrawLeft = False
         Frame.DrawRight = False
         Size.Values = (
-          47.625000000000000000
+          298.979166666666700000
           21.166666666666670000
           1714.500000000000000000
-          1756.833333333333000000)
+          1844.145833333333000000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = False
@@ -4973,7 +4769,7 @@ object frmReportSummary: TfrmReportSummary
         Frame.DrawRight = False
         Size.Values = (
           44.979166666666670000
-          402.166666666666600000
+          402.166666666666700000
           10.583333333333330000
           246.062500000000000000)
         Alignment = taLeftJustify
@@ -5023,7 +4819,7 @@ object frmReportSummary: TfrmReportSummary
         Frame.DrawRight = False
         Size.Values = (
           47.625000000000000000
-          402.166666666666600000
+          402.166666666666700000
           63.500000000000000000
           238.125000000000000000)
         Alignment = taLeftJustify
@@ -5050,7 +4846,7 @@ object frmReportSummary: TfrmReportSummary
           47.625000000000000000
           423.333333333333300000
           211.666666666666700000
-          58.208333333333340000)
+          58.208333333333330000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
@@ -5074,8 +4870,8 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           47.625000000000000000
           423.333333333333300000
-          407.458333333333400000
-          58.208333333333340000)
+          407.458333333333300000
+          58.208333333333330000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
@@ -5099,8 +4895,8 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           47.625000000000000000
           423.333333333333300000
-          359.833333333333400000
-          58.208333333333340000)
+          359.833333333333300000
+          58.208333333333330000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
@@ -5125,7 +4921,7 @@ object frmReportSummary: TfrmReportSummary
           47.625000000000000000
           423.333333333333300000
           306.916666666666700000
-          58.208333333333340000)
+          58.208333333333330000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
@@ -5150,7 +4946,7 @@ object frmReportSummary: TfrmReportSummary
           47.625000000000000000
           1471.083333333333000000
           254.000000000000000000
-          58.208333333333340000)
+          58.208333333333330000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
@@ -5175,7 +4971,7 @@ object frmReportSummary: TfrmReportSummary
           47.625000000000000000
           1471.083333333333000000
           301.625000000000000000
-          58.208333333333340000)
+          58.208333333333330000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
@@ -5199,8 +4995,8 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           44.979166666666670000
           1471.083333333333000000
-          351.895833333333400000
-          58.208333333333340000)
+          351.895833333333300000
+          58.208333333333330000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
@@ -5224,8 +5020,8 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           47.625000000000000000
           1471.083333333333000000
-          402.166666666666600000
-          58.208333333333340000)
+          402.166666666666700000
+          58.208333333333330000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
@@ -5249,8 +5045,8 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           47.625000000000000000
           190.500000000000000000
-          566.208333333333400000
-          58.208333333333340000)
+          566.208333333333300000
+          58.208333333333330000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
@@ -5275,7 +5071,7 @@ object frmReportSummary: TfrmReportSummary
           47.625000000000000000
           190.500000000000000000
           619.125000000000000000
-          58.208333333333340000)
+          58.208333333333330000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
@@ -5299,7 +5095,7 @@ object frmReportSummary: TfrmReportSummary
         Size.Values = (
           47.625000000000000000
           1000.125000000000000000
-          566.208333333333400000
+          566.208333333333300000
           690.562500000000000000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -5325,7 +5121,7 @@ object frmReportSummary: TfrmReportSummary
           47.625000000000000000
           1201.208333333333000000
           619.125000000000000000
-          58.208333333333340000)
+          58.208333333333330000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
@@ -5517,10 +5313,10 @@ object frmReportSummary: TfrmReportSummary
         Frame.DrawLeft = False
         Frame.DrawRight = False
         Size.Values = (
-          52.916666666666660000
+          52.916666666666670000
           423.333333333333300000
           259.291666666666700000
-          58.208333333333340000)
+          58.208333333333330000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True
@@ -5574,9 +5370,9 @@ object frmReportSummary: TfrmReportSummary
         Frame.DrawRight = False
         Size.Values = (
           47.625000000000000000
-          328.083333333333400000
+          328.083333333333300000
           666.750000000000000000
-          58.208333333333340000)
+          58.208333333333330000)
         Alignment = taLeftJustify
         AlignToBand = False
         AutoSize = True

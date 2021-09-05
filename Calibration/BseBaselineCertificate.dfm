@@ -3366,7 +3366,7 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         Frame.DrawRight = False
         Size.Values = (
           44.979166666666670000
-          34.395833333333340000
+          34.395833333333330000
           632.354166666666700000
           84.666666666666670000)
         Alignment = taLeftJustify
@@ -3416,7 +3416,7 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         Frame.DrawRight = False
         Size.Values = (
           44.979166666666670000
-          923.395833333333400000
+          923.395833333333300000
           632.354166666666700000
           84.666666666666670000)
         Alignment = taLeftJustify
@@ -3495,7 +3495,7 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         AlignToBand = False
         AutoSize = False
         AutoStretch = False
-        Caption = 'Least squares estimated certified baseline distances'
+        Caption = 'Certified baseline distances'
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -3537,7 +3537,7 @@ object frmBaselineCertificate: TfrmBaselineCertificate
       end
       object lblHeader1B: TQRLabel
         Left = 3
-        Top = 3
+        Top = 5
         Width = 693
         Height = 17
         Frame.Color = clBlack
@@ -3548,7 +3548,7 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         Size.Values = (
           44.979166666666670000
           7.937500000000000000
-          7.937500000000000000
+          13.229166666666670000
           1833.562500000000000000)
         Alignment = taLeftJustify
         AlignToBand = False
@@ -3585,7 +3585,7 @@ object frmBaselineCertificate: TfrmBaselineCertificate
       KeepOnOnePage = False
       BandType = rbDetail
       object QRDBText11: TQRDBText
-        Left = 117
+        Left = 97
         Top = 1
         Width = 51
         Height = 18
@@ -3596,8 +3596,8 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         Frame.DrawRight = False
         Size.Values = (
           47.625000000000000000
-          309.562500000000000000
-          2.645833333333330000
+          256.645833333333300000
+          2.645833333333333000
           134.937500000000000000)
         Alignment = taRightJustify
         AlignToBand = False
@@ -3617,7 +3617,7 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         FontSize = 10
       end
       object QRDBText1: TQRDBText
-        Left = 188
+        Left = 200
         Top = 1
         Width = 51
         Height = 18
@@ -3628,8 +3628,8 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         Frame.DrawRight = False
         Size.Values = (
           47.625000000000000000
-          497.416666666667000000
-          2.645833333333330000
+          529.166666666666700000
+          2.645833333333333000
           134.937500000000000000)
         Alignment = taRightJustify
         AlignToBand = False
@@ -3648,72 +3648,8 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         WordWrap = True
         FontSize = 10
       end
-      object QRDBText2: TQRDBText
-        Left = 260
-        Top = 1
-        Width = 82
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          687.916666666666700000
-          2.645833333333333000
-          216.958333333333300000)
-        Alignment = taRightJustify
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Color = clWhite
-        DataSet = dmBase.rxBaselineReport
-        DataField = 'InitialDistance'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Courier New'
-        Font.Style = []
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object QRDBText3: TQRDBText
-        Left = 345
-        Top = 3
-        Width = 82
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          912.812500000000000000
-          7.937500000000000000
-          216.958333333333300000)
-        Alignment = taRightJustify
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Color = clWhite
-        DataSet = dmBase.rxBaselineReport
-        DataField = 'Correction'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Courier New'
-        Font.Style = []
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
       object QRDBText4: TQRDBText
-        Left = 443
+        Left = 330
         Top = 1
         Width = 82
         Height = 18
@@ -3724,7 +3660,7 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         Frame.DrawRight = False
         Size.Values = (
           47.625000000000000000
-          1172.104166666667000000
+          873.125000000000000000
           2.645833333333333000
           216.958333333333300000)
         Alignment = taRightJustify
@@ -3745,7 +3681,7 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         FontSize = 10
       end
       object dbTxtUncertainty: TQRDBText
-        Left = 544
+        Left = 466
         Top = 1
         Width = 82
         Height = 18
@@ -3756,7 +3692,7 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         Frame.DrawRight = False
         Size.Values = (
           47.625000000000000000
-          1439.333333333333000000
+          1232.958333333333000000
           2.645833333333333000
           216.958333333333300000)
         Alignment = taRightJustify
@@ -3800,9 +3736,9 @@ object frmBaselineCertificate: TfrmBaselineCertificate
       KeepOnOnePage = False
       BandType = rbColumnHeader
       object QRLabel27: TQRLabel
-        Left = 117
-        Top = 20
-        Width = 130
+        Left = 97
+        Top = 14
+        Width = 162
         Height = 18
         Frame.Color = clBlack
         Frame.DrawTop = False
@@ -3811,9 +3747,9 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         Frame.DrawRight = False
         Size.Values = (
           47.625000000000000000
-          309.562500000000000000
-          52.916666666666660000
-          343.958333333333400000)
+          256.645833333333300000
+          37.041666666666670000
+          428.625000000000000000)
         Alignment = taCenter
         AlignToBand = False
         AutoSize = False
@@ -3831,7 +3767,7 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         FontSize = 10
       end
       object QRLabel28: TQRLabel
-        Left = 117
+        Left = 97
         Top = 38
         Width = 60
         Height = 18
@@ -3842,7 +3778,7 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         Frame.DrawRight = False
         Size.Values = (
           47.625000000000000000
-          309.562500000000000000
+          256.645833333333300000
           100.541666666666700000
           158.750000000000000000)
         Alignment = taCenter
@@ -3862,7 +3798,7 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         FontSize = 10
       end
       object QRLabel29: TQRLabel
-        Left = 444
+        Left = 330
         Top = 38
         Width = 79
         Height = 18
@@ -3873,69 +3809,7 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         Frame.DrawRight = False
         Size.Values = (
           47.625000000000000000
-          1174.750000000000000000
-          100.541666666666700000
-          209.020833333333300000)
-        Alignment = taCenter
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = '(metres)'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = [fsBold]
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object QRLabel30: TQRLabel
-        Left = 352
-        Top = 38
-        Width = 79
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = True
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          931.333333333333500000
-          100.541666666666700000
-          209.020833333333300000)
-        Alignment = taCenter
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = '(metres)'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = [fsBold]
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object QRLabel31: TQRLabel
-        Left = 260
-        Top = 38
-        Width = 79
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = True
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          687.916666666666800000
+          873.125000000000000000
           100.541666666666700000
           209.020833333333300000)
         Alignment = taCenter
@@ -3955,7 +3829,7 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         FontSize = 10
       end
       object QRLabel32: TQRLabel
-        Left = 187
+        Left = 200
         Top = 38
         Width = 60
         Height = 18
@@ -3966,7 +3840,7 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         Frame.DrawRight = False
         Size.Values = (
           47.625000000000000000
-          494.770833333333400000
+          529.166666666666700000
           100.541666666666700000
           158.750000000000000000)
         Alignment = taCenter
@@ -3985,39 +3859,8 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         WordWrap = True
         FontSize = 10
       end
-      object QRLabel34: TQRLabel
-        Left = 260
-        Top = 20
-        Width = 79
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          687.916666666666800000
-          52.916666666666660000
-          209.020833333333300000)
-        Alignment = taCenter
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = 'Distance'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = [fsBold]
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
       object QRLabel39: TQRLabel
-        Left = 444
+        Left = 330
         Top = 20
         Width = 79
         Height = 18
@@ -4028,45 +3871,14 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         Frame.DrawRight = False
         Size.Values = (
           47.625000000000000000
-          1174.750000000000000000
-          52.916666666666660000
+          873.125000000000000000
+          52.916666666666670000
           209.020833333333300000)
         Alignment = taCenter
         AlignToBand = False
         AutoSize = False
         AutoStretch = False
         Caption = 'Distance'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = [fsBold]
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object Correction: TQRLabel
-        Left = 352
-        Top = 20
-        Width = 79
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          931.333333333333500000
-          52.916666666666660000
-          209.020833333333300000)
-        Alignment = taCenter
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = 'Correction'
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
@@ -4079,7 +3891,7 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         FontSize = 10
       end
       object QRLabel41: TQRLabel
-        Left = 546
+        Left = 466
         Top = 20
         Width = 79
         Height = 18
@@ -4090,7 +3902,7 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         Frame.DrawRight = False
         Size.Values = (
           47.625000000000000000
-          1444.625000000000000000
+          1232.958333333333000000
           52.916666666666670000
           209.020833333333300000)
         Alignment = taCenter
@@ -4110,7 +3922,7 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         FontSize = 10
       end
       object QRLabel42: TQRLabel
-        Left = 546
+        Left = 466
         Top = 38
         Width = 79
         Height = 18
@@ -4121,7 +3933,7 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         Frame.DrawRight = False
         Size.Values = (
           47.625000000000000000
-          1444.625000000000000000
+          1232.958333333333000000
           100.541666666666700000
           209.020833333333300000)
         Alignment = taCenter
@@ -4129,68 +3941,6 @@ object frmBaselineCertificate: TfrmBaselineCertificate
         AutoSize = False
         AutoStretch = False
         Caption = '(metres)'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = [fsBold]
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object QRLabel43: TQRLabel
-        Left = 260
-        Top = 2
-        Width = 79
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          687.916666666666800000
-          5.291666666666667000
-          209.020833333333300000)
-        Alignment = taCenter
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = 'Initial'
-        Color = clWhite
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = [fsBold]
-        ParentFont = False
-        Transparent = False
-        WordWrap = True
-        FontSize = 10
-      end
-      object QRLabel44: TQRLabel
-        Left = 444
-        Top = 2
-        Width = 79
-        Height = 18
-        Frame.Color = clBlack
-        Frame.DrawTop = False
-        Frame.DrawBottom = False
-        Frame.DrawLeft = False
-        Frame.DrawRight = False
-        Size.Values = (
-          47.625000000000000000
-          1174.750000000000000000
-          5.291666666666667000
-          209.020833333333300000)
-        Alignment = taCenter
-        AlignToBand = False
-        AutoSize = False
-        AutoStretch = False
-        Caption = 'Adjusted '
         Color = clWhite
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText

@@ -69,6 +69,8 @@ type
      szPrismModelName      : string;  // Prism model
      szPrismSerialNo       : string;  // Prism serial number
      dPrismConstant        : Double;  // Prism additive constant (m)
+     dEdmManuConstant      : Double;  // Manufacturers uncertainty specification (mm)
+     dEdmManuPPM           : Double;  // Manufacturers uncertainty specification (ppm)
 
      szBaseLineName        : string;  // Baseline name
      szBaseLineLocation    : string;  // Baseline location
@@ -98,6 +100,9 @@ type
      cExtrapolated         : array[0..5] of Char;   // Array of Extrapolated flags
                                                     // Y=extrapolated N=blank
      cPassFail             : Char;                  // P=Pass F=Fail
+
+     ISOTestA              : array[0..5] of String; // Array of Accept / Reject
+     ISOTestC              : string;                // Accept / Reject
 
      dC                    : Double;                // Term 1 used in atmos corr
      dD                    : Double;                // Term 2 used in atmos corr
@@ -246,10 +251,28 @@ type
  end;
 
   XCOORD_L = record
-    sXCount: Integer;                    // Number of pillars
-    dConstant: Double;                   // Constant of prescribed EDM
-    dXCor: array of double;              // X coordinate correction
-    dXCoord: array of double;            // X coordinate of pillar
+    sXCount:             Integer;                  // Number of pillars
+    dConstant:           Double;                   // Constant of prescribed EDM
+    dXCor:               array of double;          // X coordinate correction
+    dXCoord:             array of double;          // X coordinate of pillar
+    StdDevEdmSF:         array of double;          // 1. EDM scale factor 
+    StdDevEdmSFtemp:     array of double;          // 2. EDM scale factor (temp. effect)   
+    StdDevEdmSFtime:     array of double;          // 3. EDM scale factor (drift over time)
+    StdDevEdmZO:         double;                   // 4. EDM zero offset                     
+    StdDevTemp:          array of double;          // 5. Temperature unc
+    StdDevPres:          array of double;          // 6. Pressure unc
+    StdDevHumi:          array of double;          // 7. Humidity unc
+    //StdDevLSAConst:      double;                   // 8. LS fit unc fixed term
+    //StdDevLSAScale:      array of double;          // 9. LS fit unc proportional term
+    StdDevLSADist :      array of double;          // 8 & 9. Std Dev from the LSA.
+    StdDevCentring:      double;                   // 10. centring (axial)
+    StdDevHD:            array of double;          // 11. Heights & offsets (transverse)
+    StdDevOS:            array of double;          // 12. Offset
+    StdDevRound:         double;                   // 13. Rounding
+    StdDevBaseInterval:  array of double;          // Type A errors from baseline calibration
+    CombinedUncertainty: array of double;					 // Sum of the squares of all in error budget
+    LUMUncertainty:      array of double;					 // LUM Calculated for distance
+    PublishUncertainty:  array of double;					 // Uncertainty used on certificate
   end;
 
   UNCERTAINTY_L = record
@@ -276,6 +299,7 @@ type
     Instrument: Double;  // Prescribed instrument
     InstrumentConstant: Double;  // Prescribed instrument
     InstrumentScale: Double;
+    AtmospherePPM: Double;
     Atmosphere: Double;
     Centring: Double;
     Offset: Double;

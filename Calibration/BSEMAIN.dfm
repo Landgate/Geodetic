@@ -340,19 +340,4 @@ object frmMain: TfrmMain
     Left = 4
     Top = 248
   end
-  object vedtLatitude: TDisplayFmt
-    Text = '0'
-    FieldType = vftLatitude
-    Hemisphere = hsNone
-    PositiveNorth = True
-    PositiveEast = True
-    DecimalPlaces = -1
-    DMSFormat = dfAbbreviated
-    MinValue = -90.000000000000000000
-    MaxValue = 90.000000000000000000
-    DateFormat = 'd/m/yyyy'
-    TimeFormat = 'h:mm:ss'
-    Left = 180
-    Top = 228
-  end
 end

@@ -449,8 +449,8 @@ begin
   hasError := False;
   strApplicationFolder := ExtractFilePath( Application.ExeName);
   strFile := Application.ExeName;
-  strFile := strApplicationFolder+ 'BASELINE.HLP';
-  strFile := strApplicationFolder+ 'BASELINE.CNT';
+//  strFile := strApplicationFolder+ 'BASELINE.HLP';
+//  strFile := strApplicationFolder+ 'BASELINE.CNT';
   strApplicationDBFolder := strApplicationFolder+'Database\';
 
   if strDistributionTo = 'VAFullVersion' then
@@ -538,6 +538,7 @@ begin
     frmProgress.pbarProgress.Position := 40;
     Application.ProcessMessages;
 
+(* Old format help files, no longer used or working in later Windows versions.
 
     strOldFileName := strApplicationFolder+'Baseline.hlp';
     strNewFileName := strDistributionFolder+'Baseline.hlp';
@@ -558,6 +559,8 @@ begin
     end;
     frmProgress.pbarProgress.Position := 55;
     Application.ProcessMessages;
+
+*)
 
     strOldFileName := strApplicationFolder+'Baseline.chm';
     strNewFileName := strDistributionFolder+'Baseline.chm';
@@ -844,8 +847,8 @@ begin
   edtDistributionFolder.Text := strDistributionFolder;
   edtDistributionFolder2.Text := strDistributionFolder;
 
-  memDistributionFiles.Lines.Append('Baseline.hlp');
-  memDistributionFiles.Lines.Append('Baseline.cnt');
+//  memDistributionFiles.Lines.Append('Baseline.hlp');
+//  memDistributionFiles.Lines.Append('Baseline.cnt');
   memDistributionFiles.Lines.Append('Baseline.chm');
 
   if not (strAuthorityLogoFile = '') then memDistributionFiles.Lines.Append(strAuthorityLogoFile);
