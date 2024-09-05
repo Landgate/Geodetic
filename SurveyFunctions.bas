@@ -1249,13 +1249,13 @@ Else
         CSF = 1.00001603
         CM = 116.453611111111
     End If
-    If UCase(proj) = "FRAZER 2020" Then
+    If UCase(proj) = "FRAZER2020" Then
         FalseEasting = 50000
         FalseNorthing = 3900000
         CSF = 1.00004321
         CM = 122.466666666667
     End If
-    If UCase(proj) = "FRAZER 94" Then
+    If UCase(proj) = "FRAZER94" Then
         FalseEasting = 50000
         FalseNorthing = 3800000
         CSF = 1.00004321
@@ -1297,13 +1297,13 @@ Else
         CSF = 1.00002027
         CM = 115.291666666667
     End If
-    If UCase(proj) = "GIBB2 2020" Then
+    If UCase(proj) = "GIBB22020" Then
         FalseEasting = 50000
         FalseNorthing = 2100000
         CSF = 1.00001571
         CM = 124.55
     End If
-    If UCase(proj) = "GIBB2 94" Then
+    If UCase(proj) = "GIBB294" Then
         FalseEasting = 50000
         FalseNorthing = 2000000
         CSF = 1.00001571
@@ -1645,13 +1645,13 @@ Else
         CSF = 1.00008818
         CM = 119.480555555556
     End If
-    If UCase(proj) = "LAKEGRACE 2020" Then
+    If UCase(proj) = "LAKEGRACE2020" Then
         FalseEasting = 50000
         FalseNorthing = 4020000
         CSF = 1.00004274
         CM = 118.283333333333
     End If
-    If UCase(proj) = "LAKEGRACE 94" Then
+    If UCase(proj) = "LAKEGRACE94" Then
         FalseEasting = 50000
         FalseNorthing = 3920000
         CSF = 1.00004274
@@ -1777,13 +1777,13 @@ Else
         CSF = 1.00002388
         CM = 119.85
     End If
-    If UCase(proj) = "MARVEL 2020" Then
+    If UCase(proj) = "MARVEL2020" Then
         FalseEasting = 50000
         FalseNorthing = 3760000
         CSF = 1.00006238
         CM = 119.6
     End If
-    If UCase(proj) = "MARVEL 94" Then
+    If UCase(proj) = "MARVEL94" Then
         FalseEasting = 50000
         FalseNorthing = 3660000
         CSF = 1.00006238
@@ -1945,13 +1945,13 @@ Else
         CSF = 1.0000677
         CM = 125.428333333333
     End If
-    If UCase(proj) = "MUKINBUDIN 2020" Then
+    If UCase(proj) = "MUKINBUDIN2020" Then
         FalseEasting = 50000
         FalseNorthing = 3740000
         CSF = 1.00004965
         CM = 118.283333333333
     End If
-    If UCase(proj) = "MUKINBUDIN 94" Then
+    If UCase(proj) = "MUKINBUDIN94" Then
         FalseEasting = 50000
         FalseNorthing = 3640000
         CSF = 1.00004965
@@ -2293,13 +2293,13 @@ Else
         CSF = 1.00008351
         CM = 118.863888888889
     End If
-    If UCase(proj) = "STOKES 2020" Then
+    If UCase(proj) = "STOKES2020" Then
         FalseEasting = 50000
         FalseNorthing = 4080000
         CSF = 1.00000676
         CM = 121.183333333333
     End If
-    If UCase(proj) = "STOKES 94" Then
+    If UCase(proj) = "STOKES94" Then
         FalseEasting = 50000
         FalseNorthing = 3980000
         CSF = 1.00000676
@@ -2473,13 +2473,13 @@ Else
         CSF = 1.00002058
         CM = 115.316666666667
     End If
-    If UCase(proj) = "WARREL 2020" Then
+    If UCase(proj) = "WARREL2020" Then
         FalseEasting = 50000
         FalseNorthing = 2640000
         CSF = 1.00001697
         CM = 119.65
     End If
-    If UCase(proj) = "WARREL 94" Then
+    If UCase(proj) = "WARREL94" Then
         FalseEasting = 50000
         FalseNorthing = 2540000
         CSF = 1.00001697
