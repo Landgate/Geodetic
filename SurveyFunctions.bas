@@ -3352,71 +3352,234 @@ Exit Function
 Errr:
 MidAz = Err.Description
 End Function
-Function Arc2Cord(ByVal Lat1, ByVal Lat2)
-On Error GoTo Errr
-
-If InStr(1, Lat1, " ") > 0 Then Lat1 = DD(Lat1)
-If InStr(1, Lat2, " ") > 0 Then Lat2 = DD(Lat2)
-Call EllipsoidalParameters("GRS80", a, b, OneOnF)
-
-E3 = nu((Lat1 + Lat2) / 2)
-' Coefficient of refraction
-D3 = 0.1
-' K1
-F3 = -((D3 ^ 2 * C3 ^ 3) / (24 * E3 ^ 2))
-'d2=d1+K1
-Arc2Cord = C3 + F3
-
-End Function
 
 Function rho(lat As Double) As Double
 
 On Error GoTo Errr
     Call EllipsoidalParameters("GRS80", a, b, OneOnF)
     
-    Dim f As Double
+    Dim F As Double
     Dim ecc1sq As Double
     Dim latRad As Double
-    f = 1 / OneOnF
-    ecc1sq = f * (2 - f)
+    F = 1 / OneOnF
+    ecc1sq = F * (2 - F)
     ' Convert latitude to radians
     latRad = lat * Application.WorksheetFunction.Pi() / 180
     
-    Debug.Print (ecc1sq)
     ' Calculate rho
     rho = (a * (1 - ecc1sq)) / ((1 - ecc1sq * (Sin(latRad) ^ 2)) ^ 1.5)
 Exit Function
 Errr:
     rho = Err.Description
 End Function
+
 Function nu(lat As Double) As Double
 
 On Error GoTo Errr
     Call EllipsoidalParameters("GRS80", a, b, OneOnF)
     
-    Dim f As Double
+    Dim F As Double
     Dim ecc1sq As Double
     Dim latRad As Double
-    f = 1 / OneOnF
-    ecc1sq = f * (2 - f)
-    ' Convert latitude to radians
-    latRad = lat * Application.WorksheetFunction.Pi() / 180
-    
-    ' Calculate nu
-    nu = a / Sqr(1 - ecc1sq * (Sin(latRad) ^ 2))
+    F = 1 / OneOnF
+    ecc1sq = F * (2 - F)
+    If lat = 0 Then
+        nu = a
+    Else
+        ' Convert latitude to radians
+        latRad = lat * Application.WorksheetFunction.Pi() / 180
+        ' Calculate nu
+        nu = a / Sqr(1 - ecc1sq * (Sin(latRad) ^ 2))
+    End If
 Exit Function
 Errr:
     nu = Err.Description
 End Function
-Function EarthRadius(lat As Double) As Double
 
+Function EarthRadiusMean(ByVal lat As Variant) As Double
+' Equation 63 in GDA2020 technical Manual v1.8
 On Error GoTo Errr
-    EarthRadius = (rho(lat) * nu(lat)) ^ 0.5
+    Dim d_lat As Double
+    If InStr(1, lat, " ") > 0 Then d_lat = DD(lat) Else d_lat = Val(lat)
+    
+    EarthRadiusMean = (rho(d_lat) * nu(d_lat)) ^ 0.5
 Exit Function
 Errr:
-    EarthRadius = Err.Description
+    EarthRadiusMean = Err.Description
 End Function
-Function SphDist(ByVal Lat1, ByVal Lng1, ByVal Lat2, ByVal Lng2)
+
+Function EarthRadiusAzimuth(ByVal lat As Variant, ByVal Az As Variant) As Double
+' Equation 64 in GDA2020 technical Manual v1.8
+On Error GoTo Errr
+    Dim d_lat As Double
+    Dim d_Az As Double
+    If InStr(1, lat, " ") > 0 Then d_lat = DD(lat) Else d_lat = Val(lat)
+    If InStr(1, Az, " ") > 0 Then d_Az = DD(Az) Else d_Az = Val(Az)
+    Dim p As Double
+    Dim v As Double
+    Dim AzRad As Double
+    
+    p = rho(d_lat)
+    v = nu(d_lat)
+    ' Convert azimuth to radians
+    AzRad = d_Az * Application.WorksheetFunction.Pi() / 180
+    
+    EarthRadiusAzimuth = (p * v) / ((v * (Cos(AzRad) ^ 2)) + (p * (Sin(AzRad) ^ 2)))
+Exit Function
+Errr:
+    EarthRadiusAzimuth = Err.Description
+End Function
+
+Function Arc2Cord(ByVal EDM_dist As Double, ByVal Earth_R As Double, Optional k As Double = 0.1) As Double
+    'First Arc-to-Chord Correction K1 (d1 to d2)
+    ' d2 = d1 + K1
+    ' k is Coefficient of refraction
+    On Error GoTo Errr
+    ' K1
+    K1 = -((k ^ 2 * EDM_dist ^ 3) / (24 * Earth_R ^ 2))
+    'd2=d1+K1
+    Arc2Cord = EDM_dist + K1
+Exit Function
+Errr:
+    Arc2Cord = Err.Description
+End Function
+
+Function slope_correction(WavePathCord As Double, hA As Double, hB As Double) As Double
+On Error GoTo Errr
+    ' K2
+    ' Equation 60 in GDA2020 technical Manual v1.8
+    Dim d2 As Double
+    Dim delta_h As Double
+    Dim mean_h As Double
+    
+    d2 = WavePathCord
+    delta_h = (hA - hB)
+    mean_h = (hA + hB) / 2
+    slope_correction = (d2 ^ 2 - delta_h ^ 2) ^ 0.5 - d2
+Exit Function
+Errr:
+    slope_correction = Err.Description
+End Function
+
+Function ellipsoidal_correction(WavePathCord As Double, hA As Double, hB As Double, Earth_Radius_Azimuth As Double) As Double
+On Error GoTo Errr
+    ' K3
+    ' Equation 61 in GDA2020 technical Manual v1.8
+    Dim d2 As Double
+    Dim delta_h As Double
+    Dim mean_h As Double
+    Dim Ra As Double
+    
+    d2 = WavePathCord
+    Ra = Earth_Radius_Azimuth
+    delta_h = (hA - hB)
+    mean_h = (hA + hB) / 2
+    ellipsoidal_correction = -(mean_h / Ra) * (d2 ^ 2 - delta_h ^ 2) ^ 0.5
+    
+Exit Function
+Errr:
+    ellipsoidal_correction = Err.Description
+End Function
+
+Function cord_to_arc_correction(e_cord_dist As Double, EarthRadiusAzimuth As Double) As Double
+' K4
+' Equation 62 in GDA2020 technical Manual v1.8
+On Error GoTo Errr
+    Dim d3 As Double
+    Dim Ra As Double
+    
+    d3 = e_cord_dist
+    Ra = EarthRadiusAzimuth
+    cord_to_arc_correction = d3 ^ 3 / (24 * Ra ^ 2) + (3 * d3 ^ 5 / (640 * Ra ^ 4))
+    
+Exit Function
+Errr:
+    cord_to_arc_correction = Err.Description
+End Function
+
+Function WavePath2sphdist(WavePathDist As Double, from_lat As Variant, from_ht As Double, to_ht As Double, ByVal Fwd_Az As Variant, Optional k As Double = 0.1) As Double
+On Error GoTo Errr
+    Dim Ra As Double
+    Dim d2 As Double
+    Dim d3 As Double
+    Dim d_from_lat As Double
+    Dim d_Fwd_Az As Double
+    
+    If InStr(1, from_lat, " ") > 0 Then d_from_lat = DD(from_lat) Else d_from_lat = Val(from_lat)
+    If InStr(1, Fwd_Az, " ") > 0 Then d_Fwd_Az = DD(Fwd_Az) Else d_Fwd_Az = Val(Fwd_Az)
+    
+    Ra = EarthRadiusAzimuth(d_from_lat, d_Fwd_Az)
+    d2 = Arc2Cord(WavePathDist, Ra, k)  'wave_path_distance to wave_path_cord_distance
+    K2 = slope_correction(d2, from_ht, to_ht)
+    d6 = d2 + K2
+    K3 = ellipsoidal_correction(d2, from_ht, to_ht, Ra)
+    d3 = d6 + K3
+    K4 = cord_to_arc_correction(d3, Ra)
+    d4 = d3 + K4
+
+    WavePath2sphdist = d4
+Exit Function
+Errr:
+    WavePath2sphdist = Err.Description
+End Function
+
+Function HzDist(ByVal Lat1 As Variant, ByVal Lng1 As Variant, ByVal e_hgt1 As Double, ByVal Lat2 As Variant, ByVal Lng2 As Variant, ByVal e_hgt2 As Double, Optional tags As Boolean = False)
+
+On Error GoTo Errr
+    Dim s As Double
+    Dim Ra As Double
+    Dim iterated_s As Double
+    Dim d2 As Double
+    Dim d3 As Double
+    Dim d6 As Double
+    Dim K2 As Double
+    Dim K3 As Double
+    Dim K4 As Double
+
+    If InStr(1, Lat1, " ") > 0 Then Lat1 = DD(Lat1)
+    If InStr(1, Lng1, " ") > 0 Then Lng1 = DD(Lng1)
+    If InStr(1, Lat2, " ") > 0 Then Lat2 = DD(Lat2)
+    If InStr(1, Lng2, " ") > 0 Then Lng2 = DD(Lng2)
+    
+    s = SphDist(Lat1, Lng1, Lat2, Lng2)
+    Fwd_Az = GeoAz(Lat1, Lng1, Lat2, Lng2)
+    Rev_Az = GeoAz(Lat2, Lng2, Lat1, Lng1)
+    Ra = EarthRadiusAzimuth(Lat1, Fwd_Az)
+    
+    d2 = s  'initiate the iteration with spheroidal distance equal to slope
+    iterated_s = 1
+    While Abs(iterated_s) > 0.0001
+        K2 = slope_correction(d2, e_hgt1, e_hgt2)
+        d6 = d2 + K2
+        d6 = d2 + K2
+        K3 = ellipsoidal_correction(d2, e_hgt1, e_hgt2, Ra)
+        d3 = d6 + K3
+        K4 = cord_to_arc_correction(d3, Ra)
+        d4 = d3 + K4
+        iterated_s = s - d4
+        d2 = d2 + iterated_s
+    Wend
+    
+    If tags Then
+        Dim Output(1 To 6)
+        Output(1) = "Ellipsoidal distance:"
+        Output(2) = s
+        Output(3) = "Mean ground level distance:"
+        Output(4) = d6
+        Output(5) = "Mid Azimuth:"
+        Output(6) = (DD(Fwd_Az) + DD(Rev_Az)) / 2
+        HzDist = Output
+    Else
+        HzDist = d6
+    End If
+    
+Exit Function
+Errr:
+    HzDist = Err.Description
+End Function
+
+
+Function SphDist(ByVal Lat1 As Variant, ByVal Lng1 As Variant, ByVal Lat2 As Variant, ByVal Lng2 As Variant)
 On Error GoTo Errr
 Call EllipsoidalParameters("GRS80", a, b, OneOnF)
 
@@ -3761,7 +3924,7 @@ Exit Function
 Errr:
 FwdLong = Err.Description
 End Function
-Function FwdRevAz(ByVal lat, ByVal Lng, ByVal Az, ByVal G4)
+Function FwdRevAz(ByVal lat, ByVal Lng, ByVal Az)
 On Error GoTo Errr
 Call EllipsoidalParameters("GRS80", a, b, OneOnF)
 
@@ -4711,13 +4874,13 @@ Function Iterate_XYZ_to_Lat(a, e2, PHI1, Z, RootXYSqr)
  "Projection and Transformation Calculations.xls" SPREADSHEET
 
 
-    V = a / (Sqr(1 - (e2 * ((Sin(PHI1)) ^ 2))))
-    PHI2 = Atn((Z + (e2 * V * (Sin(PHI1)))) / RootXYSqr)
+    v = a / (Sqr(1 - (e2 * ((Sin(PHI1)) ^ 2))))
+    PHI2 = Atn((Z + (e2 * v * (Sin(PHI1)))) / RootXYSqr)
     
     Do While Abs(PHI1 - PHI2) > 0.000000001
         PHI1 = PHI2
-        V = a / (Sqr(1 - (e2 * ((Sin(PHI1)) ^ 2))))
-        PHI2 = Atn((Z + (e2 * V * (Sin(PHI1)))) / RootXYSqr)
+        v = a / (Sqr(1 - (e2 * ((Sin(PHI1)) ^ 2))))
+        PHI2 = Atn((Z + (e2 * v * (Sin(PHI1)))) / RootXYSqr)
     Loop
 
     Iterate_XYZ_to_Lat = PHI2
@@ -4764,8 +4927,8 @@ Function XYZ_to_H(X, Y, Z, a, b)
 'Compute H
     RootXYSqr = Sqr((X ^ 2) + (Y ^ 2))
     e2 = ((a ^ 2) - (b ^ 2)) / (a ^ 2)
-    V = a / (Sqr(1 - (e2 * ((Sin(RadPHI)) ^ 2))))
-    H = (RootXYSqr / Cos(RadPHI)) - V
+    v = a / (Sqr(1 - (e2 * ((Sin(RadPHI)) ^ 2))))
+    H = (RootXYSqr / Cos(RadPHI)) - v
     
     XYZ_to_H = H
     
@@ -4784,10 +4947,10 @@ Function Lat_Long_H_to_X(PHI, LAM, H, a, b)
 
 'Compute eccentricity squared and nu
     e2 = ((a ^ 2) - (b ^ 2)) / (a ^ 2)
-    V = a / (Sqr(1 - (e2 * ((Sin(RadPHI)) ^ 2))))
+    v = a / (Sqr(1 - (e2 * ((Sin(RadPHI)) ^ 2))))
 
 'Compute X
-    Lat_Long_H_to_X = (V + H) * (Cos(RadPHI)) * (Cos(RadLAM))
+    Lat_Long_H_to_X = (v + H) * (Cos(RadPHI)) * (Cos(RadLAM))
 
 End Function
 
@@ -4804,10 +4967,10 @@ Function Lat_Long_H_to_Y(PHI, LAM, H, a, b)
 
 'Compute eccentricity squared and nu
     e2 = ((a ^ 2) - (b ^ 2)) / (a ^ 2)
-    V = a / (Sqr(1 - (e2 * ((Sin(RadPHI)) ^ 2))))
+    v = a / (Sqr(1 - (e2 * ((Sin(RadPHI)) ^ 2))))
 
 'Compute Y
-    Lat_Long_H_to_Y = (V + H) * (Cos(RadPHI)) * (Sin(RadLAM))
+    Lat_Long_H_to_Y = (v + H) * (Cos(RadPHI)) * (Sin(RadLAM))
 
 End Function
 
@@ -4823,10 +4986,10 @@ Function Lat_H_to_Z(PHI, H, a, b)
 
 'Compute eccentricity squared and nu
     e2 = ((a ^ 2) - (b ^ 2)) / (a ^ 2)
-    V = a / (Sqr(1 - (e2 * ((Sin(RadPHI)) ^ 2))))
+    v = a / (Sqr(1 - (e2 * ((Sin(RadPHI)) ^ 2))))
 
 'Compute X
-    Lat_H_to_Z = ((V * (1 - e2)) + H) * (Sin(RadPHI))
+    Lat_H_to_Z = ((v * (1 - e2)) + H) * (Sin(RadPHI))
 
 End Function
 
