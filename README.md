@@ -1,21 +1,22 @@
 # Geodetic
+### Geodetic Marks.kmz
+
+This dataset is updateded fortnightly. It has previouly been hosted on DataWA, however some security settings are blocking the datalinks to this resource and GitHub is being used as an alternative. The dataset is referenced by the kml file that can be downloaded from the Landgate website.
 
 ### Geodetic-Calculations-v4.xlsm
 
 Perform Bulk transformations, projections and geodetic calculations directly in excel.
 
-
-
 Functions include:
- 
+
 Vincenty
 Redfearn
 
- Decimal degrees >> Hours Minutes Seconds, Hours Minutes Seconds >> Decimal Degrees
- 
+Decimal degrees >> Hours Minutes Seconds, Hours Minutes Seconds >> Decimal Degrees
+
 7 Parameter transformations
 
- GDA2020 >> GDA94, GDA94 >> GDA2020
+GDA2020 >> GDA94, GDA94 >> GDA2020
 
 
 
